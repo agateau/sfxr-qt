@@ -1,6 +1,10 @@
 #ifndef AUDIO_H
 #define AUDIO_H
 
+#include <stdio.h>
+
+#include <SDL.h>
+
 extern int wave_type;
 
 extern float p_base_freq;
@@ -77,8 +81,20 @@ extern double arp_mod;
 extern int wav_bits;
 extern int wav_freq;
 
+extern bool mute_stream;
+
 void ResetParams();
 bool LoadSettings(char* filename);
 bool SaveSettings(char* filename);
+
+void ResetSample(bool restart);
+void PlaySample();
+void SynthSample(int length, float* buffer, FILE* file);
+bool ExportWAV(char* filename);
+void SDLAudioCallback(void *userdata, Uint8 *stream, int len);
+
+float frnd(float range);
+
+#define rnd(n) (rand()%(n+1))
 
 #endif /* AUDIO_H */
