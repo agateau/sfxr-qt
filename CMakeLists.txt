@@ -11,7 +11,10 @@ include_directories(
     ${GTK3_INCLUDE_DIRS}
 )
 
-set(sfxr_SRCS main.cpp)
+set(sfxr_SRCS
+    main.cpp
+    sdlkit.cpp
+)
 
 add_executable(sfxr ${sfxr_SRCS})
 target_link_libraries(sfxr SDL ${GTK3_LIBRARIES})
