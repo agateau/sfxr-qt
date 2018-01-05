@@ -78,5 +78,7 @@ extern int wav_bits;
 extern int wav_freq;
 
 void ResetParams();
+bool LoadSettings(char* filename);
+bool SaveSettings(char* filename);
 
 #endif /* AUDIO_H */
