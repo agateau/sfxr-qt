@@ -7,11 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static void error (const char *file, unsigned int line, const char *msg)
-{
-	fprintf(stderr, "[!] %s:%u  %s\n", file, line, msg);
-	exit(1);
-}
+void error (const char *file, unsigned int line, const char *msg);
 
 typedef Uint32 DWORD;
 typedef Uint16 WORD;

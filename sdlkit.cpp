@@ -22,6 +22,13 @@ bool DPInput::KeyPressed(SDLKey key)
 	return r;
 }
 
+void error (const char *file, unsigned int line, const char *msg)
+{
+	fprintf(stderr, "[!] %s:%u  %s\n", file, line, msg);
+	exit(1);
+}
+
+
 bool load_file (char *fname)
 {
 	char *fn;
