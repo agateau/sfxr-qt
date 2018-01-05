@@ -14,6 +14,7 @@ include_directories(
 set(sfxr_SRCS
     main.cpp
     sdlkit.cpp
+    audio.cpp
 )
 
 add_executable(sfxr ${sfxr_SRCS})
