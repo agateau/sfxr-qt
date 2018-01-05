@@ -38,50 +38,12 @@ extern float p_repeat_speed;
 extern float p_arp_speed;
 extern float p_arp_mod;
 
-extern float master_vol;
-
 extern float sound_vol;
 
 extern bool playing_sample;
-extern int phase;
-extern double fperiod;
-extern double fmaxperiod;
-extern double fslide;
-extern double fdslide;
-extern int period;
-extern float square_duty;
-extern float square_slide;
-extern int env_stage;
-extern int env_time;
-extern int env_length[3];
-extern float env_vol;
-extern float fphase;
-extern float fdphase;
-extern int iphase;
-extern float phaser_buffer[1024];
-extern int ipp;
-extern float noise_buffer[32];
-extern float fltp;
-extern float fltdp;
-extern float fltw;
-extern float fltw_d;
-extern float fltdmp;
-extern float fltphp;
-extern float flthp;
-extern float flthp_d;
-extern float vib_phase;
-extern float vib_speed;
-extern float vib_amp;
-extern int rep_time;
-extern int rep_limit;
-extern int arp_time;
-extern int arp_limit;
-extern double arp_mod;
 
 extern int wav_bits;
 extern int wav_freq;
-
-extern bool mute_stream;
 
 void ResetParams();
 bool LoadSettings(char* filename);

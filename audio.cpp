@@ -3,7 +3,9 @@
 #include <math.h>
 #include <string.h>
 
-#define PI 3.14159265f
+static const float PI = 3.14159265f;
+
+static const float MASTER_VOL = 0.05f;
 
 int wave_type;
 
@@ -38,51 +40,49 @@ float p_repeat_speed;
 float p_arp_speed;
 float p_arp_mod;
 
-float master_vol=0.05f;
-
 float sound_vol=0.5f;
 
 bool playing_sample=false;
-int phase;
-double fperiod;
-double fmaxperiod;
-double fslide;
-double fdslide;
-int period;
-float square_duty;
-float square_slide;
-int env_stage;
-int env_time;
-int env_length[3];
-float env_vol;
-float fphase;
-float fdphase;
-int iphase;
-float phaser_buffer[1024];
-int ipp;
-float noise_buffer[32];
-float fltp;
-float fltdp;
-float fltw;
-float fltw_d;
-float fltdmp;
-float fltphp;
-float flthp;
-float flthp_d;
-float vib_phase;
-float vib_speed;
-float vib_amp;
-int rep_time;
-int rep_limit;
-int arp_time;
-int arp_limit;
-double arp_mod;
 
 int wav_bits=16;
 int wav_freq=44100;
 
-bool mute_stream;
+static int phase;
+static double fperiod;
+static double fmaxperiod;
+static double fslide;
+static double fdslide;
+static int period;
+static float square_duty;
+static float square_slide;
+static int env_stage;
+static int env_time;
+static int env_length[3];
+static float env_vol;
+static float fphase;
+static float fdphase;
+static int iphase;
+static float phaser_buffer[1024];
+static int ipp;
+static float noise_buffer[32];
+static float fltp;
+static float fltdp;
+static float fltw;
+static float fltw_d;
+static float fltdmp;
+static float fltphp;
+static float flthp;
+static float flthp_d;
+static float vib_phase;
+static float vib_speed;
+static float vib_amp;
+static int rep_time;
+static int rep_limit;
+static int arp_time;
+static int arp_limit;
+static double arp_mod;
 
+static bool mute_stream;
 static int file_sampleswritten;
 static float filesample=0.0f;
 static int fileacc=0;
@@ -428,7 +428,7 @@ void SynthSample(int length, float* buffer, FILE* file)
 			// final accumulation and envelope application
 			ssample+=sample*env_vol;
 		}
-		ssample=ssample/8*master_vol;
+		ssample=ssample/8*MASTER_VOL;
 
 		ssample*=2.0f*sound_vol;
 
