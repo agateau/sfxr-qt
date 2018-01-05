@@ -91,7 +91,7 @@ void ResetSample(bool restart);
 void PlaySample();
 void SynthSample(int length, float* buffer, FILE* file);
 bool ExportWAV(char* filename);
-void SDLAudioCallback(void *userdata, Uint8 *stream, int len);
+void InitSDLAudio();
 
 float frnd(float range);
 

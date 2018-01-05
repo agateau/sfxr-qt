@@ -572,16 +572,7 @@ void ddkInit()
 	strcpy(categories[6].name, "BLIP/SELECT");
 
 	ResetParams();
-
-	SDL_AudioSpec des;
-	des.freq = 44100;
-	des.format = AUDIO_S16SYS;
-	des.channels = 1;
-	des.samples = 512;
-	des.callback = SDLAudioCallback;
-	des.userdata = NULL;
-	VERIFY(!SDL_OpenAudio(&des, NULL));
-	SDL_PauseAudio(0);
+	InitSDLAudio();
 }
 
 void ddkFree()

@@ -526,7 +526,7 @@ bool ExportWAV(char* filename)
 	return true;
 }
 
-void SDLAudioCallback(void *userdata, Uint8 *stream, int len)
+static void SDLAudioCallback(void *userdata, Uint8 *stream, int len)
 {
 	if (playing_sample && !mute_stream)
 	{
@@ -545,3 +545,18 @@ void SDLAudioCallback(void *userdata, Uint8 *stream, int len)
 	else memset(stream, 0, len);
 }
 
+void InitSDLAudio()
+{
+	SDL_AudioSpec des;
+	des.freq = 44100;
+	des.format = AUDIO_S16SYS;
+	des.channels = 1;
+	des.samples = 512;
+	des.callback = SDLAudioCallback;
+	des.userdata = NULL;
+	if (SDL_OpenAudio(&des, NULL) != 0) {
+		fprintf(stderr, "Failed to init audio\n");
+		exit(1);
+	}
+	SDL_PauseAudio(0);
+}
