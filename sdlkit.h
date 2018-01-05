@@ -40,6 +40,14 @@ public:
 	static bool KeyPressed(SDLKey key);
 };
 
+struct Spriteset
+{
+	DWORD *data;
+	int width;
+	int height;
+	int pitch;
+};
+
 bool ddkLock ();
 void ddkUnlock ();
 
@@ -58,5 +66,14 @@ extern bool mouse_middle;
 extern bool mouse_leftclick;
 extern bool mouse_rightclick;
 extern bool mouse_middleclick;
+extern Spriteset font;
+
+int LoadTGA(Spriteset& tiles, const char *filename);
+void ClearScreen(DWORD color);
+void DrawBar(int sx, int sy, int w, int h, DWORD color);
+void DrawBox(int sx, int sy, int w, int h, DWORD color);
+void DrawSprite(Spriteset& sprites, int sx, int sy, int i, DWORD color);
+void DrawText(int sx, int sy, DWORD color, const char *string, ...);
+bool MouseInBox(int x, int y, int w, int h);
 
 #endif

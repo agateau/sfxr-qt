@@ -22,15 +22,6 @@ float frnd(float range)
 	return (float)rnd(10000)/10000*range;
 }
 
-struct Spriteset
-{
-	DWORD *data;
-	int width;
-	int height;
-	int pitch;
-};
-
-Spriteset font;
 Spriteset ld48;
 
 struct Category
@@ -579,8 +570,6 @@ bool ExportWAV(char* filename)
 	
 	return true;
 }
-
-#include "tools.h"
 
 bool firstframe=true;
 int refresh_counter=0;
