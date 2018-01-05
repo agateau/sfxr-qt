@@ -5,23 +5,13 @@
 
 */
 
-#ifdef WIN32
-#include "ddrawkit.h"
-#else
 #include "sdlkit.h"
-#endif
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-#ifdef WIN32
-#include "DPInput.h" // WIN32
-#include "pa/portaudio.h"
-#include "fileselector.h" // WIN32
-#else
 #include "SDL.h"
-#endif
 
 #define rnd(n) (rand()%(n+1))
 
@@ -511,31 +501,8 @@ void SynthSample(int length, float* buffer, FILE* file)
 }
 
 DPInput *input;
-#ifdef WIN32
-PortAudioStream *stream;
-#endif
 bool mute_stream;
 
-#ifdef WIN32
-//ancient portaudio stuff
-static int AudioCallback(void *inputBuffer, void *outputBuffer,
-						 unsigned long framesPerBuffer,
-						 PaTimestamp outTime, void *userData)
-{
-	float *out=(float*)outputBuffer;
-	float *in=(float*)inputBuffer;
-	(void)outTime;
-
-	if(playing_sample && !mute_stream)
-		SynthSample(framesPerBuffer, out, NULL);
-	else
-		for(int i=0;i<framesPerBuffer;i++)
-			*out++=0.0f;
-	
-	return 0;
-}
-#else
-//lets use SDL in stead
 static void SDLAudioCallback(void *userdata, Uint8 *stream, int len)
 {
 	if (playing_sample && !mute_stream)
@@ -554,7 +521,6 @@ static void SDLAudioCallback(void *userdata, Uint8 *stream, int len)
 	}
 	else memset(stream, 0, len);
 }
-#endif
 
 bool ExportWAV(char* filename)
 {
@@ -1160,22 +1126,6 @@ void ddkInit()
 
 	ResetParams();
 
-#ifdef WIN32
-	// Init PortAudio
-	SetEnvironmentVariable("PA_MIN_LATENCY_MSEC", "75"); // WIN32
-	Pa_Initialize();
-	Pa_OpenDefaultStream(
-				&stream,
-				0,
-				1,
-				paFloat32,	// output type
-				44100,
-				512,		// samples per buffer
-				0,			// # of buffers
-				AudioCallback,
-				NULL);
-	Pa_StartStream(stream);
-#else
 	SDL_AudioSpec des;
 	des.freq = 44100;
 	des.format = AUDIO_S16SYS;
@@ -1185,7 +1135,6 @@ void ddkInit()
 	des.userdata = NULL;
 	VERIFY(!SDL_OpenAudio(&des, NULL));
 	SDL_PauseAudio(0);
-#endif
 }
 
 void ddkFree()
@@ -1193,12 +1142,5 @@ void ddkFree()
 	delete input;
 	free(ld48.data);
 	free(font.data);
-	
-#ifdef WIN32
-	// Close PortAudio
-    Pa_StopStream(stream);
-    Pa_CloseStream(stream);
-    Pa_Terminate();
-#endif
 }
 
