@@ -7,6 +7,30 @@ class Audio {
 public:
     void Init();
 
+    // Params
+    void ResetParams();
+    bool LoadSettings(char* filename);
+    bool SaveSettings(char* filename);
+
+    // Play
+    void ResetSample(bool restart);
+    void PlaySample();
+    void SynthSample(int length, float* buffer, FILE* file);
+    bool ExportWAV(char* filename);
+
+    // High level
+    void PickupCoin();
+    void LaserShoot();
+    void Explosion();
+    void Powerup();
+    void HitHurt();
+    void Jump();
+    void BlipSelect();
+
+    void playCallback(unsigned char *stream, int len);
+
+private:
+    // Fields editable from the outside
     int wave_type;
 
     float p_base_freq;
@@ -47,29 +71,7 @@ public:
     int wav_bits = 16;
     int wav_freq = 44100;
 
-    // Params
-    void ResetParams();
-    bool LoadSettings(char* filename);
-    bool SaveSettings(char* filename);
-
-    // Play
-    void ResetSample(bool restart);
-    void PlaySample();
-    void SynthSample(int length, float* buffer, FILE* file);
-    bool ExportWAV(char* filename);
-
-    // High level
-    void PickupCoin();
-    void LaserShoot();
-    void Explosion();
-    void Powerup();
-    void HitHurt();
-    void Jump();
-    void BlipSelect();
-
-    void playCallback(unsigned char *stream, int len);
-
-private:
+    // Internal
     int phase;
     double fperiod;
     double fmaxperiod;
