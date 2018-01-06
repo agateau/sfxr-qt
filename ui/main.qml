@@ -34,11 +34,28 @@ Window {
     }
 
     WaveFormSelector {
+        id: waveFormSelector
         synth: synth
         anchors {
             left: verticalLine.right
             leftMargin: 12
             top: parent.top
+        }
+    }
+
+    ColumnLayout {
+        anchors {
+            left: verticalLine.right
+            leftMargin: 12
+            top: waveFormSelector.bottom
+            topMargin: 12
+        }
+
+        Slider {
+            value: synth.baseFrequency
+            onValueChanged: {
+                synth.baseFrequency = value;
+            }
         }
     }
 }

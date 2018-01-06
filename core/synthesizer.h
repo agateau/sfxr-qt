@@ -3,11 +3,12 @@
 
 #include <QObject>
 
-class Audio;
+class QTimer;
 
 class Synthesizer : public QObject {
     Q_OBJECT
     Q_PROPERTY(int waveType READ waveType WRITE setWaveType NOTIFY waveTypeChanged)
+    Q_PROPERTY(qreal baseFrequency READ baseFrequency WRITE setBaseFrequency NOTIFY baseFrequencyChanged)
 public:
     explicit Synthesizer(QObject* parent = nullptr);
     ~Synthesizer();
@@ -40,8 +41,12 @@ public:
     int waveType() const;
     void setWaveType(int waveType);
 
+    qreal baseFrequency() const;
+    void setBaseFrequency(qreal baseFrequency);
+
 signals:
     void waveTypeChanged(int value);
+    void baseFrequencyChanged(qreal value);
 
 private:
     // Fields editable from the outside
@@ -126,7 +131,9 @@ private:
     float filesample = 0.0f;
     int fileacc = 0;
 
+    QTimer* mPlayTimer;
     void Init();
+    void schedulePlay();
 };
 
 #endif // SYNTHESIZER_H

@@ -1,5 +1,7 @@
 #include "synthesizer.h"
 
+#include <QTimer>
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +12,8 @@ static const float PI = 3.14159265f;
 
 static const float MASTER_VOL = 0.05f;
 
+static const int SCHEDULED_PLAY_DELAY = 200;
+
 inline int rnd(int n) {
     return rand() % (n + 1);
 }
@@ -19,8 +23,13 @@ inline float frnd(float range) {
 }
 
 Synthesizer::Synthesizer(QObject* parent)
-    : QObject(parent) {
+    : QObject(parent)
+    , mPlayTimer(new QTimer(this)) {
+    mPlayTimer->setInterval(SCHEDULED_PLAY_DELAY);
+    mPlayTimer->setSingleShot(true);
+    connect(mPlayTimer, &QTimer::timeout, this, &Synthesizer::PlaySample);
     Init();
+    ResetParams();
 }
 
 Synthesizer::~Synthesizer() {
@@ -28,7 +37,7 @@ Synthesizer::~Synthesizer() {
 
 void Synthesizer::generatePickup() {
     ResetParams();
-    p_base_freq = 0.4f + frnd(0.5f);
+    setBaseFrequency(0.4f + frnd(0.5f));
     p_env_attack = 0.0f;
     p_env_sustain = frnd(0.1f);
     p_env_decay = 0.1f + frnd(0.4f);
@@ -37,7 +46,7 @@ void Synthesizer::generatePickup() {
         p_arp_speed = 0.5f + frnd(0.2f);
         p_arp_mod = 0.2f + frnd(0.4f);
     }
-    PlaySample();
+    schedulePlay();
 }
 
 void Synthesizer::generateLaser() {
@@ -47,14 +56,14 @@ void Synthesizer::generateLaser() {
         wave_type = rnd(1);
     }
     setWaveType(wave_type);
-    p_base_freq = 0.5f + frnd(0.5f);
-    p_freq_limit = p_base_freq - 0.2f - frnd(0.6f);
+    setBaseFrequency(0.5f + frnd(0.5f));
+    p_freq_limit = baseFrequency() - 0.2f - frnd(0.6f);
     if (p_freq_limit < 0.2f) {
         p_freq_limit = 0.2f;
     }
     p_freq_ramp = -0.15f - frnd(0.2f);
     if (rnd(2) == 0) {
-        p_base_freq = 0.3f + frnd(0.6f);
+        setBaseFrequency(0.3f + frnd(0.6f));
         p_freq_limit = frnd(0.1f);
         p_freq_ramp = -0.35f - frnd(0.3f);
     }
@@ -78,20 +87,20 @@ void Synthesizer::generateLaser() {
     if (rnd(1)) {
         p_hpf_freq = frnd(0.3f);
     }
-    PlaySample();
+    schedulePlay();
 }
 
 void Synthesizer::generateExplosion() {
     ResetParams();
     setWaveType(3);
     if (rnd(1)) {
-        p_base_freq = 0.1f + frnd(0.4f);
+        setBaseFrequency(0.1f + frnd(0.4f));
         p_freq_ramp = -0.1f + frnd(0.4f);
     } else {
-        p_base_freq = 0.2f + frnd(0.7f);
+        setBaseFrequency(0.2f + frnd(0.7f));
         p_freq_ramp = -0.2f - frnd(0.2f);
     }
-    p_base_freq *= p_base_freq;
+    setBaseFrequency(baseFrequency() * baseFrequency());
     if (rnd(4) == 0) {
         p_freq_ramp = 0.0f;
     }
@@ -114,7 +123,7 @@ void Synthesizer::generateExplosion() {
         p_arp_speed = 0.6f + frnd(0.3f);
         p_arp_mod = 0.8f - frnd(1.6f);
     }
-    PlaySample();
+    schedulePlay();
 }
 
 void Synthesizer::generatePowerup() {
@@ -125,11 +134,11 @@ void Synthesizer::generatePowerup() {
         p_duty = frnd(0.6f);
     }
     if (rnd(1)) {
-        p_base_freq = 0.2f + frnd(0.3f);
+        setBaseFrequency(0.2f + frnd(0.3f));
         p_freq_ramp = 0.1f + frnd(0.4f);
         p_repeat_speed = 0.4f + frnd(0.4f);
     } else {
-        p_base_freq = 0.2f + frnd(0.3f);
+        setBaseFrequency(0.2f + frnd(0.3f));
         p_freq_ramp = 0.05f + frnd(0.2f);
         if (rnd(1)) {
             p_vib_strength = frnd(0.7f);
@@ -139,7 +148,7 @@ void Synthesizer::generatePowerup() {
     p_env_attack = 0.0f;
     p_env_sustain = frnd(0.4f);
     p_env_decay = 0.1f + frnd(0.4f);
-    PlaySample();
+    schedulePlay();
 }
 
 void Synthesizer::generateHitHurt() {
@@ -151,7 +160,7 @@ void Synthesizer::generateHitHurt() {
     if (waveType() == 0) {
         p_duty = frnd(0.6f);
     }
-    p_base_freq = 0.2f + frnd(0.6f);
+    setBaseFrequency(0.2f + frnd(0.6f));
     p_freq_ramp = -0.3f - frnd(0.4f);
     p_env_attack = 0.0f;
     p_env_sustain = frnd(0.1f);
@@ -159,14 +168,14 @@ void Synthesizer::generateHitHurt() {
     if (rnd(1)) {
         p_hpf_freq = frnd(0.3f);
     }
-    PlaySample();
+    schedulePlay();
 }
 
 void Synthesizer::generateJump() {
     ResetParams();
     setWaveType(0);
     p_duty = frnd(0.6f);
-    p_base_freq = 0.3f + frnd(0.3f);
+    setBaseFrequency(0.3f + frnd(0.3f));
     p_freq_ramp = 0.1f + frnd(0.2f);
     p_env_attack = 0.0f;
     p_env_sustain = 0.1f + frnd(0.3f);
@@ -177,7 +186,7 @@ void Synthesizer::generateJump() {
     if (rnd(1)) {
         p_lpf_freq = 1.0f - frnd(0.6f);
     }
-    PlaySample();
+    schedulePlay();
 }
 
 void Synthesizer::generateBlipSelect() {
@@ -186,12 +195,12 @@ void Synthesizer::generateBlipSelect() {
     if (waveType() == 0) {
         p_duty = frnd(0.6f);
     }
-    p_base_freq = 0.2f + frnd(0.4f);
+    setBaseFrequency(0.2f + frnd(0.4f));
     p_env_attack = 0.0f;
     p_env_sustain = 0.1f + frnd(0.1f);
     p_env_decay = frnd(0.2f);
     p_hpf_freq = 0.1f;
-    PlaySample();
+    schedulePlay();
 }
 
 void Synthesizer::ResetParams() {
@@ -700,6 +709,22 @@ void Synthesizer::setWaveType(int waveType) {
     if (waveType != wave_type) {
         wave_type = waveType;
         waveTypeChanged(waveType);
-        PlaySample();
+        schedulePlay();
     }
+}
+
+qreal Synthesizer::baseFrequency() const {
+    return p_base_freq;
+}
+
+void Synthesizer::setBaseFrequency(qreal value) {
+    if (!qFuzzyCompare(qreal(p_base_freq), value)) {
+        p_base_freq = value;
+        baseFrequencyChanged(p_base_freq);
+        schedulePlay();
+    }
+}
+
+void Synthesizer::schedulePlay() {
+    mPlayTimer->start();
 }
