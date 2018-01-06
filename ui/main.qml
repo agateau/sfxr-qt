@@ -1,5 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Window 2.3
+import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.2
 
 import sfxr2 1.0
 
@@ -12,27 +14,63 @@ Window {
         id: synth
     }
 
-    MainWindow {
-        pickupButton.onClicked: {
-            synth.generatePickup();
+    ColumnLayout {
+        id: columnLayout
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+        Label {
+            id: label
+            text: qsTr("Generator")
         }
-        laserButton.onClicked: {
-            synth.generateLaser();
+
+        Button {
+            text: qsTr("Pickup/Coin")
+            onClicked: {
+                synth.generatePickup();
+            }
         }
-        explosionButton.onClicked: {
-            synth.generateExplosion();
+
+        Button {
+            text: qsTr("Laser/Shoot")
+            onClicked: {
+                synth.generateLaser();
+            }
         }
-        powerupButton.onClicked: {
-            synth.generatePowerup();
+
+        Button {
+            text: qsTr("Explosion")
+            onClicked: {
+                synth.generateExplosion();
+            }
         }
-        hitHurtButton.onClicked: {
-            synth.generateHitHurt();
+
+        Button {
+            text: qsTr("Power Up")
+            onClicked: {
+                synth.generatePowerup();
+            }
         }
-        jumpButton.onClicked: {
-            synth.generateJump();
+
+        Button {
+            text: qsTr("Hit/Hurt")
+            onClicked: {
+                synth.generateHitHurt();
+            }
         }
-        blipSelectButton.onClicked: {
-            synth.generateBlipSelect();
+
+        Button {
+            text: qsTr("Jump")
+            onClicked: {
+                synth.generateJump();
+            }
+        }
+
+        Button {
+            text: qsTr("Blip/Select")
+            onClicked: {
+                synth.generateBlipSelect();
+            }
         }
     }
 }
