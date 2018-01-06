@@ -1,8 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-#include "audio.h"
-
 #include "synthesizer.h"
 
 int main(int argc, char* argv[]) {
