@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>Generators.qml</file>
+        <file>WaveFormSelector.qml</file>
     </qresource>
 </RCC>

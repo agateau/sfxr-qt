@@ -6,6 +6,7 @@ import QtQuick.Controls 2.2
 import sfxr2 1.0
 
 Window {
+    id: root
     visible: true
     width: 600
     height: 400
@@ -14,63 +15,30 @@ Window {
         id: synth
     }
 
-    ColumnLayout {
-        id: columnLayout
+    Generators {
+        id: generators
+        synth: synth
         anchors.left: parent.left
         anchors.top: parent.top
+    }
 
-        Label {
-            id: label
-            text: qsTr("Generator")
+    Rectangle {
+        id: verticalLine
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: generators.right
+            leftMargin: 12
         }
+        width: 1
+    }
 
-        Button {
-            text: qsTr("Pickup/Coin")
-            onClicked: {
-                synth.generatePickup();
-            }
-        }
-
-        Button {
-            text: qsTr("Laser/Shoot")
-            onClicked: {
-                synth.generateLaser();
-            }
-        }
-
-        Button {
-            text: qsTr("Explosion")
-            onClicked: {
-                synth.generateExplosion();
-            }
-        }
-
-        Button {
-            text: qsTr("Power Up")
-            onClicked: {
-                synth.generatePowerup();
-            }
-        }
-
-        Button {
-            text: qsTr("Hit/Hurt")
-            onClicked: {
-                synth.generateHitHurt();
-            }
-        }
-
-        Button {
-            text: qsTr("Jump")
-            onClicked: {
-                synth.generateJump();
-            }
-        }
-
-        Button {
-            text: qsTr("Blip/Select")
-            onClicked: {
-                synth.generateBlipSelect();
-            }
+    WaveFormSelector {
+        synth: synth
+        anchors {
+            left: verticalLine.right
+            leftMargin: 12
+            top: parent.top
         }
     }
 }
