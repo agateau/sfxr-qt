@@ -7,11 +7,10 @@
 
 class Audio;
 
-class Synthesizer : public QObject
-{
+class Synthesizer : public QObject {
     Q_OBJECT
 public:
-    explicit Synthesizer(QObject *parent = nullptr);
+    explicit Synthesizer(QObject* parent = nullptr);
     ~Synthesizer();
 
     Q_INVOKABLE void generatePickup();

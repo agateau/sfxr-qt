@@ -27,7 +27,7 @@ public:
     void Jump();
     void BlipSelect();
 
-    void playCallback(unsigned char *stream, int len);
+    void playCallback(unsigned char* stream, int len);
 
 private:
     // Fields editable from the outside
@@ -109,8 +109,8 @@ private:
 
     bool mute_stream;
     int file_sampleswritten;
-    float filesample=0.0f;
-    int fileacc=0;
+    float filesample = 0.0f;
+    int fileacc = 0;
 };
 
 #endif /* AUDIO_H */
