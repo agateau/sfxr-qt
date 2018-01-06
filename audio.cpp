@@ -560,3 +560,18 @@ void InitSDLAudio()
 	}
 	SDL_PauseAudio(0);
 }
+
+void PickupCoin()
+{
+	ResetParams();
+	p_base_freq=0.4f+frnd(0.5f);
+	p_env_attack=0.0f;
+	p_env_sustain=frnd(0.1f);
+	p_env_decay=0.1f+frnd(0.4f);
+	p_env_punch=0.3f+frnd(0.3f);
+	if(rnd(1))
+	{
+		p_arp_speed=0.5f+frnd(0.2f);
+		p_arp_mod=0.2f+frnd(0.4f);
+	}
+}

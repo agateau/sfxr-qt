@@ -45,18 +45,24 @@ extern bool playing_sample;
 extern int wav_bits;
 extern int wav_freq;
 
+// Params
 void ResetParams();
 bool LoadSettings(char* filename);
 bool SaveSettings(char* filename);
 
+// Play
 void ResetSample(bool restart);
 void PlaySample();
 void SynthSample(int length, float* buffer, FILE* file);
 bool ExportWAV(char* filename);
 void InitSDLAudio();
 
+// Misc
 float frnd(float range);
 
 #define rnd(n) (rand()%(n+1))
+
+// High level
+void PickupCoin();
 
 #endif /* AUDIO_H */
