@@ -64,5 +64,11 @@ float frnd(float range);
 
 // High level
 void PickupCoin();
+void LaserShoot();
+void Explosion();
+void Powerup();
+void HitHurt();
+void Jump();
+void BlipSelect();
 
 #endif /* AUDIO_H */

@@ -575,3 +575,157 @@ void PickupCoin()
 		p_arp_mod=0.2f+frnd(0.4f);
 	}
 }
+
+void LaserShoot()
+{
+    ResetParams();
+    wave_type=rnd(2);
+    if(wave_type==2 && rnd(1))
+        wave_type=rnd(1);
+    p_base_freq=0.5f+frnd(0.5f);
+    p_freq_limit=p_base_freq-0.2f-frnd(0.6f);
+    if(p_freq_limit<0.2f) p_freq_limit=0.2f;
+    p_freq_ramp=-0.15f-frnd(0.2f);
+    if(rnd(2)==0)
+    {
+        p_base_freq=0.3f+frnd(0.6f);
+        p_freq_limit=frnd(0.1f);
+        p_freq_ramp=-0.35f-frnd(0.3f);
+    }
+    if(rnd(1))
+    {
+        p_duty=frnd(0.5f);
+        p_duty_ramp=frnd(0.2f);
+    }
+    else
+    {
+        p_duty=0.4f+frnd(0.5f);
+        p_duty_ramp=-frnd(0.7f);
+    }
+    p_env_attack=0.0f;
+    p_env_sustain=0.1f+frnd(0.2f);
+    p_env_decay=frnd(0.4f);
+    if(rnd(1))
+        p_env_punch=frnd(0.3f);
+    if(rnd(2)==0)
+    {
+        p_pha_offset=frnd(0.2f);
+        p_pha_ramp=-frnd(0.2f);
+    }
+    if(rnd(1))
+        p_hpf_freq=frnd(0.3f);
+}
+
+void Explosion()
+{
+    ResetParams();
+    wave_type=3;
+    if(rnd(1))
+    {
+        p_base_freq=0.1f+frnd(0.4f);
+        p_freq_ramp=-0.1f+frnd(0.4f);
+    }
+    else
+    {
+        p_base_freq=0.2f+frnd(0.7f);
+        p_freq_ramp=-0.2f-frnd(0.2f);
+    }
+    p_base_freq*=p_base_freq;
+    if(rnd(4)==0)
+        p_freq_ramp=0.0f;
+    if(rnd(2)==0)
+        p_repeat_speed=0.3f+frnd(0.5f);
+    p_env_attack=0.0f;
+    p_env_sustain=0.1f+frnd(0.3f);
+    p_env_decay=frnd(0.5f);
+    if(rnd(1)==0)
+    {
+        p_pha_offset=-0.3f+frnd(0.9f);
+        p_pha_ramp=-frnd(0.3f);
+    }
+    p_env_punch=0.2f+frnd(0.6f);
+    if(rnd(1))
+    {
+        p_vib_strength=frnd(0.7f);
+        p_vib_speed=frnd(0.6f);
+    }
+    if(rnd(2)==0)
+    {
+        p_arp_speed=0.6f+frnd(0.3f);
+        p_arp_mod=0.8f-frnd(1.6f);
+    }
+}
+
+void Powerup()
+{
+    ResetParams();
+    if(rnd(1))
+        wave_type=1;
+    else
+        p_duty=frnd(0.6f);
+    if(rnd(1))
+    {
+        p_base_freq=0.2f+frnd(0.3f);
+        p_freq_ramp=0.1f+frnd(0.4f);
+        p_repeat_speed=0.4f+frnd(0.4f);
+    }
+    else
+    {
+        p_base_freq=0.2f+frnd(0.3f);
+        p_freq_ramp=0.05f+frnd(0.2f);
+        if(rnd(1))
+        {
+            p_vib_strength=frnd(0.7f);
+            p_vib_speed=frnd(0.6f);
+        }
+    }
+    p_env_attack=0.0f;
+    p_env_sustain=frnd(0.4f);
+    p_env_decay=0.1f+frnd(0.4f);
+}
+
+void HitHurt()
+{
+    ResetParams();
+    wave_type=rnd(2);
+    if(wave_type==2)
+        wave_type=3;
+    if(wave_type==0)
+        p_duty=frnd(0.6f);
+    p_base_freq=0.2f+frnd(0.6f);
+    p_freq_ramp=-0.3f-frnd(0.4f);
+    p_env_attack=0.0f;
+    p_env_sustain=frnd(0.1f);
+    p_env_decay=0.1f+frnd(0.2f);
+    if(rnd(1))
+        p_hpf_freq=frnd(0.3f);
+}
+
+void Jump()
+{
+    ResetParams();
+    wave_type=0;
+    p_duty=frnd(0.6f);
+    p_base_freq=0.3f+frnd(0.3f);
+    p_freq_ramp=0.1f+frnd(0.2f);
+    p_env_attack=0.0f;
+    p_env_sustain=0.1f+frnd(0.3f);
+    p_env_decay=0.1f+frnd(0.2f);
+    if(rnd(1))
+        p_hpf_freq=frnd(0.3f);
+    if(rnd(1))
+        p_lpf_freq=1.0f-frnd(0.6f);
+}
+
+void BlipSelect()
+{
+    ResetParams();
+    wave_type=rnd(1);
+    if(wave_type==0)
+        p_duty=frnd(0.6f);
+    p_base_freq=0.2f+frnd(0.4f);
+    p_env_attack=0.0f;
+    p_env_sustain=0.1f+frnd(0.1f);
+    p_env_decay=frnd(0.2f);
+    p_hpf_freq=0.1f;
+}
