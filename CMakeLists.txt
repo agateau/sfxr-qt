@@ -22,5 +22,3 @@ qt5_add_resources(sfxr2_QRC ui/qml.qrc)
 
 add_executable(sfxr2 ${sfxr2_SRCS} ${sfxr2_QRC})
 target_link_libraries(sfxr2 SDL Qt5::Gui Qt5::Quick)
-
-add_subdirectory(legacy)
