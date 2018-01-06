@@ -11,6 +11,15 @@ RowLayout {
 
     ButtonGroup {
         buttons: root.children
+        checkedButton: buttons[synth.waveType]
+        onCheckedButtonChanged: {
+            for (var i = 0; i < buttons.length; ++i) {
+                if (buttons[i].checked) {
+                    synth.waveType = i;
+                    return;
+                }
+            }
+        }
     }
 
     Button {

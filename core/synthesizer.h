@@ -7,6 +7,7 @@ class Audio;
 
 class Synthesizer : public QObject {
     Q_OBJECT
+    Q_PROPERTY(int waveType READ waveType WRITE setWaveType NOTIFY waveTypeChanged)
 public:
     explicit Synthesizer(QObject* parent = nullptr);
     ~Synthesizer();
@@ -35,9 +36,16 @@ public:
 
     void playCallback(unsigned char* stream, int len);
 
+    // Properties
+    int waveType() const;
+    void setWaveType(int waveType);
+
+signals:
+    void waveTypeChanged(int value);
+
 private:
     // Fields editable from the outside
-    int wave_type;
+    int wave_type = 0;
 
     float p_base_freq;
     float p_freq_limit;

@@ -42,10 +42,11 @@ void Synthesizer::generatePickup() {
 
 void Synthesizer::generateLaser() {
     ResetParams();
-    wave_type = rnd(2);
+    int wave_type = rnd(2);
     if (wave_type == 2 && rnd(1)) {
         wave_type = rnd(1);
     }
+    setWaveType(wave_type);
     p_base_freq = 0.5f + frnd(0.5f);
     p_freq_limit = p_base_freq - 0.2f - frnd(0.6f);
     if (p_freq_limit < 0.2f) {
@@ -82,7 +83,7 @@ void Synthesizer::generateLaser() {
 
 void Synthesizer::generateExplosion() {
     ResetParams();
-    wave_type = 3;
+    setWaveType(3);
     if (rnd(1)) {
         p_base_freq = 0.1f + frnd(0.4f);
         p_freq_ramp = -0.1f + frnd(0.4f);
@@ -119,7 +120,7 @@ void Synthesizer::generateExplosion() {
 void Synthesizer::generatePowerup() {
     ResetParams();
     if (rnd(1)) {
-        wave_type = 1;
+        setWaveType(1);
     } else {
         p_duty = frnd(0.6f);
     }
@@ -143,11 +144,11 @@ void Synthesizer::generatePowerup() {
 
 void Synthesizer::generateHitHurt() {
     ResetParams();
-    wave_type = rnd(2);
-    if (wave_type == 2) {
-        wave_type = 3;
+    setWaveType(rnd(2));
+    if (waveType() == 2) {
+        setWaveType(3);
     }
-    if (wave_type == 0) {
+    if (waveType() == 0) {
         p_duty = frnd(0.6f);
     }
     p_base_freq = 0.2f + frnd(0.6f);
@@ -163,7 +164,7 @@ void Synthesizer::generateHitHurt() {
 
 void Synthesizer::generateJump() {
     ResetParams();
-    wave_type = 0;
+    setWaveType(0);
     p_duty = frnd(0.6f);
     p_base_freq = 0.3f + frnd(0.3f);
     p_freq_ramp = 0.1f + frnd(0.2f);
@@ -181,8 +182,8 @@ void Synthesizer::generateJump() {
 
 void Synthesizer::generateBlipSelect() {
     ResetParams();
-    wave_type = rnd(1);
-    if (wave_type == 0) {
+    setWaveType(rnd(1));
+    if (waveType() == 0) {
         p_duty = frnd(0.6f);
     }
     p_base_freq = 0.2f + frnd(0.4f);
@@ -194,7 +195,7 @@ void Synthesizer::generateBlipSelect() {
 }
 
 void Synthesizer::ResetParams() {
-    wave_type = 0;
+    setWaveType(0);
 
     p_base_freq = 0.3f;
     p_freq_limit = 0.0f;
@@ -689,4 +690,16 @@ void Synthesizer::Init() {
         exit(1);
     }
     SDL_PauseAudio(0);
+}
+
+int Synthesizer::waveType() const {
+    return wave_type;
+}
+
+void Synthesizer::setWaveType(int waveType) {
+    if (waveType != wave_type) {
+        wave_type = waveType;
+        waveTypeChanged(waveType);
+        PlaySample();
+    }
 }
