@@ -7,11 +7,6 @@
 
 int main(int argc, char* argv[]) {
     QGuiApplication app(argc, argv);
-    InitSDLAudio();
-    /*
-    PickupCoin();
-    PlaySample();
-    */
     QQmlApplicationEngine engine;
     qmlRegisterType<Synthesizer>("sfxr2", 1, 0, "Synthesizer");
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

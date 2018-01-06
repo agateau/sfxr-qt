@@ -3,72 +3,112 @@
 
 #include <stdio.h>
 
-#include <SDL.h>
+class Audio {
+public:
+    void Init();
 
-extern int wave_type;
+    int wave_type;
 
-extern float p_base_freq;
-extern float p_freq_limit;
-extern float p_freq_ramp;
-extern float p_freq_dramp;
-extern float p_duty;
-extern float p_duty_ramp;
+    float p_base_freq;
+    float p_freq_limit;
+    float p_freq_ramp;
+    float p_freq_dramp;
+    float p_duty;
+    float p_duty_ramp;
 
-extern float p_vib_strength;
-extern float p_vib_speed;
-extern float p_vib_delay;
+    float p_vib_strength;
+    float p_vib_speed;
+    float p_vib_delay;
 
-extern float p_env_attack;
-extern float p_env_sustain;
-extern float p_env_decay;
-extern float p_env_punch;
+    float p_env_attack;
+    float p_env_sustain;
+    float p_env_decay;
+    float p_env_punch;
 
-extern bool filter_on;
-extern float p_lpf_resonance;
-extern float p_lpf_freq;
-extern float p_lpf_ramp;
-extern float p_hpf_freq;
-extern float p_hpf_ramp;
+    bool filter_on;
+    float p_lpf_resonance;
+    float p_lpf_freq;
+    float p_lpf_ramp;
+    float p_hpf_freq;
+    float p_hpf_ramp;
 
-extern float p_pha_offset;
-extern float p_pha_ramp;
+    float p_pha_offset;
+    float p_pha_ramp;
 
-extern float p_repeat_speed;
+    float p_repeat_speed;
 
-extern float p_arp_speed;
-extern float p_arp_mod;
+    float p_arp_speed;
+    float p_arp_mod;
 
-extern float sound_vol;
+    float sound_vol = 0.5f;
 
-extern bool playing_sample;
+    bool playing_sample = false;
 
-extern int wav_bits;
-extern int wav_freq;
+    int wav_bits = 16;
+    int wav_freq = 44100;
 
-// Params
-void ResetParams();
-bool LoadSettings(char* filename);
-bool SaveSettings(char* filename);
+    // Params
+    void ResetParams();
+    bool LoadSettings(char* filename);
+    bool SaveSettings(char* filename);
 
-// Play
-void ResetSample(bool restart);
-void PlaySample();
-void SynthSample(int length, float* buffer, FILE* file);
-bool ExportWAV(char* filename);
-void InitSDLAudio();
+    // Play
+    void ResetSample(bool restart);
+    void PlaySample();
+    void SynthSample(int length, float* buffer, FILE* file);
+    bool ExportWAV(char* filename);
 
-// Misc
-float frnd(float range);
+    // High level
+    void PickupCoin();
+    void LaserShoot();
+    void Explosion();
+    void Powerup();
+    void HitHurt();
+    void Jump();
+    void BlipSelect();
 
-#define rnd(n) (rand()%(n+1))
+    void playCallback(unsigned char *stream, int len);
 
-// High level
-void PickupCoin();
-void LaserShoot();
-void Explosion();
-void Powerup();
-void HitHurt();
-void Jump();
-void BlipSelect();
+private:
+    int phase;
+    double fperiod;
+    double fmaxperiod;
+    double fslide;
+    double fdslide;
+    int period;
+    float square_duty;
+    float square_slide;
+    int env_stage;
+    int env_time;
+    int env_length[3];
+    float env_vol;
+    float fphase;
+    float fdphase;
+    int iphase;
+    float phaser_buffer[1024];
+    int ipp;
+    float noise_buffer[32];
+    float fltp;
+    float fltdp;
+    float fltw;
+    float fltw_d;
+    float fltdmp;
+    float fltphp;
+    float flthp;
+    float flthp_d;
+    float vib_phase;
+    float vib_speed;
+    float vib_amp;
+    int rep_time;
+    int rep_limit;
+    int arp_time;
+    int arp_limit;
+    double arp_mod;
+
+    bool mute_stream;
+    int file_sampleswritten;
+    float filesample=0.0f;
+    int fileacc=0;
+};
 
 #endif /* AUDIO_H */

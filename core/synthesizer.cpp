@@ -2,49 +2,55 @@
 
 #include "audio.h"
 
-Synthesizer::Synthesizer(QObject *parent) : QObject(parent)
+Synthesizer::Synthesizer(QObject *parent)
+    : QObject(parent)
+    , mAudio(new Audio)
 {
+    mAudio->Init();
+}
 
+Synthesizer::~Synthesizer()
+{
 }
 
 void Synthesizer::generatePickup()
 {
-    PickupCoin();
-    PlaySample();
+    mAudio->PickupCoin();
+    mAudio->PlaySample();
 }
 
 void Synthesizer::generateLaser()
 {
-    LaserShoot();
-    PlaySample();
+    mAudio->LaserShoot();
+    mAudio->PlaySample();
 }
 
 void Synthesizer::generateExplosion()
 {
-    Explosion();
-    PlaySample();
+    mAudio->Explosion();
+    mAudio->PlaySample();
 }
 
 void Synthesizer::generatePowerup()
 {
-    Powerup();
-    PlaySample();
+    mAudio->Powerup();
+    mAudio->PlaySample();
 }
 
 void Synthesizer::generateHitHurt()
 {
-    HitHurt();
-    PlaySample();
+    mAudio->HitHurt();
+    mAudio->PlaySample();
 }
 
 void Synthesizer::generateJump()
 {
-    Jump();
-    PlaySample();
+    mAudio->Jump();
+    mAudio->PlaySample();
 }
 
 void Synthesizer::generateBlipSelect()
 {
-    BlipSelect();
-    PlaySample();
+    mAudio->BlipSelect();
+    mAudio->PlaySample();
 }
