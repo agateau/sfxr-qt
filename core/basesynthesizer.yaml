@@ -1,0 +1,12 @@
+class:
+    name: BaseSynthesizer
+    header: basesynthesizer.h
+    impl: basesynthesizer.cpp
+properties:
+    - name: waveType
+      type: int
+      value: 0
+      var_name: wave_type
+    - name: baseFrequency
+      type: qreal
+      var_name: p_base_freq

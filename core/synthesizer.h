@@ -3,12 +3,12 @@
 
 #include <QObject>
 
+#include <basesynthesizer.h>
+
 class QTimer;
 
-class Synthesizer : public QObject {
+class Synthesizer : public BaseSynthesizer {
     Q_OBJECT
-    Q_PROPERTY(int waveType READ waveType WRITE setWaveType NOTIFY waveTypeChanged)
-    Q_PROPERTY(qreal baseFrequency READ baseFrequency WRITE setBaseFrequency NOTIFY baseFrequencyChanged)
 public:
     explicit Synthesizer(QObject* parent = nullptr);
     ~Synthesizer();
@@ -37,22 +37,8 @@ public:
 
     void playCallback(unsigned char* stream, int len);
 
-    // Properties
-    int waveType() const;
-    void setWaveType(int waveType);
-
-    qreal baseFrequency() const;
-    void setBaseFrequency(qreal baseFrequency);
-
-signals:
-    void waveTypeChanged(int value);
-    void baseFrequencyChanged(qreal value);
-
 private:
     // Fields editable from the outside
-    int wave_type = 0;
-
-    float p_base_freq;
     float p_freq_limit;
     float p_freq_ramp;
     float p_freq_dramp;

@@ -23,13 +23,16 @@ inline float frnd(float range) {
 }
 
 Synthesizer::Synthesizer(QObject* parent)
-    : QObject(parent)
-    , mPlayTimer(new QTimer(this)) {
+: BaseSynthesizer(parent)
+, mPlayTimer(new QTimer(this)) {
     mPlayTimer->setInterval(SCHEDULED_PLAY_DELAY);
     mPlayTimer->setSingleShot(true);
     connect(mPlayTimer, &QTimer::timeout, this, &Synthesizer::PlaySample);
     Init();
     ResetParams();
+
+    connect(this, &BaseSynthesizer::waveTypeChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::baseFrequencyChanged, this, &Synthesizer::schedulePlay);
 }
 
 Synthesizer::~Synthesizer() {
@@ -698,30 +701,6 @@ void Synthesizer::Init() {
         exit(1);
     }
     SDL_PauseAudio(0);
-}
-
-int Synthesizer::waveType() const {
-    return wave_type;
-}
-
-void Synthesizer::setWaveType(int waveType) {
-    if (waveType != wave_type) {
-        wave_type = waveType;
-        waveTypeChanged(waveType);
-        schedulePlay();
-    }
-}
-
-qreal Synthesizer::baseFrequency() const {
-    return p_base_freq;
-}
-
-void Synthesizer::setBaseFrequency(qreal value) {
-    if (!qFuzzyCompare(qreal(p_base_freq), value)) {
-        p_base_freq = value;
-        baseFrequencyChanged(p_base_freq);
-        schedulePlay();
-    }
 }
 
 void Synthesizer::schedulePlay() {
