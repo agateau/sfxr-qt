@@ -7,6 +7,9 @@ Slider {
     property Synthesizer synth
     property string synthProperty
     property string name
+    property bool bipolar: false
+
+    from: bipolar ? -1 : 0
 
     value: synth[synthProperty]
 

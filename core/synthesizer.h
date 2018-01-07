@@ -39,14 +39,9 @@ public:
 
 private:
     // Fields editable from the outside
-    float p_freq_limit;
-    float p_freq_ramp;
-    float p_freq_dramp;
     float p_duty;
     float p_duty_ramp;
 
-    float p_vib_strength;
-    float p_vib_speed;
     float p_vib_delay;
 
     bool filter_on;

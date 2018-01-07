@@ -8,8 +8,8 @@ import sfxr2 1.0
 Window {
     id: root
     visible: true
-    width: 600
-    height: 400
+    width: 800
+    height: 600
 
     Synthesizer {
         id: synth
@@ -73,6 +73,40 @@ Window {
                 ListElement {
                     text: qsTr("Decay time")
                     synthProperty: "decayTime"
+                }
+            }
+        }
+
+        SliderGroup {
+            Layout.fillWidth: true
+            text: qsTr("Frequency")
+            synth: synth
+            model: ListModel {
+                ListElement {
+                    text: qsTr("Start frequency")
+                    synthProperty: "baseFrequency"
+                }
+                ListElement {
+                    text: qsTr("Min frequency")
+                    synthProperty: "minFrequency"
+                }
+                ListElement {
+                    text: qsTr("Slide")
+                    synthProperty: "slide"
+                    bipolar: true
+                }
+                ListElement {
+                    text: qsTr("Delta slide")
+                    synthProperty: "deltaSlide"
+                    bipolar: true
+                }
+                ListElement {
+                    text: qsTr("Vibrato depth")
+                    synthProperty: "vibratoDepth"
+                }
+                ListElement {
+                    text: qsTr("Vibrato speed")
+                    synthProperty: "vibratoSpeed"
                 }
             }
         }

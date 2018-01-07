@@ -32,11 +32,18 @@ Synthesizer::Synthesizer(QObject* parent)
     ResetParams();
 
     connect(this, &BaseSynthesizer::waveTypeChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::baseFrequencyChanged, this, &Synthesizer::schedulePlay);
+
     connect(this, &BaseSynthesizer::attackTimeChanged, this, &Synthesizer::schedulePlay);
     connect(this, &BaseSynthesizer::sustainTimeChanged, this, &Synthesizer::schedulePlay);
     connect(this, &BaseSynthesizer::sustainPunchChanged, this, &Synthesizer::schedulePlay);
     connect(this, &BaseSynthesizer::decayTimeChanged, this, &Synthesizer::schedulePlay);
+
+    connect(this, &BaseSynthesizer::baseFrequencyChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::minFrequencyChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::slideChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::deltaSlideChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::vibratoDepthChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::vibratoSpeedChanged, this, &Synthesizer::schedulePlay);
 }
 
 Synthesizer::~Synthesizer() {
@@ -64,15 +71,15 @@ void Synthesizer::generateLaser() {
     }
     setWaveType(wave_type);
     setBaseFrequency(0.5f + frnd(0.5f));
-    p_freq_limit = baseFrequency() - 0.2f - frnd(0.6f);
+    setMinFrequency(baseFrequency() - 0.2f - frnd(0.6f));
     if (p_freq_limit < 0.2f) {
-        p_freq_limit = 0.2f;
+        setMinFrequency(0.2f);
     }
-    p_freq_ramp = -0.15f - frnd(0.2f);
+    setSlide(-0.15f - frnd(0.2f));
     if (rnd(2) == 0) {
         setBaseFrequency(0.3f + frnd(0.6f));
-        p_freq_limit = frnd(0.1f);
-        p_freq_ramp = -0.35f - frnd(0.3f);
+        setMinFrequency(frnd(0.1f));
+        setSlide(-0.35f - frnd(0.3f));
     }
     if (rnd(1)) {
         p_duty = frnd(0.5f);
@@ -102,14 +109,14 @@ void Synthesizer::generateExplosion() {
     setWaveType(3);
     if (rnd(1)) {
         setBaseFrequency(0.1f + frnd(0.4f));
-        p_freq_ramp = -0.1f + frnd(0.4f);
+        setSlide(-0.1f + frnd(0.4f));
     } else {
         setBaseFrequency(0.2f + frnd(0.7f));
-        p_freq_ramp = -0.2f - frnd(0.2f);
+        setSlide(-0.2f - frnd(0.2f));
     }
     setBaseFrequency(baseFrequency() * baseFrequency());
     if (rnd(4) == 0) {
-        p_freq_ramp = 0.0f;
+        setSlide(0.0f);
     }
     if (rnd(2) == 0) {
         p_repeat_speed = 0.3f + frnd(0.5f);
@@ -123,8 +130,8 @@ void Synthesizer::generateExplosion() {
     }
     setSustainPunch(0.2f + frnd(0.6f));
     if (rnd(1)) {
-        p_vib_strength = frnd(0.7f);
-        p_vib_speed = frnd(0.6f);
+        setVibratoDepth(frnd(0.7f));
+        setVibratoSpeed(frnd(0.6f));
     }
     if (rnd(2) == 0) {
         p_arp_speed = 0.6f + frnd(0.3f);
@@ -142,14 +149,14 @@ void Synthesizer::generatePowerup() {
     }
     if (rnd(1)) {
         setBaseFrequency(0.2f + frnd(0.3f));
-        p_freq_ramp = 0.1f + frnd(0.4f);
+        setSlide(0.1f + frnd(0.4f));
         p_repeat_speed = 0.4f + frnd(0.4f);
     } else {
         setBaseFrequency(0.2f + frnd(0.3f));
-        p_freq_ramp = 0.05f + frnd(0.2f);
+        setSlide(0.05f + frnd(0.2f));
         if (rnd(1)) {
-            p_vib_strength = frnd(0.7f);
-            p_vib_speed = frnd(0.6f);
+            setVibratoDepth(frnd(0.7f));
+            setVibratoSpeed(frnd(0.6f));
         }
     }
     setAttackTime(0.0f);
@@ -168,7 +175,7 @@ void Synthesizer::generateHitHurt() {
         p_duty = frnd(0.6f);
     }
     setBaseFrequency(0.2f + frnd(0.6f));
-    p_freq_ramp = -0.3f - frnd(0.4f);
+    setSlide(-0.3f - frnd(0.4f));
     setAttackTime(0.0f);
     setSustainTime(frnd(0.1f));
     setDecayTime(0.1f + frnd(0.2f));
@@ -183,7 +190,7 @@ void Synthesizer::generateJump() {
     setWaveType(0);
     p_duty = frnd(0.6f);
     setBaseFrequency(0.3f + frnd(0.3f));
-    p_freq_ramp = 0.1f + frnd(0.2f);
+    setSlide(0.1f + frnd(0.2f));
     setAttackTime(0.0f);
     setSustainTime(0.1f + frnd(0.3f));
     setDecayTime(0.1f + frnd(0.2f));
@@ -214,14 +221,14 @@ void Synthesizer::ResetParams() {
     setWaveType(0);
 
     p_base_freq = 0.3f;
-    p_freq_limit = 0.0f;
-    p_freq_ramp = 0.0f;
-    p_freq_dramp = 0.0f;
+    setMinFrequency(0.0f);
+    setSlide(0.0f);
+    setDeltaSlide(0.0f);
     p_duty = 0.0f;
     p_duty_ramp = 0.0f;
 
-    p_vib_strength = 0.0f;
-    p_vib_speed = 0.0f;
+    setVibratoDepth(0.0f);
+    setVibratoSpeed(0.0f);
     p_vib_delay = 0.0f;
 
     setAttackTime(0.0f);

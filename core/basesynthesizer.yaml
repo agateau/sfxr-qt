@@ -24,3 +24,18 @@ properties:
     - name: baseFrequency
       type: qreal
       var_name: p_base_freq
+    - name: minFrequency
+      type: qreal
+      var_name: p_freq_limit
+    - name: slide
+      type: qreal
+      var_name: p_freq_ramp
+    - name: deltaSlide
+      type: qreal
+      var_name: p_freq_dramp
+    - name: vibratoDepth
+      type: qreal
+      var_name: p_vib_strength
+    - name: vibratoSpeed
+      type: qreal
+      var_name: p_vib_speed

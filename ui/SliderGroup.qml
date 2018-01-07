@@ -31,6 +31,7 @@ ColumnLayout {
                 id: slider
                 synth: root.synth
                 synthProperty: model.synthProperty
+                bipolar: model.bipolar === true
                 width: parent.width / 2
             }
         }
