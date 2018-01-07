@@ -39,9 +39,6 @@ public:
 
 private:
     // Fields editable from the outside
-    float p_duty;
-    float p_duty_ramp;
-
     float p_vib_delay;
 
     bool filter_on;

@@ -132,6 +132,24 @@ Window {
                     }
                 }
             }
+
+            SliderGroup {
+                Layout.fillWidth: true
+                enabled: synth.waveType === 0
+                text: qsTr("Square")
+                synth: synth
+                model: ListModel {
+                    ListElement {
+                        text: qsTr("Square duty")
+                        synthProperty: "squareDuty"
+                    }
+                    ListElement {
+                        text: qsTr("Duty sweep")
+                        synthProperty: "dutySweep"
+                        bipolar: true
+                    }
+                }
+            }
         }
     }
 }

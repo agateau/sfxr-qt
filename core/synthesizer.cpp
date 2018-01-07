@@ -47,6 +47,9 @@ Synthesizer::Synthesizer(QObject* parent)
 
     connect(this, &BaseSynthesizer::changeAmountChanged, this, &Synthesizer::schedulePlay);
     connect(this, &BaseSynthesizer::changeSpeedChanged, this, &Synthesizer::schedulePlay);
+
+    connect(this, &BaseSynthesizer::squareDutyChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::dutySweepChanged, this, &Synthesizer::schedulePlay);
 }
 
 Synthesizer::~Synthesizer() {
@@ -85,11 +88,11 @@ void Synthesizer::generateLaser() {
         setSlide(-0.35f - frnd(0.3f));
     }
     if (rnd(1)) {
-        p_duty = frnd(0.5f);
-        p_duty_ramp = frnd(0.2f);
+        setSquareDuty(frnd(0.5f));
+        setDutySweep(frnd(0.2f));
     } else {
-        p_duty = 0.4f + frnd(0.5f);
-        p_duty_ramp = -frnd(0.7f);
+        setSquareDuty(0.4f + frnd(0.5f));
+        setDutySweep(-frnd(0.7f));
     }
     setAttackTime(0.0f);
     setSustainTime(0.1f + frnd(0.2f));
@@ -148,7 +151,7 @@ void Synthesizer::generatePowerup() {
     if (rnd(1)) {
         setWaveType(1);
     } else {
-        p_duty = frnd(0.6f);
+        setSquareDuty(frnd(0.6f));
     }
     if (rnd(1)) {
         setBaseFrequency(0.2f + frnd(0.3f));
@@ -175,7 +178,7 @@ void Synthesizer::generateHitHurt() {
         setWaveType(3);
     }
     if (waveType() == 0) {
-        p_duty = frnd(0.6f);
+        setSquareDuty(frnd(0.6f));
     }
     setBaseFrequency(0.2f + frnd(0.6f));
     setSlide(-0.3f - frnd(0.4f));
@@ -191,7 +194,7 @@ void Synthesizer::generateHitHurt() {
 void Synthesizer::generateJump() {
     ResetParams();
     setWaveType(0);
-    p_duty = frnd(0.6f);
+    setSquareDuty(frnd(0.6f));
     setBaseFrequency(0.3f + frnd(0.3f));
     setSlide(0.1f + frnd(0.2f));
     setAttackTime(0.0f);
@@ -210,7 +213,7 @@ void Synthesizer::generateBlipSelect() {
     ResetParams();
     setWaveType(rnd(1));
     if (waveType() == 0) {
-        p_duty = frnd(0.6f);
+        setSquareDuty(frnd(0.6f));
     }
     setBaseFrequency(0.2f + frnd(0.4f));
     setAttackTime(0.0f);
@@ -227,8 +230,8 @@ void Synthesizer::ResetParams() {
     setMinFrequency(0.0f);
     setSlide(0.0f);
     setDeltaSlide(0.0f);
-    p_duty = 0.0f;
-    p_duty_ramp = 0.0f;
+    setSquareDuty(0.0f);
+    setDutySweep(0.0f);
 
     setVibratoDepth(0.0f);
     setVibratoSpeed(0.0f);

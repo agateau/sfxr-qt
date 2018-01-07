@@ -46,3 +46,10 @@ properties:
     - name: changeSpeed
       type: qreal
       var_name: p_arp_speed
+
+    - name: squareDuty
+      type: qreal
+      var_name: p_duty
+    - name: dutySweep
+      type: qreal
+      var_name: p_duty_ramp
