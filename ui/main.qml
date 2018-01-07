@@ -164,6 +164,24 @@ Window {
                     }
                 }
             }
+
+            SliderGroup {
+                Layout.fillWidth: true
+                text: qsTr("Phaser")
+                synth: synth
+                model: ListModel {
+                    ListElement {
+                        text: qsTr("Phaser offset")
+                        synthProperty: "phaserOffset"
+                        bipolar: true
+                    }
+                    ListElement {
+                        text: qsTr("Phaser sweep")
+                        synthProperty: "phaserSweep"
+                        bipolar: true
+                    }
+                }
+            }
         }
     }
 }

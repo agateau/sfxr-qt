@@ -57,3 +57,10 @@ properties:
     - name: repeatSpeed
       type: qreal
       var_name: p_repeat_speed
+
+    - name: phaserOffset
+      type: qreal
+      var_name: p_pha_offset
+    - name: phaserSweep
+      type: qreal
+      var_name: p_pha_ramp

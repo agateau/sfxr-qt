@@ -52,6 +52,9 @@ Synthesizer::Synthesizer(QObject* parent)
     connect(this, &BaseSynthesizer::dutySweepChanged, this, &Synthesizer::schedulePlay);
 
     connect(this, &BaseSynthesizer::repeatSpeedChanged, this, &Synthesizer::schedulePlay);
+
+    connect(this, &BaseSynthesizer::phaserOffsetChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::phaserSweepChanged, this, &Synthesizer::schedulePlay);
 }
 
 Synthesizer::~Synthesizer() {
@@ -103,8 +106,8 @@ void Synthesizer::generateLaser() {
         setSustainPunch(frnd(0.3f));
     }
     if (rnd(2) == 0) {
-        p_pha_offset = frnd(0.2f);
-        p_pha_ramp = -frnd(0.2f);
+        setPhaserOffset(frnd(0.2f));
+        setPhaserSweep(-frnd(0.2f));
     }
     if (rnd(1)) {
         p_hpf_freq = frnd(0.3f);
@@ -133,8 +136,8 @@ void Synthesizer::generateExplosion() {
     setSustainTime(0.1f + frnd(0.3f));
     setDecayTime(frnd(0.5f));
     if (rnd(1) == 0) {
-        p_pha_offset = -0.3f + frnd(0.9f);
-        p_pha_ramp = -frnd(0.3f);
+        setPhaserOffset(-0.3f + frnd(0.9f));
+        setPhaserSweep(-frnd(0.3f));
     }
     setSustainPunch(0.2f + frnd(0.6f));
     if (rnd(1)) {
@@ -251,8 +254,8 @@ void Synthesizer::ResetParams() {
     p_hpf_freq = 0.0f;
     p_hpf_ramp = 0.0f;
 
-    p_pha_offset = 0.0f;
-    p_pha_ramp = 0.0f;
+    setPhaserOffset(0.0f);
+    setPhaserSweep(0.0f);
 
     setRepeatSpeed(0.0f);
 

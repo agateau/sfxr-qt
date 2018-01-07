@@ -48,9 +48,6 @@ private:
     float p_hpf_freq;
     float p_hpf_ramp;
 
-    float p_pha_offset;
-    float p_pha_ramp;
-
     float sound_vol = 0.5f;
 
     bool playing_sample = false;
