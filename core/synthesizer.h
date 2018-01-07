@@ -49,11 +49,6 @@ private:
     float p_vib_speed;
     float p_vib_delay;
 
-    float p_env_attack;
-    float p_env_sustain;
-    float p_env_decay;
-    float p_env_punch;
-
     bool filter_on;
     float p_lpf_resonance;
     float p_lpf_freq;

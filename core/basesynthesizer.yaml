@@ -10,3 +10,16 @@ properties:
     - name: baseFrequency
       type: qreal
       var_name: p_base_freq
+
+    - name: attackTime
+      type: qreal
+      var_name: p_env_attack
+    - name: sustainTime
+      type: qreal
+      var_name: p_env_sustain
+    - name: sustainPunch
+      type: qreal
+      var_name: p_env_punch
+    - name: decayTime
+      type: qreal
+      var_name: p_env_decay

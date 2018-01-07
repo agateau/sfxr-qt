@@ -33,6 +33,10 @@ Synthesizer::Synthesizer(QObject* parent)
 
     connect(this, &BaseSynthesizer::waveTypeChanged, this, &Synthesizer::schedulePlay);
     connect(this, &BaseSynthesizer::baseFrequencyChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::attackTimeChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::sustainTimeChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::sustainPunchChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::decayTimeChanged, this, &Synthesizer::schedulePlay);
 }
 
 Synthesizer::~Synthesizer() {
@@ -41,10 +45,10 @@ Synthesizer::~Synthesizer() {
 void Synthesizer::generatePickup() {
     ResetParams();
     setBaseFrequency(0.4f + frnd(0.5f));
-    p_env_attack = 0.0f;
-    p_env_sustain = frnd(0.1f);
-    p_env_decay = 0.1f + frnd(0.4f);
-    p_env_punch = 0.3f + frnd(0.3f);
+    setAttackTime(0.0f);
+    setSustainTime(frnd(0.1f));
+    setDecayTime(0.1f + frnd(0.4f));
+    setSustainPunch(0.3f + frnd(0.3f));
     if (rnd(1)) {
         p_arp_speed = 0.5f + frnd(0.2f);
         p_arp_mod = 0.2f + frnd(0.4f);
@@ -77,11 +81,11 @@ void Synthesizer::generateLaser() {
         p_duty = 0.4f + frnd(0.5f);
         p_duty_ramp = -frnd(0.7f);
     }
-    p_env_attack = 0.0f;
-    p_env_sustain = 0.1f + frnd(0.2f);
-    p_env_decay = frnd(0.4f);
+    setAttackTime(0.0f);
+    setSustainTime(0.1f + frnd(0.2f));
+    setDecayTime(frnd(0.4f));
     if (rnd(1)) {
-        p_env_punch = frnd(0.3f);
+        setSustainPunch(frnd(0.3f));
     }
     if (rnd(2) == 0) {
         p_pha_offset = frnd(0.2f);
@@ -110,14 +114,14 @@ void Synthesizer::generateExplosion() {
     if (rnd(2) == 0) {
         p_repeat_speed = 0.3f + frnd(0.5f);
     }
-    p_env_attack = 0.0f;
-    p_env_sustain = 0.1f + frnd(0.3f);
-    p_env_decay = frnd(0.5f);
+    setAttackTime(0.0f);
+    setSustainTime(0.1f + frnd(0.3f));
+    setDecayTime(frnd(0.5f));
     if (rnd(1) == 0) {
         p_pha_offset = -0.3f + frnd(0.9f);
         p_pha_ramp = -frnd(0.3f);
     }
-    p_env_punch = 0.2f + frnd(0.6f);
+    setSustainPunch(0.2f + frnd(0.6f));
     if (rnd(1)) {
         p_vib_strength = frnd(0.7f);
         p_vib_speed = frnd(0.6f);
@@ -148,9 +152,9 @@ void Synthesizer::generatePowerup() {
             p_vib_speed = frnd(0.6f);
         }
     }
-    p_env_attack = 0.0f;
-    p_env_sustain = frnd(0.4f);
-    p_env_decay = 0.1f + frnd(0.4f);
+    setAttackTime(0.0f);
+    setSustainTime(frnd(0.4f));
+    setDecayTime(0.1f + frnd(0.4f));
     schedulePlay();
 }
 
@@ -165,9 +169,9 @@ void Synthesizer::generateHitHurt() {
     }
     setBaseFrequency(0.2f + frnd(0.6f));
     p_freq_ramp = -0.3f - frnd(0.4f);
-    p_env_attack = 0.0f;
-    p_env_sustain = frnd(0.1f);
-    p_env_decay = 0.1f + frnd(0.2f);
+    setAttackTime(0.0f);
+    setSustainTime(frnd(0.1f));
+    setDecayTime(0.1f + frnd(0.2f));
     if (rnd(1)) {
         p_hpf_freq = frnd(0.3f);
     }
@@ -180,9 +184,9 @@ void Synthesizer::generateJump() {
     p_duty = frnd(0.6f);
     setBaseFrequency(0.3f + frnd(0.3f));
     p_freq_ramp = 0.1f + frnd(0.2f);
-    p_env_attack = 0.0f;
-    p_env_sustain = 0.1f + frnd(0.3f);
-    p_env_decay = 0.1f + frnd(0.2f);
+    setAttackTime(0.0f);
+    setSustainTime(0.1f + frnd(0.3f));
+    setDecayTime(0.1f + frnd(0.2f));
     if (rnd(1)) {
         p_hpf_freq = frnd(0.3f);
     }
@@ -199,9 +203,9 @@ void Synthesizer::generateBlipSelect() {
         p_duty = frnd(0.6f);
     }
     setBaseFrequency(0.2f + frnd(0.4f));
-    p_env_attack = 0.0f;
-    p_env_sustain = 0.1f + frnd(0.1f);
-    p_env_decay = frnd(0.2f);
+    setAttackTime(0.0f);
+    setSustainTime(0.1f + frnd(0.1f));
+    setDecayTime(frnd(0.2f));
     p_hpf_freq = 0.1f;
     schedulePlay();
 }
@@ -220,10 +224,10 @@ void Synthesizer::ResetParams() {
     p_vib_speed = 0.0f;
     p_vib_delay = 0.0f;
 
-    p_env_attack = 0.0f;
-    p_env_sustain = 0.3f;
-    p_env_decay = 0.4f;
-    p_env_punch = 0.0f;
+    setAttackTime(0.0f);
+    setSustainTime(0.3f);
+    setDecayTime(0.4f);
+    setSustainPunch(0.0f);
 
     filter_on = false;
     p_lpf_resonance = 0.0f;
