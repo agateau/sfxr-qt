@@ -51,8 +51,6 @@ private:
     float p_pha_offset;
     float p_pha_ramp;
 
-    float p_repeat_speed;
-
     float sound_vol = 0.5f;
 
     bool playing_sample = false;

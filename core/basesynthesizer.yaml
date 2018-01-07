@@ -53,3 +53,7 @@ properties:
     - name: dutySweep
       type: qreal
       var_name: p_duty_ramp
+
+    - name: repeatSpeed
+      type: qreal
+      var_name: p_repeat_speed

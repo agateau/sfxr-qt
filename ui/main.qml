@@ -44,6 +44,8 @@ Window {
     }
 
     Row {
+        spacing: 12
+
         anchors {
             left: verticalLine.right
             leftMargin: 12
@@ -147,6 +149,18 @@ Window {
                         text: qsTr("Duty sweep")
                         synthProperty: "dutySweep"
                         bipolar: true
+                    }
+                }
+            }
+
+            SliderGroup {
+                Layout.fillWidth: true
+                text: qsTr("Repeat")
+                synth: synth
+                model: ListModel {
+                    ListElement {
+                        text: qsTr("Repeat speed")
+                        synthProperty: "repeatSpeed"
                     }
                 }
             }

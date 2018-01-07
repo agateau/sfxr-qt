@@ -50,6 +50,8 @@ Synthesizer::Synthesizer(QObject* parent)
 
     connect(this, &BaseSynthesizer::squareDutyChanged, this, &Synthesizer::schedulePlay);
     connect(this, &BaseSynthesizer::dutySweepChanged, this, &Synthesizer::schedulePlay);
+
+    connect(this, &BaseSynthesizer::repeatSpeedChanged, this, &Synthesizer::schedulePlay);
 }
 
 Synthesizer::~Synthesizer() {
@@ -125,7 +127,7 @@ void Synthesizer::generateExplosion() {
         setSlide(0.0f);
     }
     if (rnd(2) == 0) {
-        p_repeat_speed = 0.3f + frnd(0.5f);
+        setRepeatSpeed(0.3f + frnd(0.5f));
     }
     setAttackTime(0.0f);
     setSustainTime(0.1f + frnd(0.3f));
@@ -156,7 +158,7 @@ void Synthesizer::generatePowerup() {
     if (rnd(1)) {
         setBaseFrequency(0.2f + frnd(0.3f));
         setSlide(0.1f + frnd(0.4f));
-        p_repeat_speed = 0.4f + frnd(0.4f);
+        setRepeatSpeed(0.4f + frnd(0.4f));
     } else {
         setBaseFrequency(0.2f + frnd(0.3f));
         setSlide(0.05f + frnd(0.2f));
@@ -252,7 +254,7 @@ void Synthesizer::ResetParams() {
     p_pha_offset = 0.0f;
     p_pha_ramp = 0.0f;
 
-    p_repeat_speed = 0.0f;
+    setRepeatSpeed(0.0f);
 
     setChangeSpeed(0.0f);
     setChangeAmount(0.0f);
