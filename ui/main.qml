@@ -51,10 +51,29 @@ Window {
             topMargin: 12
         }
 
-        Slider {
-            value: synth.baseFrequency
-            onValueChanged: {
-                synth.baseFrequency = value;
+        width: 300
+
+        SliderGroup {
+            Layout.fillWidth: true
+            text: qsTr("Envelop")
+            synth: synth
+            model: ListModel {
+                ListElement {
+                    text: qsTr("Attack time")
+                    synthProperty: "attackTime"
+                }
+                ListElement {
+                    text: qsTr("Sustain time")
+                    synthProperty: "sustainTime"
+                }
+                ListElement {
+                    text: qsTr("Sustain punch")
+                    synthProperty: "sustainPunch"
+                }
+                ListElement {
+                    text: qsTr("Decay time")
+                    synthProperty: "decayTime"
+                }
             }
         }
     }

@@ -7,9 +7,6 @@ properties:
       type: int
       value: 0
       var_name: wave_type
-    - name: baseFrequency
-      type: qreal
-      var_name: p_base_freq
 
     - name: attackTime
       type: qreal
@@ -23,3 +20,7 @@ properties:
     - name: decayTime
       type: qreal
       var_name: p_env_decay
+
+    - name: baseFrequency
+      type: qreal
+      var_name: p_base_freq
