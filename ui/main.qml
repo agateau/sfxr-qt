@@ -43,7 +43,7 @@ Window {
         }
     }
 
-    ColumnLayout {
+    Row {
         anchors {
             left: verticalLine.right
             leftMargin: 12
@@ -51,62 +51,85 @@ Window {
             topMargin: 12
         }
 
-        width: 300
+        ColumnLayout {
+            width: 300
 
-        SliderGroup {
-            Layout.fillWidth: true
-            text: qsTr("Envelop")
-            synth: synth
-            model: ListModel {
-                ListElement {
-                    text: qsTr("Attack time")
-                    synthProperty: "attackTime"
+            SliderGroup {
+                Layout.fillWidth: true
+                text: qsTr("Envelop")
+                synth: synth
+                model: ListModel {
+                    ListElement {
+                        text: qsTr("Attack time")
+                        synthProperty: "attackTime"
+                    }
+                    ListElement {
+                        text: qsTr("Sustain time")
+                        synthProperty: "sustainTime"
+                    }
+                    ListElement {
+                        text: qsTr("Sustain punch")
+                        synthProperty: "sustainPunch"
+                    }
+                    ListElement {
+                        text: qsTr("Decay time")
+                        synthProperty: "decayTime"
+                    }
                 }
-                ListElement {
-                    text: qsTr("Sustain time")
-                    synthProperty: "sustainTime"
-                }
-                ListElement {
-                    text: qsTr("Sustain punch")
-                    synthProperty: "sustainPunch"
-                }
-                ListElement {
-                    text: qsTr("Decay time")
-                    synthProperty: "decayTime"
+            }
+
+            SliderGroup {
+                Layout.fillWidth: true
+                text: qsTr("Frequency")
+                synth: synth
+                model: ListModel {
+                    ListElement {
+                        text: qsTr("Start frequency")
+                        synthProperty: "baseFrequency"
+                    }
+                    ListElement {
+                        text: qsTr("Min frequency")
+                        synthProperty: "minFrequency"
+                    }
+                    ListElement {
+                        text: qsTr("Slide")
+                        synthProperty: "slide"
+                        bipolar: true
+                    }
+                    ListElement {
+                        text: qsTr("Delta slide")
+                        synthProperty: "deltaSlide"
+                        bipolar: true
+                    }
+                    ListElement {
+                        text: qsTr("Vibrato depth")
+                        synthProperty: "vibratoDepth"
+                    }
+                    ListElement {
+                        text: qsTr("Vibrato speed")
+                        synthProperty: "vibratoSpeed"
+                    }
                 }
             }
         }
 
-        SliderGroup {
-            Layout.fillWidth: true
-            text: qsTr("Frequency")
-            synth: synth
-            model: ListModel {
-                ListElement {
-                    text: qsTr("Start frequency")
-                    synthProperty: "baseFrequency"
-                }
-                ListElement {
-                    text: qsTr("Min frequency")
-                    synthProperty: "minFrequency"
-                }
-                ListElement {
-                    text: qsTr("Slide")
-                    synthProperty: "slide"
-                    bipolar: true
-                }
-                ListElement {
-                    text: qsTr("Delta slide")
-                    synthProperty: "deltaSlide"
-                    bipolar: true
-                }
-                ListElement {
-                    text: qsTr("Vibrato depth")
-                    synthProperty: "vibratoDepth"
-                }
-                ListElement {
-                    text: qsTr("Vibrato speed")
-                    synthProperty: "vibratoSpeed"
+        ColumnLayout {
+            width: 300
+
+            SliderGroup {
+                Layout.fillWidth: true
+                text: qsTr("Change")
+                synth: synth
+                model: ListModel {
+                    ListElement {
+                        text: qsTr("Change amount")
+                        synthProperty: "changeAmount"
+                        bipolar: true
+                    }
+                    ListElement {
+                        text: qsTr("Change speed")
+                        synthProperty: "changeSpeed"
+                    }
                 }
             }
         }

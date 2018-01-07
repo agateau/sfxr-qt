@@ -56,9 +56,6 @@ private:
 
     float p_repeat_speed;
 
-    float p_arp_speed;
-    float p_arp_mod;
-
     float sound_vol = 0.5f;
 
     bool playing_sample = false;

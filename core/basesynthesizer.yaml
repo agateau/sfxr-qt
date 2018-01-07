@@ -39,3 +39,10 @@ properties:
     - name: vibratoSpeed
       type: qreal
       var_name: p_vib_speed
+
+    - name: changeAmount
+      type: qreal
+      var_name: p_arp_mod
+    - name: changeSpeed
+      type: qreal
+      var_name: p_arp_speed

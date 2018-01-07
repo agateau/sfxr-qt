@@ -44,6 +44,9 @@ Synthesizer::Synthesizer(QObject* parent)
     connect(this, &BaseSynthesizer::deltaSlideChanged, this, &Synthesizer::schedulePlay);
     connect(this, &BaseSynthesizer::vibratoDepthChanged, this, &Synthesizer::schedulePlay);
     connect(this, &BaseSynthesizer::vibratoSpeedChanged, this, &Synthesizer::schedulePlay);
+
+    connect(this, &BaseSynthesizer::changeAmountChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::changeSpeedChanged, this, &Synthesizer::schedulePlay);
 }
 
 Synthesizer::~Synthesizer() {
@@ -57,8 +60,8 @@ void Synthesizer::generatePickup() {
     setDecayTime(0.1f + frnd(0.4f));
     setSustainPunch(0.3f + frnd(0.3f));
     if (rnd(1)) {
-        p_arp_speed = 0.5f + frnd(0.2f);
-        p_arp_mod = 0.2f + frnd(0.4f);
+        setChangeSpeed(0.5f + frnd(0.2f));
+        setChangeAmount(0.2f + frnd(0.4f));
     }
     schedulePlay();
 }
@@ -134,8 +137,8 @@ void Synthesizer::generateExplosion() {
         setVibratoSpeed(frnd(0.6f));
     }
     if (rnd(2) == 0) {
-        p_arp_speed = 0.6f + frnd(0.3f);
-        p_arp_mod = 0.8f - frnd(1.6f);
+        setChangeSpeed(0.6f + frnd(0.3f));
+        setChangeAmount(0.8f - frnd(1.6f));
     }
     schedulePlay();
 }
@@ -248,8 +251,8 @@ void Synthesizer::ResetParams() {
 
     p_repeat_speed = 0.0f;
 
-    p_arp_speed = 0.0f;
-    p_arp_mod = 0.0f;
+    setChangeSpeed(0.0f);
+    setChangeAmount(0.0f);
 }
 
 bool Synthesizer::LoadSettings(char* filename) {
