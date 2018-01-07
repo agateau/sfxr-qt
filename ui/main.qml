@@ -31,6 +31,7 @@ Window {
             leftMargin: 12
         }
         width: 1
+        color: "black"
     }
 
     WaveFormSelector {
