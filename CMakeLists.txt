@@ -31,6 +31,7 @@ set(sfxr2_SRCS
     ui/sfxr2.cpp
     core/synthesizer.cpp
     core/generator.cpp
+    core/wavsaver.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/core/basesynthesizer.cpp
 )
 

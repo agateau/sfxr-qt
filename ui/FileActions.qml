@@ -11,6 +11,10 @@ ColumnLayout {
         text: qsTr("Files")
     }
 
+    WavSaver {
+        id: wavSaver
+    }
+
     Button {
         FileDialog {
             id: exportWavFileDialog
@@ -19,7 +23,7 @@ ColumnLayout {
             nameFilters: [qsTr("Wav files") + " (*.wav)",
                 qsTr("All files") + " (*)"]
             onAccepted: {
-                synth.exportWav(fileUrl);
+                wavSaver.save(synth, fileUrl);
             }
         }
         text: qsTr("Export as WAV")
