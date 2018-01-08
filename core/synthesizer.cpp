@@ -27,9 +27,9 @@ Synthesizer::Synthesizer(QObject* parent)
 , mPlayTimer(new QTimer(this)) {
     mPlayTimer->setInterval(SCHEDULED_PLAY_DELAY);
     mPlayTimer->setSingleShot(true);
-    connect(mPlayTimer, &QTimer::timeout, this, &Synthesizer::PlaySample);
-    Init();
-    ResetParams();
+    connect(mPlayTimer, &QTimer::timeout, this, &Synthesizer::play);
+    init();
+    resetParams();
 
     connect(this, &BaseSynthesizer::waveTypeChanged, this, &Synthesizer::schedulePlay);
 
@@ -67,7 +67,7 @@ Synthesizer::~Synthesizer() {
 }
 
 void Synthesizer::generatePickup() {
-    ResetParams();
+    resetParams();
     setBaseFrequency(0.4f + frnd(0.5f));
     setAttackTime(0.0f);
     setSustainTime(frnd(0.1f));
@@ -81,7 +81,7 @@ void Synthesizer::generatePickup() {
 }
 
 void Synthesizer::generateLaser() {
-    ResetParams();
+    resetParams();
     int wave_type = rnd(2);
     if (wave_type == 2 && rnd(1)) {
         wave_type = rnd(1);
@@ -122,7 +122,7 @@ void Synthesizer::generateLaser() {
 }
 
 void Synthesizer::generateExplosion() {
-    ResetParams();
+    resetParams();
     setWaveType(3);
     if (rnd(1)) {
         setBaseFrequency(0.1f + frnd(0.4f));
@@ -158,7 +158,7 @@ void Synthesizer::generateExplosion() {
 }
 
 void Synthesizer::generatePowerup() {
-    ResetParams();
+    resetParams();
     if (rnd(1)) {
         setWaveType(1);
     } else {
@@ -183,7 +183,7 @@ void Synthesizer::generatePowerup() {
 }
 
 void Synthesizer::generateHitHurt() {
-    ResetParams();
+    resetParams();
     setWaveType(rnd(2));
     if (waveType() == 2) {
         setWaveType(3);
@@ -203,7 +203,7 @@ void Synthesizer::generateHitHurt() {
 }
 
 void Synthesizer::generateJump() {
-    ResetParams();
+    resetParams();
     setWaveType(0);
     setSquareDuty(frnd(0.6f));
     setBaseFrequency(0.3f + frnd(0.3f));
@@ -221,7 +221,7 @@ void Synthesizer::generateJump() {
 }
 
 void Synthesizer::generateBlipSelect() {
-    ResetParams();
+    resetParams();
     setWaveType(rnd(1));
     if (waveType() == 0) {
         setSquareDuty(frnd(0.6f));
@@ -234,7 +234,7 @@ void Synthesizer::generateBlipSelect() {
     schedulePlay();
 }
 
-void Synthesizer::ResetParams() {
+void Synthesizer::resetParams() {
     setWaveType(0);
 
     p_base_freq = 0.3f;
@@ -269,7 +269,7 @@ void Synthesizer::ResetParams() {
     setChangeAmount(0.0f);
 }
 
-bool Synthesizer::LoadSettings(char* filename) {
+bool Synthesizer::loadSettings(char* filename) {
     FILE* file = fopen(filename, "rb");
     if (!file) {
         return false;
@@ -327,7 +327,7 @@ bool Synthesizer::LoadSettings(char* filename) {
     return true;
 }
 
-bool Synthesizer::SaveSettings(char* filename) {
+bool Synthesizer::saveSettings(char* filename) {
     FILE* file = fopen(filename, "wb");
     if (!file) {
         return false;
@@ -375,7 +375,7 @@ bool Synthesizer::SaveSettings(char* filename) {
     return true;
 }
 
-void Synthesizer::ResetSample(bool restart) {
+void Synthesizer::resetSample(bool restart) {
     if (!restart) {
         phase = 0;
     }
@@ -447,12 +447,12 @@ void Synthesizer::ResetSample(bool restart) {
     }
 }
 
-void Synthesizer::PlaySample() {
-    ResetSample(false);
+void Synthesizer::play() {
+    resetSample(false);
     playing_sample = true;
 }
 
-void Synthesizer::SynthSample(int length, float* buffer, FILE* file) {
+void Synthesizer::synthSample(int length, float* buffer, FILE* file) {
     for (int i = 0; i < length; i++) {
         if (!playing_sample) {
             break;
@@ -461,7 +461,7 @@ void Synthesizer::SynthSample(int length, float* buffer, FILE* file) {
         rep_time++;
         if (rep_limit != 0 && rep_time >= rep_limit) {
             rep_time = 0;
-            ResetSample(true);
+            resetSample(true);
         }
 
         // frequency envelopes/arpeggios
@@ -632,7 +632,7 @@ void Synthesizer::SynthSample(int length, float* buffer, FILE* file) {
     }
 }
 
-bool Synthesizer::ExportWAV(char* filename) {
+bool Synthesizer::exportWav(char* filename) {
     FILE* foutput = fopen(filename, "wb");
     if (!foutput) {
         return false;
@@ -671,9 +671,9 @@ bool Synthesizer::ExportWAV(char* filename) {
     file_sampleswritten = 0;
     filesample = 0.0f;
     fileacc = 0;
-    PlaySample();
+    play();
     while (playing_sample) {
-        SynthSample(256, NULL, foutput);
+        synthSample(256, NULL, foutput);
     }
     mute_stream = false;
 
@@ -690,17 +690,14 @@ bool Synthesizer::ExportWAV(char* filename) {
     return true;
 }
 
-static void SDLAudioCallback(void* userdata, Uint8* stream, int len) {
+void Synthesizer::sdlAudioCallback(void* userdata, Uint8* stream, int len) {
     Synthesizer* synth = reinterpret_cast<Synthesizer*>(userdata);
-    synth->playCallback(stream, len);
-}
 
-void Synthesizer::playCallback(unsigned char* stream, int len) {
-    if (playing_sample && !mute_stream) {
+    if (synth->playing_sample && !synth->mute_stream) {
         unsigned int l = len / 2;
         float fbuf[l];
         memset(fbuf, 0, sizeof(fbuf));
-        SynthSample(l, fbuf, NULL);
+        synth->synthSample(l, fbuf, NULL);
         while (l--) {
             float f = fbuf[l];
             if (f < -1.0) {
@@ -716,13 +713,13 @@ void Synthesizer::playCallback(unsigned char* stream, int len) {
     }
 }
 
-void Synthesizer::Init() {
+void Synthesizer::init() {
     SDL_AudioSpec des;
     des.freq = 44100;
     des.format = AUDIO_S16SYS;
     des.channels = 1;
     des.samples = 512;
-    des.callback = SDLAudioCallback;
+    des.callback = sdlAudioCallback;
     des.userdata = this;
     if (SDL_OpenAudio(&des, NULL) != 0) {
         fprintf(stderr, "Failed to init audio\n");

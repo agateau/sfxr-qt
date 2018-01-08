@@ -25,17 +25,14 @@ public:
     Q_INVOKABLE void generateBlipSelect();
 
     // Params
-    void ResetParams();
-    bool LoadSettings(char* filename);
-    bool SaveSettings(char* filename);
-    bool ExportWAV(char* filename);
+    void resetParams();
+    bool loadSettings(char* filename);
+    bool saveSettings(char* filename);
+    bool exportWav(char* filename);
 
     // Play
-    void ResetSample(bool restart);
-    void PlaySample();
-    void SynthSample(int length, float* buffer, FILE* file);
-
-    void playCallback(unsigned char* stream, int len);
+    void play();
+    void synthSample(int length, float* buffer, FILE* file);
 
 private:
     // Fields editable from the outside
@@ -92,8 +89,11 @@ private:
     int fileacc = 0;
 
     QTimer* mPlayTimer;
-    void Init();
+    void init();
     void schedulePlay();
+    void resetSample(bool restart);
+
+    static void sdlAudioCallback(void* userdata, unsigned char* stream, int len);
 };
 
 #endif // SYNTHESIZER_H
