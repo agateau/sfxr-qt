@@ -10,6 +10,12 @@ class QTimer;
 class Synthesizer : public BaseSynthesizer {
     Q_OBJECT
 public:
+    class SynthStrategy {
+    public:
+        virtual ~SynthStrategy();
+        virtual void write(float sample) = 0;
+    };
+
     explicit Synthesizer(QObject* parent = nullptr);
     ~Synthesizer();
 
@@ -19,7 +25,7 @@ public:
     Q_INVOKABLE bool exportWav(const QUrl& url);
 
     void play();
-    void synthSample(int length, float* buffer, FILE* file);
+    void synthSample(int length, SynthStrategy* strategy);
 
 private:
     // Fields editable from the outside
@@ -30,9 +36,6 @@ private:
     float sound_vol = 0.5f;
 
     bool playing_sample = false;
-
-    int wav_bits = 16;
-    int wav_freq = 44100;
 
     // Internal
     int phase;
@@ -71,9 +74,6 @@ private:
     double arp_mod;
 
     bool mute_stream;
-    int file_sampleswritten;
-    float filesample = 0.0f;
-    int fileacc = 0;
 
     QTimer* mPlayTimer;
     void init();
