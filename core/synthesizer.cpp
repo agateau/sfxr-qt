@@ -23,8 +23,8 @@ inline float frnd(float range) {
 }
 
 Synthesizer::Synthesizer(QObject* parent)
-: BaseSynthesizer(parent)
-, mPlayTimer(new QTimer(this)) {
+    : BaseSynthesizer(parent)
+    , mPlayTimer(new QTimer(this)) {
     mPlayTimer->setInterval(SCHEDULED_PLAY_DELAY);
     mPlayTimer->setSingleShot(true);
     connect(mPlayTimer, &QTimer::timeout, this, &Synthesizer::play);
