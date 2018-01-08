@@ -1,11 +1,14 @@
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 
 #include "generator.h"
 #include "synthesizer.h"
 
 int main(int argc, char* argv[]) {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
+    app.setOrganizationDomain("agateau.com");
+    app.setApplicationName("sfxr2");
+
     QQmlApplicationEngine engine;
     qmlRegisterType<Synthesizer>("sfxr2", 1, 0, "Synthesizer");
     qmlRegisterType<Generator>("sfxr2", 1, 0, "Generator");

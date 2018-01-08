@@ -13,13 +13,11 @@ public:
     explicit Synthesizer(QObject* parent = nullptr);
     ~Synthesizer();
 
-    // Params
     void resetParams();
     bool loadSettings(char* filename);
     bool saveSettings(char* filename);
-    bool exportWav(char* filename);
+    Q_INVOKABLE bool exportWav(const QUrl& url);
 
-    // Play
     void play();
     void synthSample(int length, float* buffer, FILE* file);
 

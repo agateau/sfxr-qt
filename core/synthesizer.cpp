@@ -1,6 +1,7 @@
 #include "synthesizer.h"
 
 #include <QTimer>
+#include <QUrl>
 
 #include <math.h>
 #include <stdlib.h>
@@ -464,8 +465,9 @@ void Synthesizer::synthSample(int length, float* buffer, FILE* file) {
     }
 }
 
-bool Synthesizer::exportWav(char* filename) {
-    FILE* foutput = fopen(filename, "wb");
+bool Synthesizer::exportWav(const QUrl& url) {
+    QString path = url.path();
+    FILE* foutput = fopen(path.toLocal8Bit().constData(), "wb");
     if (!foutput) {
         return false;
     }

@@ -2,13 +2,14 @@ import QtQuick 2.4
 import QtQuick.Window 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
+import QtQuick.Dialogs 1.2
 
 import sfxr2 1.0
 
 Window {
     id: root
     visible: true
-    width: 800
+    width: 1000
     height: 800
 
     Synthesizer {
@@ -214,5 +215,14 @@ Window {
                 }
             }
         }
+    }
+
+    FileActions {
+        anchors {
+            top: parent.top
+            right: parent.right
+        }
+
+        synth: synth
     }
 }
