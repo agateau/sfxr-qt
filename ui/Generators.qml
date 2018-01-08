@@ -6,8 +6,14 @@ import QtQuick.Controls 2.2
 import sfxr2 1.0
 
 ColumnLayout {
-    id: generatorLayout
+    id: root
     property Synthesizer synth
+
+    Generator {
+        id: generator
+        synth: root.synth
+    }
+
     Label {
         id: label
         text: qsTr("Generators")
@@ -16,49 +22,49 @@ ColumnLayout {
     Button {
         text: qsTr("Pickup/Coin")
         onClicked: {
-            synth.generatePickup();
+            generator.generatePickup();
         }
     }
 
     Button {
         text: qsTr("Laser/Shoot")
         onClicked: {
-            synth.generateLaser();
+            generator.generateLaser();
         }
     }
 
     Button {
         text: qsTr("Explosion")
         onClicked: {
-            synth.generateExplosion();
+            generator.generateExplosion();
         }
     }
 
     Button {
         text: qsTr("Power Up")
         onClicked: {
-            synth.generatePowerup();
+            generator.generatePowerup();
         }
     }
 
     Button {
         text: qsTr("Hit/Hurt")
         onClicked: {
-            synth.generateHitHurt();
+            generator.generateHitHurt();
         }
     }
 
     Button {
         text: qsTr("Jump")
         onClicked: {
-            synth.generateJump();
+            generator.generateJump();
         }
     }
 
     Button {
         text: qsTr("Blip/Select")
         onClicked: {
-            synth.generateBlipSelect();
+            generator.generateBlipSelect();
         }
     }
 }

@@ -13,17 +13,6 @@ public:
     explicit Synthesizer(QObject* parent = nullptr);
     ~Synthesizer();
 
-    // Generators
-    // TODO: Move outside once every changes are done through
-    // setters
-    Q_INVOKABLE void generatePickup();
-    Q_INVOKABLE void generateLaser();
-    Q_INVOKABLE void generateExplosion();
-    Q_INVOKABLE void generatePowerup();
-    Q_INVOKABLE void generateHitHurt();
-    Q_INVOKABLE void generateJump();
-    Q_INVOKABLE void generateBlipSelect();
-
     // Params
     void resetParams();
     bool loadSettings(char* filename);

@@ -29,8 +29,9 @@ qt5_wrap_cpp(sfxr2_MOC ${CMAKE_CURRENT_BINARY_DIR}/core/basesynthesizer.h)
 
 set(sfxr2_SRCS
     ui/sfxr2.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/core/basesynthesizer.cpp
     core/synthesizer.cpp
+    core/generator.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/core/basesynthesizer.cpp
 )
 
 qt5_add_resources(sfxr2_QRC ui/qml.qrc)
