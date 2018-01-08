@@ -64,3 +64,19 @@ properties:
     - name: phaserSweep
       type: qreal
       var_name: p_pha_ramp
+
+    - name: lpFilterCutoff
+      type: qreal
+      var_name: p_lpf_freq
+    - name: lpFilterCutoffSweep
+      type: qreal
+      var_name: p_lpf_ramp
+    - name: lpFilterResonance
+      type: qreal
+      var_name: p_lpf_resonance
+    - name: hpFilterCutoff
+      type: qreal
+      var_name: p_hpf_freq
+    - name: hpFilterCutoffSweep
+      type: qreal
+      var_name: p_hpf_ramp

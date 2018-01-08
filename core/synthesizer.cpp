@@ -55,6 +55,12 @@ Synthesizer::Synthesizer(QObject* parent)
 
     connect(this, &BaseSynthesizer::phaserOffsetChanged, this, &Synthesizer::schedulePlay);
     connect(this, &BaseSynthesizer::phaserSweepChanged, this, &Synthesizer::schedulePlay);
+
+    connect(this, &BaseSynthesizer::lpFilterCutoffChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::lpFilterCutoffSweepChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::lpFilterResonanceChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::hpFilterCutoffChanged, this, &Synthesizer::schedulePlay);
+    connect(this, &BaseSynthesizer::hpFilterCutoffSweepChanged, this, &Synthesizer::schedulePlay);
 }
 
 Synthesizer::~Synthesizer() {
@@ -110,7 +116,7 @@ void Synthesizer::generateLaser() {
         setPhaserSweep(-frnd(0.2f));
     }
     if (rnd(1)) {
-        p_hpf_freq = frnd(0.3f);
+        setHpFilterCutoff(frnd(0.3f));
     }
     schedulePlay();
 }
@@ -191,7 +197,7 @@ void Synthesizer::generateHitHurt() {
     setSustainTime(frnd(0.1f));
     setDecayTime(0.1f + frnd(0.2f));
     if (rnd(1)) {
-        p_hpf_freq = frnd(0.3f);
+        setHpFilterCutoff(frnd(0.3f));
     }
     schedulePlay();
 }
@@ -206,10 +212,10 @@ void Synthesizer::generateJump() {
     setSustainTime(0.1f + frnd(0.3f));
     setDecayTime(0.1f + frnd(0.2f));
     if (rnd(1)) {
-        p_hpf_freq = frnd(0.3f);
+        setHpFilterCutoff(frnd(0.3f));
     }
     if (rnd(1)) {
-        p_lpf_freq = 1.0f - frnd(0.6f);
+        setLpFilterCutoff(1.0f - frnd(0.6f));
     }
     schedulePlay();
 }
@@ -224,7 +230,7 @@ void Synthesizer::generateBlipSelect() {
     setAttackTime(0.0f);
     setSustainTime(0.1f + frnd(0.1f));
     setDecayTime(frnd(0.2f));
-    p_hpf_freq = 0.1f;
+    setHpFilterCutoff(0.1f);
     schedulePlay();
 }
 
@@ -248,11 +254,11 @@ void Synthesizer::ResetParams() {
     setSustainPunch(0.0f);
 
     filter_on = false;
-    p_lpf_resonance = 0.0f;
-    p_lpf_freq = 1.0f;
-    p_lpf_ramp = 0.0f;
-    p_hpf_freq = 0.0f;
-    p_hpf_ramp = 0.0f;
+    setLpFilterResonance(0.0f);
+    setLpFilterCutoff(1.0f);
+    setLpFilterCutoffSweep(0.0f);
+    setHpFilterCutoff(0.0f);
+    setHpFilterCutoffSweep(0.0f);
 
     setPhaserOffset(0.0f);
     setPhaserSweep(0.0f);

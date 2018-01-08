@@ -42,11 +42,6 @@ private:
     float p_vib_delay;
 
     bool filter_on;
-    float p_lpf_resonance;
-    float p_lpf_freq;
-    float p_lpf_ramp;
-    float p_hpf_freq;
-    float p_hpf_ramp;
 
     float sound_vol = 0.5f;
 

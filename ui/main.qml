@@ -9,7 +9,7 @@ Window {
     id: root
     visible: true
     width: 800
-    height: 600
+    height: 800
 
     Synthesizer {
         id: synth
@@ -114,10 +114,6 @@ Window {
                     }
                 }
             }
-        }
-
-        ColumnLayout {
-            width: 300
 
             SliderGroup {
                 Layout.fillWidth: true
@@ -135,6 +131,10 @@ Window {
                     }
                 }
             }
+        }
+
+        ColumnLayout {
+            width: 300
 
             SliderGroup {
                 Layout.fillWidth: true
@@ -179,6 +179,36 @@ Window {
                     ListElement {
                         text: qsTr("Phaser sweep")
                         synthProperty: "phaserSweep"
+                        bipolar: true
+                    }
+                }
+            }
+
+            SliderGroup {
+                Layout.fillWidth: true
+                text: qsTr("Filters")
+                synth: synth
+                model: ListModel {
+                    ListElement {
+                        text: qsTr("LP filter cutoff")
+                        synthProperty: "lpFilterCutoff"
+                    }
+                    ListElement {
+                        text: qsTr("LP filter cutoff sweep")
+                        synthProperty: "lpFilterCutoffSweep"
+                        bipolar: true
+                    }
+                    ListElement {
+                        text: qsTr("LP filter resonance")
+                        synthProperty: "lpFilterResonance"
+                    }
+                    ListElement {
+                        text: qsTr("HP filter cutoff")
+                        synthProperty: "hpFilterCutoff"
+                    }
+                    ListElement {
+                        text: qsTr("HP filter cutoff sweep")
+                        synthProperty: "hpFilterCutoffSweep"
                         bipolar: true
                     }
                 }
