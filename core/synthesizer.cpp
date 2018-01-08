@@ -77,7 +77,6 @@ void Synthesizer::generatePickup() {
         setChangeSpeed(0.5f + frnd(0.2f));
         setChangeAmount(0.2f + frnd(0.4f));
     }
-    schedulePlay();
 }
 
 void Synthesizer::generateLaser() {
@@ -118,7 +117,6 @@ void Synthesizer::generateLaser() {
     if (rnd(1)) {
         setHpFilterCutoff(frnd(0.3f));
     }
-    schedulePlay();
 }
 
 void Synthesizer::generateExplosion() {
@@ -154,7 +152,6 @@ void Synthesizer::generateExplosion() {
         setChangeSpeed(0.6f + frnd(0.3f));
         setChangeAmount(0.8f - frnd(1.6f));
     }
-    schedulePlay();
 }
 
 void Synthesizer::generatePowerup() {
@@ -179,7 +176,6 @@ void Synthesizer::generatePowerup() {
     setAttackTime(0.0f);
     setSustainTime(frnd(0.4f));
     setDecayTime(0.1f + frnd(0.4f));
-    schedulePlay();
 }
 
 void Synthesizer::generateHitHurt() {
@@ -199,7 +195,6 @@ void Synthesizer::generateHitHurt() {
     if (rnd(1)) {
         setHpFilterCutoff(frnd(0.3f));
     }
-    schedulePlay();
 }
 
 void Synthesizer::generateJump() {
@@ -217,7 +212,6 @@ void Synthesizer::generateJump() {
     if (rnd(1)) {
         setLpFilterCutoff(1.0f - frnd(0.6f));
     }
-    schedulePlay();
 }
 
 void Synthesizer::generateBlipSelect() {
@@ -231,7 +225,6 @@ void Synthesizer::generateBlipSelect() {
     setSustainTime(0.1f + frnd(0.1f));
     setDecayTime(frnd(0.2f));
     setHpFilterCutoff(0.1f);
-    schedulePlay();
 }
 
 void Synthesizer::resetParams() {
