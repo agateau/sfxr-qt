@@ -17,7 +17,7 @@ public:
     explicit SoundPlayer(QObject* parent = nullptr);
     ~SoundPlayer();
 
-    void play();
+    Q_INVOKABLE void play();
 
     Sound* sound() const;
     void setSound(Sound* value);

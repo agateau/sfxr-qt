@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.7
 import QtQuick.Window 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
@@ -17,6 +17,7 @@ Window {
     }
 
     SoundPlayer {
+        id: soundPlayer
         sound: sound
     }
 
@@ -228,5 +229,6 @@ Window {
         }
 
         sound: sound
+        soundPlayer: soundPlayer
     }
 }

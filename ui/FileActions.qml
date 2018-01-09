@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.2
@@ -7,8 +7,23 @@ import sfxr2 1.0
 
 ColumnLayout {
     property Sound sound
+    property SoundPlayer soundPlayer
+
+    Button {
+        text: qsTr("Play (Return)")
+        onClicked: {
+            soundPlayer.play();
+        }
+    }
+
+    Shortcut {
+        sequence: "Return"
+        onActivated: soundPlayer.play();
+    }
+
     Label {
         text: qsTr("File")
+        font.bold: true
     }
     Button {
         FileDialog {
@@ -45,6 +60,7 @@ ColumnLayout {
 
     Label {
         text: qsTr("WAV export")
+        font.bold: true
     }
 
     WavSaver {
