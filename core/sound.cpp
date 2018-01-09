@@ -117,45 +117,51 @@ bool Sound::save(const QUrl& url) {
         return false;
     }
 
+    // File format uses float, but we use qreal, so we need to round the value down
+    auto writeFloat = [file](qreal value) {
+        float fvalue = float(value);
+        fwrite(&fvalue, 1, sizeof(float), file);
+    };
+
     int version = 102;
     fwrite(&version, 1, sizeof(int), file);
 
     fwrite(&wave_type, 1, sizeof(int), file);
 
-    fwrite(&sound_vol, 1, sizeof(float), file);
+    writeFloat(sound_vol);
 
-    fwrite(&p_base_freq, 1, sizeof(float), file);
-    fwrite(&p_freq_limit, 1, sizeof(float), file);
-    fwrite(&p_freq_ramp, 1, sizeof(float), file);
-    fwrite(&p_freq_dramp, 1, sizeof(float), file);
-    fwrite(&p_duty, 1, sizeof(float), file);
-    fwrite(&p_duty_ramp, 1, sizeof(float), file);
+    writeFloat(p_base_freq);
+    writeFloat(p_freq_limit);
+    writeFloat(p_freq_ramp);
+    writeFloat(p_freq_dramp);
+    writeFloat(p_duty);
+    writeFloat(p_duty_ramp);
 
-    fwrite(&p_vib_strength, 1, sizeof(float), file);
-    fwrite(&p_vib_speed, 1, sizeof(float), file);
+    writeFloat(p_vib_strength);
+    writeFloat(p_vib_speed);
     float p_vib_delay = 0;
-    fwrite(&p_vib_delay, 1, sizeof(float), file);
+    writeFloat(p_vib_delay);
 
-    fwrite(&p_env_attack, 1, sizeof(float), file);
-    fwrite(&p_env_sustain, 1, sizeof(float), file);
-    fwrite(&p_env_decay, 1, sizeof(float), file);
-    fwrite(&p_env_punch, 1, sizeof(float), file);
+    writeFloat(p_env_attack);
+    writeFloat(p_env_sustain);
+    writeFloat(p_env_decay);
+    writeFloat(p_env_punch);
 
     bool filter_on = false;
     fwrite(&filter_on, 1, sizeof(bool), file);
-    fwrite(&p_lpf_resonance, 1, sizeof(float), file);
-    fwrite(&p_lpf_freq, 1, sizeof(float), file);
-    fwrite(&p_lpf_ramp, 1, sizeof(float), file);
-    fwrite(&p_hpf_freq, 1, sizeof(float), file);
-    fwrite(&p_hpf_ramp, 1, sizeof(float), file);
+    writeFloat(p_lpf_resonance);
+    writeFloat(p_lpf_freq);
+    writeFloat(p_lpf_ramp);
+    writeFloat(p_hpf_freq);
+    writeFloat(p_hpf_ramp);
 
-    fwrite(&p_pha_offset, 1, sizeof(float), file);
-    fwrite(&p_pha_ramp, 1, sizeof(float), file);
+    writeFloat(p_pha_offset);
+    writeFloat(p_pha_ramp);
 
-    fwrite(&p_repeat_speed, 1, sizeof(float), file);
+    writeFloat(p_repeat_speed);
 
-    fwrite(&p_arp_speed, 1, sizeof(float), file);
-    fwrite(&p_arp_mod, 1, sizeof(float), file);
+    writeFloat(p_arp_speed);
+    writeFloat(p_arp_mod);
 
     fclose(file);
     return true;

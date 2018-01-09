@@ -20,9 +20,26 @@ ColumnLayout {
                 sound.load(fileUrl);
             }
         }
-        text: qsTr("Load")
+        text: qsTr("Load...")
         onClicked: {
             loadFileDialog.open();
+        }
+    }
+
+    Button {
+        FileDialog {
+            id: saveFileDialog
+            title: qsTr("Save SFXR sound")
+            selectExisting: false
+            nameFilters: [qsTr("sfxr files") + " (*.sfxr)",
+                qsTr("All files") + " (*)"]
+            onAccepted: {
+                sound.save(fileUrl);
+            }
+        }
+        text: qsTr("Save as...")
+        onClicked: {
+            saveFileDialog.open();
         }
     }
 
