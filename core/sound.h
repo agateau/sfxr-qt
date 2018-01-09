@@ -9,12 +9,8 @@ public:
     explicit Sound(QObject* parent = nullptr);
 
     void resetParams();
-    bool loadSettings(char* filename);
-    bool saveSettings(char* filename);
-
-private:
-    float p_vib_delay;
-    bool filter_on;
+    Q_INVOKABLE bool load(const QUrl& url);
+    Q_INVOKABLE bool save(const QUrl& url);
 };
 
 #endif // SOUND_H

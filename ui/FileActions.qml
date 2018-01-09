@@ -8,6 +8,25 @@ import sfxr2 1.0
 ColumnLayout {
     property Sound sound
     Label {
+        text: qsTr("File")
+    }
+    Button {
+        FileDialog {
+            id: loadFileDialog
+            title: qsTr("Load SFXR sound")
+            nameFilters: [qsTr("sfxr files") + " (*.sfxr)",
+                qsTr("All files") + " (*)"]
+            onAccepted: {
+                sound.load(fileUrl);
+            }
+        }
+        text: qsTr("Load")
+        onClicked: {
+            loadFileDialog.open();
+        }
+    }
+
+    Label {
         text: qsTr("WAV export")
     }
 
