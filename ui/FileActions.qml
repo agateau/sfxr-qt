@@ -6,7 +6,7 @@ import QtQuick.Dialogs 1.2
 import sfxr2 1.0
 
 ColumnLayout {
-    property Synthesizer synth
+    property Sound sound
     Label {
         text: qsTr("Files")
     }
@@ -23,7 +23,7 @@ ColumnLayout {
             nameFilters: [qsTr("Wav files") + " (*.wav)",
                 qsTr("All files") + " (*)"]
             onAccepted: {
-                wavSaver.save(synth, fileUrl);
+                wavSaver.save(sound, fileUrl);
             }
         }
         text: qsTr("Export as WAV")

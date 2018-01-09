@@ -3,12 +3,13 @@
 
 #include <QObject>
 
-#include <basesynthesizer.h>
-
 class QTimer;
 
-class Synthesizer : public BaseSynthesizer {
+class Sound;
+
+class Synthesizer : public QObject {
     Q_OBJECT
+    Q_PROPERTY(Sound* sound READ sound WRITE setSound NOTIFY soundChanged)
 public:
     class SynthStrategy {
     public:
@@ -19,21 +20,19 @@ public:
     explicit Synthesizer(QObject* parent = nullptr);
     ~Synthesizer();
 
-    void resetParams();
-    bool loadSettings(char* filename);
-    bool saveSettings(char* filename);
-    Q_INVOKABLE bool exportWav(const QUrl& url);
+    Sound* sound() const;
+    void setSound(Sound* value);
+
+    bool exportWav(const QUrl& url);
 
     void play();
     void synthSample(int length, SynthStrategy* strategy);
 
+signals:
+    void soundChanged(Sound* value);
+
 private:
-    // Fields editable from the outside
-    float p_vib_delay;
-
-    bool filter_on;
-
-    float sound_vol = 0.5f;
+    Sound* mSound = nullptr;
 
     bool playing_sample = false;
 
@@ -74,6 +73,8 @@ private:
     double arp_mod;
 
     bool mute_stream;
+
+    bool mInited = false;
 
     QTimer* mPlayTimer;
     void init();

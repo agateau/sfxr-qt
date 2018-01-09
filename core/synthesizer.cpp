@@ -9,6 +9,8 @@
 
 #include <SDL.h>
 
+#include "sound.h"
+
 static const float PI = 3.14159265f;
 
 static const float MASTER_VOL = 0.05f;
@@ -84,242 +86,115 @@ void WavExportStrategy::write(float ssample) {
 }
 
 Synthesizer::Synthesizer(QObject* parent)
-    : BaseSynthesizer(parent)
+    : QObject(parent)
     , mPlayTimer(new QTimer(this)) {
     mPlayTimer->setInterval(SCHEDULED_PLAY_DELAY);
     mPlayTimer->setSingleShot(true);
     connect(mPlayTimer, &QTimer::timeout, this, &Synthesizer::play);
-    init();
-    resetParams();
+}
 
-    connect(this, &BaseSynthesizer::waveTypeChanged, this, &Synthesizer::schedulePlay);
+Sound* Synthesizer::sound() const {
+    return mSound;
+}
 
-    connect(this, &BaseSynthesizer::attackTimeChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::sustainTimeChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::sustainPunchChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::decayTimeChanged, this, &Synthesizer::schedulePlay);
+void Synthesizer::setSound(Sound* value) {
+    if (mSound == value) {
+        return;
+    }
+    if (mSound) {
+        disconnect(mSound, 0, this, 0);
+    }
+    mSound = value;
 
-    connect(this, &BaseSynthesizer::baseFrequencyChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::minFrequencyChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::slideChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::deltaSlideChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::vibratoDepthChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::vibratoSpeedChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::waveTypeChanged, this, &Synthesizer::schedulePlay);
 
-    connect(this, &BaseSynthesizer::changeAmountChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::changeSpeedChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::attackTimeChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::sustainTimeChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::sustainPunchChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::decayTimeChanged, this, &Synthesizer::schedulePlay);
 
-    connect(this, &BaseSynthesizer::squareDutyChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::dutySweepChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::baseFrequencyChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::minFrequencyChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::slideChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::deltaSlideChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::vibratoDepthChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::vibratoSpeedChanged, this, &Synthesizer::schedulePlay);
 
-    connect(this, &BaseSynthesizer::repeatSpeedChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::changeAmountChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::changeSpeedChanged, this, &Synthesizer::schedulePlay);
 
-    connect(this, &BaseSynthesizer::phaserOffsetChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::phaserSweepChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::squareDutyChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::dutySweepChanged, this, &Synthesizer::schedulePlay);
 
-    connect(this, &BaseSynthesizer::lpFilterCutoffChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::lpFilterCutoffSweepChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::lpFilterResonanceChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::hpFilterCutoffChanged, this, &Synthesizer::schedulePlay);
-    connect(this, &BaseSynthesizer::hpFilterCutoffSweepChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::repeatSpeedChanged, this, &Synthesizer::schedulePlay);
+
+    connect(mSound, &Sound::phaserOffsetChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::phaserSweepChanged, this, &Synthesizer::schedulePlay);
+
+    connect(mSound, &Sound::lpFilterCutoffChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::lpFilterCutoffSweepChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::lpFilterResonanceChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::hpFilterCutoffChanged, this, &Synthesizer::schedulePlay);
+    connect(mSound, &Sound::hpFilterCutoffSweepChanged, this, &Synthesizer::schedulePlay);
+
+    soundChanged(value);
 }
 
 Synthesizer::~Synthesizer() {
-}
-
-void Synthesizer::resetParams() {
-    setWaveType(0);
-
-    p_base_freq = 0.3f;
-    setMinFrequency(0.0f);
-    setSlide(0.0f);
-    setDeltaSlide(0.0f);
-    setSquareDuty(0.0f);
-    setDutySweep(0.0f);
-
-    setVibratoDepth(0.0f);
-    setVibratoSpeed(0.0f);
-    p_vib_delay = 0.0f;
-
-    setAttackTime(0.0f);
-    setSustainTime(0.3f);
-    setDecayTime(0.4f);
-    setSustainPunch(0.0f);
-
-    filter_on = false;
-    setLpFilterResonance(0.0f);
-    setLpFilterCutoff(1.0f);
-    setLpFilterCutoffSweep(0.0f);
-    setHpFilterCutoff(0.0f);
-    setHpFilterCutoffSweep(0.0f);
-
-    setPhaserOffset(0.0f);
-    setPhaserSweep(0.0f);
-
-    setRepeatSpeed(0.0f);
-
-    setChangeSpeed(0.0f);
-    setChangeAmount(0.0f);
-}
-
-bool Synthesizer::loadSettings(char* filename) {
-    FILE* file = fopen(filename, "rb");
-    if (!file) {
-        return false;
-    }
-
-    int version = 0;
-    fread(&version, 1, sizeof(int), file);
-    if (version != 100 && version != 101 && version != 102) {
-        return false;
-    }
-
-    fread(&wave_type, 1, sizeof(int), file);
-
-    sound_vol = 0.5f;
-    if (version == 102) {
-        fread(&sound_vol, 1, sizeof(float), file);
-    }
-
-    fread(&p_base_freq, 1, sizeof(float), file);
-    fread(&p_freq_limit, 1, sizeof(float), file);
-    fread(&p_freq_ramp, 1, sizeof(float), file);
-    if (version >= 101) {
-        fread(&p_freq_dramp, 1, sizeof(float), file);
-    }
-    fread(&p_duty, 1, sizeof(float), file);
-    fread(&p_duty_ramp, 1, sizeof(float), file);
-
-    fread(&p_vib_strength, 1, sizeof(float), file);
-    fread(&p_vib_speed, 1, sizeof(float), file);
-    fread(&p_vib_delay, 1, sizeof(float), file);
-
-    fread(&p_env_attack, 1, sizeof(float), file);
-    fread(&p_env_sustain, 1, sizeof(float), file);
-    fread(&p_env_decay, 1, sizeof(float), file);
-    fread(&p_env_punch, 1, sizeof(float), file);
-
-    fread(&filter_on, 1, sizeof(bool), file);
-    fread(&p_lpf_resonance, 1, sizeof(float), file);
-    fread(&p_lpf_freq, 1, sizeof(float), file);
-    fread(&p_lpf_ramp, 1, sizeof(float), file);
-    fread(&p_hpf_freq, 1, sizeof(float), file);
-    fread(&p_hpf_ramp, 1, sizeof(float), file);
-
-    fread(&p_pha_offset, 1, sizeof(float), file);
-    fread(&p_pha_ramp, 1, sizeof(float), file);
-
-    fread(&p_repeat_speed, 1, sizeof(float), file);
-
-    if (version >= 101) {
-        fread(&p_arp_speed, 1, sizeof(float), file);
-        fread(&p_arp_mod, 1, sizeof(float), file);
-    }
-
-    fclose(file);
-    return true;
-}
-
-bool Synthesizer::saveSettings(char* filename) {
-    FILE* file = fopen(filename, "wb");
-    if (!file) {
-        return false;
-    }
-
-    int version = 102;
-    fwrite(&version, 1, sizeof(int), file);
-
-    fwrite(&wave_type, 1, sizeof(int), file);
-
-    fwrite(&sound_vol, 1, sizeof(float), file);
-
-    fwrite(&p_base_freq, 1, sizeof(float), file);
-    fwrite(&p_freq_limit, 1, sizeof(float), file);
-    fwrite(&p_freq_ramp, 1, sizeof(float), file);
-    fwrite(&p_freq_dramp, 1, sizeof(float), file);
-    fwrite(&p_duty, 1, sizeof(float), file);
-    fwrite(&p_duty_ramp, 1, sizeof(float), file);
-
-    fwrite(&p_vib_strength, 1, sizeof(float), file);
-    fwrite(&p_vib_speed, 1, sizeof(float), file);
-    fwrite(&p_vib_delay, 1, sizeof(float), file);
-
-    fwrite(&p_env_attack, 1, sizeof(float), file);
-    fwrite(&p_env_sustain, 1, sizeof(float), file);
-    fwrite(&p_env_decay, 1, sizeof(float), file);
-    fwrite(&p_env_punch, 1, sizeof(float), file);
-
-    fwrite(&filter_on, 1, sizeof(bool), file);
-    fwrite(&p_lpf_resonance, 1, sizeof(float), file);
-    fwrite(&p_lpf_freq, 1, sizeof(float), file);
-    fwrite(&p_lpf_ramp, 1, sizeof(float), file);
-    fwrite(&p_hpf_freq, 1, sizeof(float), file);
-    fwrite(&p_hpf_ramp, 1, sizeof(float), file);
-
-    fwrite(&p_pha_offset, 1, sizeof(float), file);
-    fwrite(&p_pha_ramp, 1, sizeof(float), file);
-
-    fwrite(&p_repeat_speed, 1, sizeof(float), file);
-
-    fwrite(&p_arp_speed, 1, sizeof(float), file);
-    fwrite(&p_arp_mod, 1, sizeof(float), file);
-
-    fclose(file);
-    return true;
 }
 
 void Synthesizer::resetSample(bool restart) {
     if (!restart) {
         phase = 0;
     }
-    fperiod = 100.0 / (p_base_freq * p_base_freq + 0.001);
+    fperiod = 100.0 / (mSound->baseFrequency() * mSound->baseFrequency() + 0.001);
     period = (int)fperiod;
-    fmaxperiod = 100.0 / (p_freq_limit * p_freq_limit + 0.001);
-    fslide = 1.0 - pow((double)p_freq_ramp, 3.0) * 0.01;
-    fdslide = -pow((double)p_freq_dramp, 3.0) * 0.000001;
-    square_duty = 0.5f - p_duty * 0.5f;
-    square_slide = -p_duty_ramp * 0.00005f;
-    if (p_arp_mod >= 0.0f) {
-        arp_mod = 1.0 - pow((double)p_arp_mod, 2.0) * 0.9;
+    fmaxperiod = 100.0 / (mSound->minFrequency() * mSound->minFrequency() + 0.001);
+    fslide = 1.0 - pow((double)mSound->slide(), 3.0) * 0.01;
+    fdslide = -pow((double)mSound->deltaSlide(), 3.0) * 0.000001;
+    square_duty = 0.5f - mSound->squareDuty() * 0.5f;
+    square_slide = -mSound->dutySweep() * 0.00005f;
+    if (mSound->changeAmount() >= 0.0f) {
+        arp_mod = 1.0 - pow((double)mSound->changeAmount(), 2.0) * 0.9;
     } else {
-        arp_mod = 1.0 + pow((double)p_arp_mod, 2.0) * 10.0;
+        arp_mod = 1.0 + pow((double)mSound->changeAmount(), 2.0) * 10.0;
     }
     arp_time = 0;
-    arp_limit = (int)(pow(1.0f - p_arp_speed, 2.0f) * 20000 + 32);
-    if (p_arp_speed == 1.0f) {
+    arp_limit = (int)(pow(1.0f - mSound->changeSpeed(), 2.0f) * 20000 + 32);
+    if (mSound->changeSpeed() == 1.0f) {
         arp_limit = 0;
     }
     if (!restart) {
         // reset filter
         fltp = 0.0f;
         fltdp = 0.0f;
-        fltw = pow(p_lpf_freq, 3.0f) * 0.1f;
-        fltw_d = 1.0f + p_lpf_ramp * 0.0001f;
-        fltdmp = 5.0f / (1.0f + pow(p_lpf_resonance, 2.0f) * 20.0f) * (0.01f + fltw);
+        fltw = pow(mSound->lpFilterCutoff(), 3.0f) * 0.1f;
+        fltw_d = 1.0f + mSound->lpFilterCutoffSweep() * 0.0001f;
+        fltdmp = 5.0f / (1.0f + pow(mSound->lpFilterResonance(), 2.0f) * 20.0f) * (0.01f + fltw);
         if (fltdmp > 0.8f) {
             fltdmp = 0.8f;
         }
         fltphp = 0.0f;
-        flthp = pow(p_hpf_freq, 2.0f) * 0.1f;
-        flthp_d = 1.0 + p_hpf_ramp * 0.0003f;
+        flthp = pow(mSound->hpFilterCutoff(), 2.0f) * 0.1f;
+        flthp_d = 1.0 + mSound->hpFilterCutoffSweep() * 0.0003f;
         // reset vibrato
         vib_phase = 0.0f;
-        vib_speed = pow(p_vib_speed, 2.0f) * 0.01f;
-        vib_amp = p_vib_strength * 0.5f;
+        vib_speed = pow(mSound->vibratoSpeed(), 2.0f) * 0.01f;
+        vib_amp = mSound->vibratoDepth() * 0.5f;
         // reset envelope
         env_vol = 0.0f;
         env_stage = 0;
         env_time = 0;
-        env_length[0] = (int)(p_env_attack * p_env_attack * 100000.0f);
-        env_length[1] = (int)(p_env_sustain * p_env_sustain * 100000.0f);
-        env_length[2] = (int)(p_env_decay * p_env_decay * 100000.0f);
+        env_length[0] = (int)(mSound->attackTime() * mSound->attackTime() * 100000.0f);
+        env_length[1] = (int)(mSound->sustainTime() * mSound->sustainTime() * 100000.0f);
+        env_length[2] = (int)(mSound->decayTime() * mSound->decayTime() * 100000.0f);
 
-        fphase = pow(p_pha_offset, 2.0f) * 1020.0f;
-        if (p_pha_offset < 0.0f) {
+        fphase = pow(mSound->phaserOffset(), 2.0f) * 1020.0f;
+        if (mSound->phaserOffset() < 0.0f) {
             fphase = -fphase;
         }
-        fdphase = pow(p_pha_ramp, 2.0f) * 1.0f;
-        if (p_pha_ramp < 0.0f) {
+        fdphase = pow(mSound->phaserSweep(), 2.0f) * 1.0f;
+        if (mSound->phaserSweep() < 0.0f) {
             fdphase = -fdphase;
         }
         iphase = abs((int)fphase);
@@ -333,8 +208,8 @@ void Synthesizer::resetSample(bool restart) {
         }
 
         rep_time = 0;
-        rep_limit = (int)(pow(1.0f - p_repeat_speed, 2.0f) * 20000 + 32);
-        if (p_repeat_speed == 0.0f) {
+        rep_limit = (int)(pow(1.0f - mSound->repeatSpeed(), 2.0f) * 20000 + 32);
+        if (mSound->repeatSpeed() == 0.0f) {
             rep_limit = 0;
         }
     }
@@ -367,7 +242,7 @@ void Synthesizer::synthSample(int length, SynthStrategy* strategy) {
         fperiod *= fslide;
         if (fperiod > fmaxperiod) {
             fperiod = fmaxperiod;
-            if (p_freq_limit > 0.0f) {
+            if (mSound->minFrequency() > 0.0f) {
                 playing_sample = false;
             }
         }
@@ -400,7 +275,7 @@ void Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             env_vol = (float)env_time / env_length[0];
         }
         if (env_stage == 1) {
-            env_vol = 1.0f + pow(1.0f - (float)env_time / env_length[1], 1.0f) * 2.0f * p_env_punch;
+            env_vol = 1.0f + pow(1.0f - (float)env_time / env_length[1], 1.0f) * 2.0f * mSound->sustainPunch();
         }
         if (env_stage == 2) {
             env_vol = 1.0f - (float)env_time / env_length[2];
@@ -430,14 +305,14 @@ void Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             if (phase >= period) {
 //              phase=0;
                 phase %= period;
-                if (wave_type == 3)
+                if (mSound->waveType() == 3)
                     for (int i = 0; i < 32; i++) {
                         noise_buffer[i] = frnd(2.0f) - 1.0f;
                     }
             }
             // base waveform
             float fp = (float)phase / period;
-            switch (wave_type) {
+            switch (mSound->waveType()) {
             case 0: // square
                 if (fp < square_duty) {
                     sample = 0.5f;
@@ -464,7 +339,7 @@ void Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             if (fltw > 0.1f) {
                 fltw = 0.1f;
             }
-            if (p_lpf_freq != 1.0f) {
+            if (mSound->lpFilterCutoff() != 1.0f) {
                 fltdp += (sample - fltp) * fltw;
                 fltdp -= fltdp * fltdmp;
             } else {
@@ -485,7 +360,7 @@ void Synthesizer::synthSample(int length, SynthStrategy* strategy) {
         }
         ssample = ssample / 8 * MASTER_VOL;
 
-        ssample *= 2.0f * sound_vol;
+        ssample *= 2.0f * mSound->volume();
 
         strategy->write(ssample);
     }
@@ -592,5 +467,10 @@ void Synthesizer::init() {
 }
 
 void Synthesizer::schedulePlay() {
+    // FIXME: Hack
+    if (!mInited) {
+        init();
+        mInited = true;
+    }
     mPlayTimer->start();
 }

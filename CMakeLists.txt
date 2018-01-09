@@ -15,24 +15,25 @@ include_directories(
 
 add_custom_command(
     OUTPUT
-        ${CMAKE_CURRENT_BINARY_DIR}/core/basesynthesizer.h
-        ${CMAKE_CURRENT_BINARY_DIR}/core/basesynthesizer.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/core/basesound.h
+        ${CMAKE_CURRENT_BINARY_DIR}/core/basesound.cpp
     COMMAND
-        qpropgen "${CMAKE_CURRENT_SOURCE_DIR}/core/basesynthesizer.yaml" -d "${CMAKE_CURRENT_BINARY_DIR}/core"
+        qpropgen "${CMAKE_CURRENT_SOURCE_DIR}/core/basesound.yaml" -d "${CMAKE_CURRENT_BINARY_DIR}/core"
     DEPENDS
-        core/basesynthesizer.yaml
+        core/basesound.yaml
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/core
 )
 
 # automoc cannot find generated files, so use qt5_wrap_cpp for them
-qt5_wrap_cpp(sfxr2_MOC ${CMAKE_CURRENT_BINARY_DIR}/core/basesynthesizer.h)
+qt5_wrap_cpp(sfxr2_MOC ${CMAKE_CURRENT_BINARY_DIR}/core/basesound.h)
 
 set(sfxr2_SRCS
     ui/sfxr2.cpp
     core/synthesizer.cpp
     core/generator.cpp
     core/wavsaver.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/core/basesynthesizer.cpp
+    core/sound.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/core/basesound.cpp
 )
 
 qt5_add_resources(sfxr2_QRC ui/qml.qrc)

@@ -1,5 +1,6 @@
 #include "wavsaver.h"
 
+#include "sound.h"
 #include "synthesizer.h"
 
 WavSaver::WavSaver(QObject* parent)
@@ -7,6 +8,8 @@ WavSaver::WavSaver(QObject* parent)
 
 }
 
-void WavSaver::save(Synthesizer* synth, const QUrl& url) {
-    synth->exportWav(url);
+void WavSaver::save(Sound* sound, const QUrl& url) {
+    Synthesizer synth;
+    synth.setSound(sound);
+    synth.exportWav(url);
 }

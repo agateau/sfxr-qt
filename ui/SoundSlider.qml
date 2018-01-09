@@ -4,16 +4,15 @@ import QtQuick.Controls 2.2
 import sfxr2 1.0
 
 Slider {
-    property Synthesizer synth
-    property string synthProperty
-    property string name
+    property Sound sound
+    property string soundProperty
     property bool bipolar: false
 
     from: bipolar ? -1 : 0
 
-    value: synth[synthProperty]
+    value: sound[soundProperty]
 
     onValueChanged: {
-        synth[synthProperty] = value;
+        sound[soundProperty] = value;
     }
 }

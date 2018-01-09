@@ -1,7 +1,7 @@
 class:
-    name: BaseSynthesizer
-    header: basesynthesizer.h
-    impl: basesynthesizer.cpp
+    name: BaseSound
+    header: basesound.h
+    impl: basesound.cpp
 properties:
     - name: waveType
       type: int
@@ -80,3 +80,8 @@ properties:
     - name: hpFilterCutoffSweep
       type: qreal
       var_name: p_hpf_ramp
+
+    - name: volume
+      type: qreal
+      value: 0.5f
+      var_name: sound_vol

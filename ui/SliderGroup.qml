@@ -8,7 +8,7 @@ import sfxr2 1.0
 ColumnLayout {
     id: root
     property string text
-    property Synthesizer synth
+    property Sound sound
     property ListModel model
 
     Label {
@@ -27,10 +27,10 @@ ColumnLayout {
                 anchors.verticalCenter: slider.verticalCenter
                 horizontalAlignment: Qt.AlignRight
             }
-            SynthSlider {
+            SoundSlider {
                 id: slider
-                synth: root.synth
-                synthProperty: model.synthProperty
+                sound: root.sound
+                soundProperty: model.soundProperty
                 bipolar: model.bipolar === true
                 width: parent.width / 2
             }
