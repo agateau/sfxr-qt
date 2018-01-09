@@ -2,7 +2,8 @@
 #include <QQmlApplicationEngine>
 
 #include "generator.h"
-#include "synthesizer.h"
+#include "sound.h"
+#include "soundplayer.h"
 #include "wavsaver.h"
 
 int main(int argc, char* argv[]) {
@@ -11,7 +12,8 @@ int main(int argc, char* argv[]) {
     app.setApplicationName("sfxr2");
 
     QQmlApplicationEngine engine;
-    qmlRegisterType<Synthesizer>("sfxr2", 1, 0, "Synthesizer");
+    qmlRegisterType<Sound>("sfxr2", 1, 0, "Sound");
+    qmlRegisterType<SoundPlayer>("sfxr2", 1, 0, "SoundPlayer");
     qmlRegisterType<Generator>("sfxr2", 1, 0, "Generator");
     qmlRegisterType<WavSaver>("sfxr2", 1, 0, "WavSaver");
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

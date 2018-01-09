@@ -6,9 +6,9 @@ import QtQuick.Dialogs 1.2
 import sfxr2 1.0
 
 ColumnLayout {
-    property Synthesizer synth
+    property Sound sound
     Label {
-        text: qsTr("Files")
+        text: qsTr("WAV export")
     }
 
     WavSaver {
@@ -16,6 +16,23 @@ ColumnLayout {
     }
 
     Button {
+        Layout.fillWidth: true
+        text: qsTr("%1 bits").arg(wavSaver.bits)
+        onClicked: {
+            wavSaver.bits = wavSaver.bits == 16 ? 8 : 16;
+        }
+    }
+
+    Button {
+        Layout.fillWidth: true
+        text: qsTr("%1 hz").arg(wavSaver.frequency)
+        onClicked: {
+            wavSaver.frequency = wavSaver.frequency == 44100 ? 22050 : 44100;
+        }
+    }
+
+    Button {
+        Layout.fillWidth: true
         FileDialog {
             id: exportWavFileDialog
             selectExisting: false
@@ -23,10 +40,10 @@ ColumnLayout {
             nameFilters: [qsTr("Wav files") + " (*.wav)",
                 qsTr("All files") + " (*)"]
             onAccepted: {
-                wavSaver.save(synth, fileUrl);
+                wavSaver.save(sound, fileUrl);
             }
         }
-        text: qsTr("Export as WAV")
+        text: qsTr("Export as...")
         onClicked: {
             exportWavFileDialog.open();
         }

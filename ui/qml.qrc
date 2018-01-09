@@ -3,7 +3,7 @@
         <file>main.qml</file>
         <file>Generators.qml</file>
         <file>WaveFormSelector.qml</file>
-        <file>SynthSlider.qml</file>
+        <file>SoundSlider.qml</file>
         <file>SliderGroup.qml</file>
         <file>FileActions.qml</file>
     </qresource>

@@ -7,11 +7,11 @@ import sfxr2 1.0
 
 ColumnLayout {
     id: root
-    property Synthesizer synth
+    property Sound sound
 
     Generator {
         id: generator
-        synth: root.synth
+        sound: root.sound
     }
 
     Label {

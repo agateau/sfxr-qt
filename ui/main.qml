@@ -12,13 +12,17 @@ Window {
     width: 1000
     height: 800
 
-    Synthesizer {
-        id: synth
+    Sound {
+        id: sound
+    }
+
+    SoundPlayer {
+        sound: sound
     }
 
     Generators {
         id: generators
-        synth: synth
+        sound: sound
         anchors.left: parent.left
         anchors.top: parent.top
     }
@@ -37,7 +41,7 @@ Window {
 
     WaveFormSelector {
         id: waveFormSelector
-        synth: synth
+        sound: sound
         anchors {
             left: verticalLine.right
             leftMargin: 12
@@ -61,23 +65,23 @@ Window {
             SliderGroup {
                 Layout.fillWidth: true
                 text: qsTr("Envelop")
-                synth: synth
+                sound: sound
                 model: ListModel {
                     ListElement {
                         text: qsTr("Attack time")
-                        synthProperty: "attackTime"
+                        soundProperty: "attackTime"
                     }
                     ListElement {
                         text: qsTr("Sustain time")
-                        synthProperty: "sustainTime"
+                        soundProperty: "sustainTime"
                     }
                     ListElement {
                         text: qsTr("Sustain punch")
-                        synthProperty: "sustainPunch"
+                        soundProperty: "sustainPunch"
                     }
                     ListElement {
                         text: qsTr("Decay time")
-                        synthProperty: "decayTime"
+                        soundProperty: "decayTime"
                     }
                 }
             }
@@ -85,33 +89,33 @@ Window {
             SliderGroup {
                 Layout.fillWidth: true
                 text: qsTr("Frequency")
-                synth: synth
+                sound: sound
                 model: ListModel {
                     ListElement {
                         text: qsTr("Start frequency")
-                        synthProperty: "baseFrequency"
+                        soundProperty: "baseFrequency"
                     }
                     ListElement {
                         text: qsTr("Min frequency")
-                        synthProperty: "minFrequency"
+                        soundProperty: "minFrequency"
                     }
                     ListElement {
                         text: qsTr("Slide")
-                        synthProperty: "slide"
+                        soundProperty: "slide"
                         bipolar: true
                     }
                     ListElement {
                         text: qsTr("Delta slide")
-                        synthProperty: "deltaSlide"
+                        soundProperty: "deltaSlide"
                         bipolar: true
                     }
                     ListElement {
                         text: qsTr("Vibrato depth")
-                        synthProperty: "vibratoDepth"
+                        soundProperty: "vibratoDepth"
                     }
                     ListElement {
                         text: qsTr("Vibrato speed")
-                        synthProperty: "vibratoSpeed"
+                        soundProperty: "vibratoSpeed"
                     }
                 }
             }
@@ -119,16 +123,16 @@ Window {
             SliderGroup {
                 Layout.fillWidth: true
                 text: qsTr("Change")
-                synth: synth
+                sound: sound
                 model: ListModel {
                     ListElement {
                         text: qsTr("Change amount")
-                        synthProperty: "changeAmount"
+                        soundProperty: "changeAmount"
                         bipolar: true
                     }
                     ListElement {
                         text: qsTr("Change speed")
-                        synthProperty: "changeSpeed"
+                        soundProperty: "changeSpeed"
                     }
                 }
             }
@@ -139,17 +143,17 @@ Window {
 
             SliderGroup {
                 Layout.fillWidth: true
-                enabled: synth.waveType === 0
+                enabled: sound.waveType === 0
                 text: qsTr("Square")
-                synth: synth
+                sound: sound
                 model: ListModel {
                     ListElement {
                         text: qsTr("Square duty")
-                        synthProperty: "squareDuty"
+                        soundProperty: "squareDuty"
                     }
                     ListElement {
                         text: qsTr("Duty sweep")
-                        synthProperty: "dutySweep"
+                        soundProperty: "dutySweep"
                         bipolar: true
                     }
                 }
@@ -158,11 +162,11 @@ Window {
             SliderGroup {
                 Layout.fillWidth: true
                 text: qsTr("Repeat")
-                synth: synth
+                sound: sound
                 model: ListModel {
                     ListElement {
                         text: qsTr("Repeat speed")
-                        synthProperty: "repeatSpeed"
+                        soundProperty: "repeatSpeed"
                     }
                 }
             }
@@ -170,16 +174,16 @@ Window {
             SliderGroup {
                 Layout.fillWidth: true
                 text: qsTr("Phaser")
-                synth: synth
+                sound: sound
                 model: ListModel {
                     ListElement {
                         text: qsTr("Phaser offset")
-                        synthProperty: "phaserOffset"
+                        soundProperty: "phaserOffset"
                         bipolar: true
                     }
                     ListElement {
                         text: qsTr("Phaser sweep")
-                        synthProperty: "phaserSweep"
+                        soundProperty: "phaserSweep"
                         bipolar: true
                     }
                 }
@@ -188,28 +192,28 @@ Window {
             SliderGroup {
                 Layout.fillWidth: true
                 text: qsTr("Filters")
-                synth: synth
+                sound: sound
                 model: ListModel {
                     ListElement {
                         text: qsTr("LP filter cutoff")
-                        synthProperty: "lpFilterCutoff"
+                        soundProperty: "lpFilterCutoff"
                     }
                     ListElement {
                         text: qsTr("LP filter cutoff sweep")
-                        synthProperty: "lpFilterCutoffSweep"
+                        soundProperty: "lpFilterCutoffSweep"
                         bipolar: true
                     }
                     ListElement {
                         text: qsTr("LP filter resonance")
-                        synthProperty: "lpFilterResonance"
+                        soundProperty: "lpFilterResonance"
                     }
                     ListElement {
                         text: qsTr("HP filter cutoff")
-                        synthProperty: "hpFilterCutoff"
+                        soundProperty: "hpFilterCutoff"
                     }
                     ListElement {
                         text: qsTr("HP filter cutoff sweep")
-                        synthProperty: "hpFilterCutoffSweep"
+                        soundProperty: "hpFilterCutoffSweep"
                         bipolar: true
                     }
                 }
@@ -223,6 +227,6 @@ Window {
             right: parent.right
         }
 
-        synth: synth
+        sound: sound
     }
 }

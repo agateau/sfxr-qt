@@ -3,16 +3,16 @@
 
 #include <QObject>
 
-#include "synthesizer.h"
+class Sound;
 
 class Generator : public QObject {
     Q_OBJECT
-    Q_PROPERTY(Synthesizer* synth READ synth WRITE setSynth NOTIFY synthChanged)
+    Q_PROPERTY(Sound* sound READ sound WRITE setSound NOTIFY soundChanged)
 public:
     explicit Generator(QObject* parent = nullptr);
 
-    Synthesizer* synth() const;
-    void setSynth(Synthesizer* value);
+    Sound* sound() const;
+    void setSound(Sound* value);
 
     Q_INVOKABLE void generatePickup();
     Q_INVOKABLE void generateLaser();
@@ -23,10 +23,10 @@ public:
     Q_INVOKABLE void generateBlipSelect();
 
 signals:
-    void synthChanged(Synthesizer* value);
+    void soundChanged(Sound* value);
 
 private:
-    Synthesizer* mSynth;
+    Sound* mSound;
 };
 
 #endif // GENERATOR_H

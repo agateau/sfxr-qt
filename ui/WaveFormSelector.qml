@@ -7,15 +7,15 @@ import sfxr2 1.0
 
 RowLayout {
     id: root
-    property Synthesizer synth
+    property Sound sound
 
     ButtonGroup {
         buttons: root.children
-        checkedButton: buttons[synth.waveType]
+        checkedButton: buttons[sound.waveType]
         onCheckedButtonChanged: {
             for (var i = 0; i < buttons.length; ++i) {
                 if (buttons[i].checked) {
-                    synth.waveType = i;
+                    sound.waveType = i;
                     return;
                 }
             }
