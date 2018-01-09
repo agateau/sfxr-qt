@@ -1,21 +1,12 @@
 #include "synthesizer.h"
 
-#include <QTimer>
-#include <QUrl>
-
 #include <math.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <SDL.h>
 
 #include "sound.h"
 
 static const float PI = 3.14159265f;
 
 static const float MASTER_VOL = 0.05f;
-
-static const int SCHEDULED_PLAY_DELAY = 200;
 
 inline int rnd(int n) {
     return rand() % (n + 1);
@@ -28,116 +19,8 @@ inline float frnd(float range) {
 Synthesizer::SynthStrategy::~SynthStrategy() {
 }
 
-class BufferStrategy : public Synthesizer::SynthStrategy {
-public:
-    BufferStrategy(float* buffer)
-        : buffer(buffer) {
-    }
-    void write(float ssample) override {
-        if (ssample > 1.0f) {
-            ssample = 1.0f;
-        }
-        if (ssample < -1.0f) {
-            ssample = -1.0f;
-        }
-        *buffer++ = ssample;
-    }
-private:
-    float* buffer;
-};
-
-class WavExportStrategy : public Synthesizer::SynthStrategy {
-public:
-    FILE* file;
-    int file_sampleswritten;
-    float filesample = 0.0f;
-    int fileacc = 0;
-    int wav_bits = 16;
-    int wav_freq = 44100;
-
-    void write(float sample) override;
-};
-
-void WavExportStrategy::write(float ssample) {
-    // quantize depending on format
-    // accumulate/count to accomodate variable sample rate?
-    ssample *= 4.0f; // arbitrary gain to get reasonable output volume...
-    if (ssample > 1.0f) {
-        ssample = 1.0f;
-    }
-    if (ssample < -1.0f) {
-        ssample = -1.0f;
-    }
-    filesample += ssample;
-    fileacc++;
-    if (wav_freq == 44100 || fileacc == 2) {
-        filesample /= fileacc;
-        fileacc = 0;
-        if (wav_bits == 16) {
-            short isample = (short)(filesample * 32000);
-            fwrite(&isample, 1, 2, file);
-        } else {
-            unsigned char isample = (unsigned char)(filesample * 127 + 128);
-            fwrite(&isample, 1, 1, file);
-        }
-        filesample = 0.0f;
-    }
-    file_sampleswritten++;
-}
-
-Synthesizer::Synthesizer(QObject* parent)
-    : QObject(parent)
-    , mPlayTimer(new QTimer(this)) {
-    mPlayTimer->setInterval(SCHEDULED_PLAY_DELAY);
-    mPlayTimer->setSingleShot(true);
-    connect(mPlayTimer, &QTimer::timeout, this, &Synthesizer::play);
-}
-
-Sound* Synthesizer::sound() const {
-    return mSound;
-}
-
-void Synthesizer::setSound(Sound* value) {
-    if (mSound == value) {
-        return;
-    }
-    if (mSound) {
-        disconnect(mSound, 0, this, 0);
-    }
-    mSound = value;
-
-    connect(mSound, &Sound::waveTypeChanged, this, &Synthesizer::schedulePlay);
-
-    connect(mSound, &Sound::attackTimeChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::sustainTimeChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::sustainPunchChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::decayTimeChanged, this, &Synthesizer::schedulePlay);
-
-    connect(mSound, &Sound::baseFrequencyChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::minFrequencyChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::slideChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::deltaSlideChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::vibratoDepthChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::vibratoSpeedChanged, this, &Synthesizer::schedulePlay);
-
-    connect(mSound, &Sound::changeAmountChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::changeSpeedChanged, this, &Synthesizer::schedulePlay);
-
-    connect(mSound, &Sound::squareDutyChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::dutySweepChanged, this, &Synthesizer::schedulePlay);
-
-    connect(mSound, &Sound::repeatSpeedChanged, this, &Synthesizer::schedulePlay);
-
-    connect(mSound, &Sound::phaserOffsetChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::phaserSweepChanged, this, &Synthesizer::schedulePlay);
-
-    connect(mSound, &Sound::lpFilterCutoffChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::lpFilterCutoffSweepChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::lpFilterResonanceChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::hpFilterCutoffChanged, this, &Synthesizer::schedulePlay);
-    connect(mSound, &Sound::hpFilterCutoffSweepChanged, this, &Synthesizer::schedulePlay);
-
-    soundChanged(value);
+Synthesizer::Synthesizer(const Sound* sound)
+    : mSound(sound) {
 }
 
 Synthesizer::~Synthesizer() {
@@ -215,17 +98,12 @@ void Synthesizer::resetSample(bool restart) {
     }
 }
 
-void Synthesizer::play() {
+void Synthesizer::start() {
     resetSample(false);
-    playing_sample = true;
 }
 
-void Synthesizer::synthSample(int length, SynthStrategy* strategy) {
+bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
     for (int i = 0; i < length; i++) {
-        if (!playing_sample) {
-            break;
-        }
-
         rep_time++;
         if (rep_limit != 0 && rep_time >= rep_limit) {
             rep_time = 0;
@@ -243,7 +121,7 @@ void Synthesizer::synthSample(int length, SynthStrategy* strategy) {
         if (fperiod > fmaxperiod) {
             fperiod = fmaxperiod;
             if (mSound->minFrequency() > 0.0f) {
-                playing_sample = false;
+                return false;
             }
         }
         float rfperiod = fperiod;
@@ -268,7 +146,7 @@ void Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             env_time = 0;
             env_stage++;
             if (env_stage == 3) {
-                playing_sample = false;
+                return false;
             }
         }
         if (env_stage == 0) {
@@ -364,113 +242,5 @@ void Synthesizer::synthSample(int length, SynthStrategy* strategy) {
 
         strategy->write(ssample);
     }
-}
-
-bool Synthesizer::exportWav(const QUrl& url) {
-    QString path = url.path();
-    FILE* foutput = fopen(path.toLocal8Bit().constData(), "wb");
-    if (!foutput) {
-        return false;
-    }
-    WavExportStrategy wav;
-    // write wav header
-    unsigned int dword = 0;
-    unsigned short word = 0;
-    fwrite("RIFF", 4, 1, foutput); // "RIFF"
-    dword = 0;
-    fwrite(&dword, 1, 4, foutput); // remaining file size
-    fwrite("WAVE", 4, 1, foutput); // "WAVE"
-
-    fwrite("fmt ", 4, 1, foutput); // "fmt "
-    dword = 16;
-    fwrite(&dword, 1, 4, foutput); // chunk size
-    word = 1;
-    fwrite(&word, 1, 2, foutput); // compression code
-    word = 1;
-    fwrite(&word, 1, 2, foutput); // channels
-    dword = wav.wav_freq;
-    fwrite(&dword, 1, 4, foutput); // sample rate
-    dword = wav.wav_freq * wav.wav_bits / 8;
-    fwrite(&dword, 1, 4, foutput); // bytes/sec
-    word = wav.wav_bits / 8;
-    fwrite(&word, 1, 2, foutput); // block align
-    word = wav.wav_bits;
-    fwrite(&word, 1, 2, foutput); // bits per sample
-
-    fwrite("data", 4, 1, foutput); // "data"
-    dword = 0;
-    int foutstream_datasize = ftell(foutput);
-    fwrite(&dword, 1, 4, foutput); // chunk size
-
-    // write sample data
-    mute_stream = true;
-    wav.file = foutput;
-    wav.file_sampleswritten = 0;
-    wav.filesample = 0.0f;
-    wav.fileacc = 0;
-    play();
-    while (playing_sample) {
-        synthSample(256, &wav);
-    }
-    mute_stream = false;
-
-    // seek back to header and write size info
-    fseek(foutput, 4, SEEK_SET);
-    dword = 0;
-    dword = foutstream_datasize - 4 + wav.file_sampleswritten * wav.wav_bits / 8;
-    fwrite(&dword, 1, 4, foutput); // remaining file size
-    fseek(foutput, foutstream_datasize, SEEK_SET);
-    dword = wav.file_sampleswritten * wav.wav_bits / 8;
-    fwrite(&dword, 1, 4, foutput); // chunk size (data)
-    fclose(foutput);
-
     return true;
-}
-
-void Synthesizer::sdlAudioCallback(void* userdata, Uint8* stream, int len) {
-    Synthesizer* synth = reinterpret_cast<Synthesizer*>(userdata);
-
-    if (synth->playing_sample && !synth->mute_stream) {
-        unsigned int l = len / 2;
-        float fbuf[l];
-        memset(fbuf, 0, sizeof(fbuf));
-        BufferStrategy strategy(fbuf);
-        synth->synthSample(l, &strategy);
-        while (l--) {
-            float f = fbuf[l];
-            if (f < -1.0) {
-                f = -1.0;
-            }
-            if (f > 1.0) {
-                f = 1.0;
-            }
-            ((Sint16*)stream)[l] = (Sint16)(f * 32767);
-        }
-    } else {
-        memset(stream, 0, len);
-    }
-}
-
-void Synthesizer::init() {
-    SDL_AudioSpec des;
-    des.freq = 44100;
-    des.format = AUDIO_S16SYS;
-    des.channels = 1;
-    des.samples = 512;
-    des.callback = sdlAudioCallback;
-    des.userdata = this;
-    if (SDL_OpenAudio(&des, NULL) != 0) {
-        fprintf(stderr, "Failed to init audio\n");
-        exit(1);
-    }
-    SDL_PauseAudio(0);
-}
-
-void Synthesizer::schedulePlay() {
-    // FIXME: Hack
-    if (!mInited) {
-        init();
-        mInited = true;
-    }
-    mPlayTimer->start();
 }

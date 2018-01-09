@@ -16,8 +16,7 @@ Window {
         id: sound
     }
 
-    Synthesizer {
-        id: synth
+    SoundPlayer {
         sound: sound
     }
 
@@ -144,7 +143,7 @@ Window {
 
             SliderGroup {
                 Layout.fillWidth: true
-                enabled: synth.waveType === 0
+                enabled: sound.waveType === 0
                 text: qsTr("Square")
                 sound: sound
                 model: ListModel {

@@ -1,15 +1,9 @@
 #ifndef SYNTHESIZER_H
 #define SYNTHESIZER_H
 
-#include <QObject>
-
-class QTimer;
-
 class Sound;
 
-class Synthesizer : public QObject {
-    Q_OBJECT
-    Q_PROPERTY(Sound* sound READ sound WRITE setSound NOTIFY soundChanged)
+class Synthesizer {
 public:
     class SynthStrategy {
     public:
@@ -17,24 +11,14 @@ public:
         virtual void write(float sample) = 0;
     };
 
-    explicit Synthesizer(QObject* parent = nullptr);
+    explicit Synthesizer(const Sound* sound);
     ~Synthesizer();
 
-    Sound* sound() const;
-    void setSound(Sound* value);
-
-    bool exportWav(const QUrl& url);
-
-    void play();
-    void synthSample(int length, SynthStrategy* strategy);
-
-signals:
-    void soundChanged(Sound* value);
+    void start();
+    bool synthSample(int length, SynthStrategy* strategy);
 
 private:
-    Sound* mSound = nullptr;
-
-    bool playing_sample = false;
+    const Sound* mSound = nullptr;
 
     // Internal
     int phase;
@@ -72,16 +56,7 @@ private:
     int arp_limit;
     double arp_mod;
 
-    bool mute_stream;
-
-    bool mInited = false;
-
-    QTimer* mPlayTimer;
-    void init();
-    void schedulePlay();
     void resetSample(bool restart);
-
-    static void sdlAudioCallback(void* userdata, unsigned char* stream, int len);
 };
 
 #endif // SYNTHESIZER_H
