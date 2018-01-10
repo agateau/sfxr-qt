@@ -32,7 +32,8 @@ private:
     std::unique_ptr<Synthesizer> mSynth;
 
     void sdlAudioCallback(unsigned char* stream, int len);
-    void init();
+    void registerCallback();
+    void unregisterCallback();
     void schedulePlay();
 
     static void staticSdlAudioCallback(void* userdata, unsigned char* stream, int len);

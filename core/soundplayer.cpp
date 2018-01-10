@@ -33,10 +33,11 @@ SoundPlayer::SoundPlayer(QObject* parent)
     mPlayTimer->setInterval(SCHEDULED_PLAY_DELAY);
     mPlayTimer->setSingleShot(true);
     connect(mPlayTimer, &QTimer::timeout, this, &SoundPlayer::play);
-    init();
+    registerCallback();
 }
 
 SoundPlayer::~SoundPlayer() {
+    unregisterCallback();
 }
 
 Sound* SoundPlayer::sound() const {
@@ -113,7 +114,7 @@ void SoundPlayer::sdlAudioCallback(unsigned char* stream, int len) {
     }
 }
 
-void SoundPlayer::init() {
+void SoundPlayer::registerCallback() {
     SDL_AudioSpec des;
     des.freq = 44100;
     des.format = AUDIO_S16SYS;
@@ -126,6 +127,10 @@ void SoundPlayer::init() {
         exit(1);
     }
     SDL_PauseAudio(0);
+}
+
+void SoundPlayer::unregisterCallback() {
+    SDL_CloseAudio();
 }
 
 void SoundPlayer::schedulePlay() {
