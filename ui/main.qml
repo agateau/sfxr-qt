@@ -24,8 +24,11 @@ Window {
     Generators {
         id: generators
         sound: sound
-        anchors.left: parent.left
-        anchors.top: parent.top
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+        }
     }
 
     Rectangle {

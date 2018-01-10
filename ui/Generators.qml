@@ -69,13 +69,20 @@ ColumnLayout {
     }
 
     Item {
-        Layout.fillWidth: true
+        Layout.fillHeight: true
     }
 
     Button {
         text: qsTr("Mutate")
         onClicked: {
             generator.mutate();
+        }
+    }
+
+    Button {
+        text: qsTr("Randomize")
+        onClicked: {
+            generator.randomize();
         }
     }
 }

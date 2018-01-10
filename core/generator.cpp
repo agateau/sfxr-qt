@@ -2,6 +2,8 @@
 
 #include <QMetaProperty>
 
+#include <math.h>
+
 #include <sound.h>
 
 inline int rnd(int n) {
@@ -198,4 +200,48 @@ void Generator::mutate() {
             property.write(mSound, value);
         }
     }
+}
+
+void Generator::randomize() {
+    mSound->setBaseFrequency(pow(frnd(2.0f) - 1.0f, 2.0f));
+    if (rnd(1)) {
+        mSound->setBaseFrequency(pow(frnd(2.0f) - 1.0f, 3.0f) + 0.5f);
+    }
+    mSound->setMinFrequency(0);
+    mSound->setSlide(pow(frnd(2.0f) - 1.0f, 5.0f));
+    if (mSound->baseFrequency() > 0.7f && mSound->slide() > 0.2f) {
+        mSound->setSlide(-mSound->slide());
+    }
+    if (mSound->baseFrequency() < 0.2f && mSound->slide() < -0.05f) {
+        mSound->setSlide(-mSound->slide());
+    }
+    mSound->setDeltaSlide(pow(frnd(2.0f) - 1.0f, 3.0f));
+    mSound->setSquareDuty(frnd(2.0f) - 1.0f);
+    mSound->setDutySweep(pow(frnd(2.0f) - 1.0f, 3.0f));
+    mSound->setVibratoDepth(pow(frnd(2.0f) - 1.0f, 3.0f));
+    mSound->setVibratoSpeed(frnd(2.0f) - 1.0f);
+    mSound->setAttackTime(pow(frnd(2.0f) - 1.0f, 3.0f));
+    mSound->setSustainTime(pow(frnd(2.0f) - 1.0f, 2.0f));
+    mSound->setDecayTime(frnd(2.0f) - 1.0f);
+    mSound->setSustainPunch(pow(frnd(0.8f), 2.0f));
+    if (mSound->attackTime() + mSound->sustainTime() + mSound->decayTime() < 0.2f) {
+        mSound->setSustainTime(mSound->sustainTime() + 0.2f + frnd(0.3f));
+        mSound->setDecayTime(mSound->decayTime() + 0.2f + frnd(0.3f));
+    }
+    mSound->setLpFilterResonance(frnd(2.0f) - 1.0f);
+    mSound->setLpFilterCutoff(1.0f - pow(frnd(1.0f), 3.0f));
+    mSound->setLpFilterCutoffSweep(pow(frnd(2.0f) - 1.0f, 3.0f));
+    if (mSound->lpFilterCutoff() < 0.1f && mSound->lpFilterCutoffSweep() < -0.05f) {
+        mSound->setLpFilterCutoffSweep(-mSound->lpFilterCutoffSweep());
+    }
+    mSound->setHpFilterCutoff(pow(frnd(1.0f), 5.0f));
+    mSound->setHpFilterCutoffSweep(pow(frnd(2.0f) - 1.0f, 5.0f));
+
+    mSound->setPhaserOffset(pow(frnd(2.0f) - 1.0f, 3.0f));
+    mSound->setPhaserSweep(pow(frnd(2.0f) - 1.0f, 3.0f));
+
+    mSound->setRepeatSpeed(frnd(2.0f) - 1.0f);
+
+    mSound->setChangeSpeed(frnd(2.0f) - 1.0f);
+    mSound->setChangeAmount(frnd(2.0f) - 1.0f);
 }
