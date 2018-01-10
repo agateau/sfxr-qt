@@ -28,7 +28,7 @@ signals:
     void soundChanged(Sound* value);
 
 private:
-    Sound* mSound;
+    Sound* mSound = nullptr;
 };
 
 #endif // GENERATOR_H

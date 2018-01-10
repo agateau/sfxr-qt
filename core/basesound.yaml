@@ -10,75 +10,97 @@ properties:
 
     - name: attackTime
       type: qreal
+      value: 0
       var_name: p_env_attack
     - name: sustainTime
       type: qreal
+      value: 0.3
       var_name: p_env_sustain
     - name: sustainPunch
       type: qreal
+      value: 0
       var_name: p_env_punch
     - name: decayTime
       type: qreal
+      value: 0.4
       var_name: p_env_decay
 
     - name: baseFrequency
       type: qreal
+      value: 0.3
       var_name: p_base_freq
     - name: minFrequency
       type: qreal
+      value: 0
       var_name: p_freq_limit
     - name: slide
       type: qreal
+      value: 0
       var_name: p_freq_ramp
     - name: deltaSlide
+      value: 0
       type: qreal
       var_name: p_freq_dramp
     - name: vibratoDepth
       type: qreal
+      value: 0
       var_name: p_vib_strength
     - name: vibratoSpeed
       type: qreal
+      value: 0
       var_name: p_vib_speed
 
     - name: changeAmount
       type: qreal
+      value: 0
       var_name: p_arp_mod
     - name: changeSpeed
       type: qreal
+      value: 0
       var_name: p_arp_speed
 
     - name: squareDuty
       type: qreal
+      value: 0
       var_name: p_duty
     - name: dutySweep
       type: qreal
+      value: 0
       var_name: p_duty_ramp
 
     - name: repeatSpeed
       type: qreal
+      value: 0
       var_name: p_repeat_speed
 
     - name: phaserOffset
       type: qreal
+      value: 0
       var_name: p_pha_offset
     - name: phaserSweep
       type: qreal
+      value: 0
       var_name: p_pha_ramp
 
     - name: lpFilterCutoff
       type: qreal
+      value: 1
       var_name: p_lpf_freq
     - name: lpFilterCutoffSweep
       type: qreal
+      value: 0
       var_name: p_lpf_ramp
     - name: lpFilterResonance
       type: qreal
+      value: 0
       var_name: p_lpf_resonance
     - name: hpFilterCutoff
       type: qreal
+      value: 0
       var_name: p_hpf_freq
     - name: hpFilterCutoffSweep
       type: qreal
+      value: 0
       var_name: p_hpf_ramp
 
     - name: volume
