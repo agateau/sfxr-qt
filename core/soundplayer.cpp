@@ -15,13 +15,7 @@ public:
         : buffer(buffer) {
     }
     void write(float ssample) override {
-        if (ssample > 1.0f) {
-            ssample = 1.0f;
-        }
-        if (ssample < -1.0f) {
-            ssample = -1.0f;
-        }
-        *buffer++ = ssample;
+        *buffer++ = qBound(-1.f, ssample, 1.f);;
     }
 private:
     float* buffer;
