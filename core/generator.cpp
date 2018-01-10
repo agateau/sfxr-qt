@@ -1,5 +1,7 @@
 #include <generator.h>
 
+#include <QMetaProperty>
+
 #include <sound.h>
 
 inline int rnd(int n) {
@@ -185,4 +187,15 @@ void Generator::generateBlipSelect() {
     mSound->setSustainTime(0.1f + frnd(0.1f));
     mSound->setDecayTime(frnd(0.2f));
     mSound->setHpFilterCutoff(0.1f);
+}
+
+void Generator::mutate() {
+    QMetaObject mo = BaseSound::staticMetaObject;
+    for (int i = 0; i < mo.propertyCount(); ++i) {
+        QMetaProperty property = mo.property(i);
+        if (property.type() == QVariant::Double) {
+            qreal value = property.read(mSound).toReal() + frnd(0.1f) - 0.05f;
+            property.write(mSound, value);
+        }
+    }
 }

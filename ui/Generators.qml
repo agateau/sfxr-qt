@@ -67,4 +67,15 @@ ColumnLayout {
             generator.generateBlipSelect();
         }
     }
+
+    Item {
+        Layout.fillWidth: true
+    }
+
+    Button {
+        text: qsTr("Mutate")
+        onClicked: {
+            generator.mutate();
+        }
+    }
 }
