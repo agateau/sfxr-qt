@@ -79,6 +79,8 @@ void SoundPlayer::setSound(Sound* value) {
     connect(mSound, &Sound::hpFilterCutoffChanged, this, &SoundPlayer::schedulePlay);
     connect(mSound, &Sound::hpFilterCutoffSweepChanged, this, &SoundPlayer::schedulePlay);
 
+    connect(mSound, &Sound::volumeChanged, this, &SoundPlayer::schedulePlay);
+
     soundChanged(value);
 }
 
