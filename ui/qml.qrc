@@ -6,5 +6,6 @@
         <file>SoundSlider.qml</file>
         <file>SliderGroup.qml</file>
         <file>FileActions.qml</file>
+        <file>TitleLabel.qml</file>
     </qresource>
 </RCC>

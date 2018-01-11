@@ -14,7 +14,7 @@ ColumnLayout {
         sound: root.sound
     }
 
-    Label {
+    TitleLabel {
         id: label
         text: qsTr("Generators")
     }

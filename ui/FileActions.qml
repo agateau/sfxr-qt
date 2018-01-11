@@ -8,35 +8,12 @@ import sfxr2 1.0
 ColumnLayout {
     id: root
     property Sound sound
-    property SoundPlayer soundPlayer
 
-    Label {
-        text: qsTr("Volume")
-    }
-
-    SoundSlider {
-        Layout.fillWidth: true
-        sound: root.sound
-        soundProperty: "volume"
-    }
-
-    Button {
-        Layout.fillWidth: true
-        text: qsTr("Play (Return)")
-        onClicked: {
-            soundPlayer.play();
-        }
-    }
-
-    Shortcut {
-        sequence: "Return"
-        onActivated: soundPlayer.play();
-    }
-
-    Label {
+    TitleLabel {
         text: qsTr("File")
         font.bold: true
     }
+
     Button {
         Layout.fillWidth: true
         FileDialog {
@@ -72,9 +49,13 @@ ColumnLayout {
         }
     }
 
-    Label {
+    Item {
+        width: 1
+        height: 12
+    }
+
+    TitleLabel {
         text: qsTr("WAV export")
-        font.bold: true
     }
 
     WavSaver {

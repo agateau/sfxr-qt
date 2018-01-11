@@ -23,7 +23,7 @@ ColumnLayout {
             width: parent.width
             Label {
                 text: model.text
-                width: parent.width / 2
+                width: parent.width / 3
                 anchors.verticalCenter: slider.verticalCenter
                 horizontalAlignment: Qt.AlignRight
             }
@@ -32,7 +32,7 @@ ColumnLayout {
                 sound: root.sound
                 soundProperty: model.soundProperty
                 bipolar: model.bipolar === true
-                width: parent.width / 2
+                width: parent.width * 2 / 3
             }
         }
     }
