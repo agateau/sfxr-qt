@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=SFXR Qt
-GenericName=Retrogaming sound generator
-Comment=Retrogaming sound generator
+GenericName=Sound effect generator
+Comment=Sound effect generator
 Type=Application
 Exec=sfxr-qt
 Icon=sfxr-qt
