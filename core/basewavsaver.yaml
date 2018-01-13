@@ -1,7 +1,5 @@
 class:
     name: BaseWavSaver
-    header: basewavsaver.h
-    impl: basewavsaver.cpp
 properties:
     - name: bits
       type: int

@@ -1,7 +1,5 @@
 class:
     name: BaseSound
-    header: basesound.h
-    impl: basesound.cpp
 properties:
     - name: waveType
       type: int
