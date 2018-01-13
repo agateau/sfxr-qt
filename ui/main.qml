@@ -81,10 +81,6 @@ Window {
                     sound: sound
                     model: ListModel {
                         ListElement {
-                            text: qsTr("Volume")
-                            soundProperty: "volume"
-                        }
-                        ListElement {
                             text: qsTr("Attack time")
                             soundProperty: "attackTime"
                         }
@@ -232,6 +228,18 @@ Window {
                             text: qsTr("HP filter cutoff sweep")
                             soundProperty: "hpFilterCutoffSweep"
                             bipolar: true
+                        }
+                    }
+                }
+
+                SliderGroup {
+                    Layout.fillWidth: true
+                    text: qsTr("Others")
+                    sound: sound
+                    model: ListModel {
+                        ListElement {
+                            text: qsTr("Volume")
+                            soundProperty: "volume"
                         }
                     }
                 }
