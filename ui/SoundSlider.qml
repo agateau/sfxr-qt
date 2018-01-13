@@ -4,6 +4,7 @@ import QtQuick.Controls 2.0
 import sfxr 1.0
 
 Slider {
+    id: root
     property Sound sound
     property string soundProperty
     property bool bipolar: false
@@ -14,5 +15,13 @@ Slider {
 
     onValueChanged: {
         sound[soundProperty] = value;
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.RightButton
+        onClicked: {
+            root.value = 0;
+        }
     }
 }
