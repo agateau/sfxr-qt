@@ -29,3 +29,18 @@ qt5_add_resources(QRC_SRCS ui/qml.qrc)
 
 add_executable(sfxr-qt ${SRCS} ${QPROPGEN_SRCS} ${QRC_SRCS})
 target_link_libraries(sfxr-qt SDL Qt5::Widgets Qt5::Quick)
+
+# Installation
+install(TARGETS sfxr-qt RUNTIME DESTINATION bin)
+
+install(FILES ui/icons/sfxr-qt.desktop
+    DESTINATION share/applications
+    RENAME com.agateau.sfxr-qt.desktop
+)
+
+foreach(size 16 32 48)
+    install(FILES ui/icons/sfxr-qt-${size}.png
+        DESTINATION share/icons/hicolor/${size}x${size}/apps
+        RENAME sfxr-qt.png
+    )
+endforeach()

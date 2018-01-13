@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=SFXR Qt
+GenericName=Retrogaming sound generator
+Comment=Retrogaming sound generator
+Type=Application
+Exec=sfxr-qt
+Icon=sfxr-qt
+Terminal=false
+Categories=Qt;AudioVideo;Audio;AudioVideoEditing;
