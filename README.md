@@ -21,32 +21,44 @@ readme.txt](readme-sfxr-sdl.txt).
 
 ## Building
 
-Building SFXR Qt requires the following:
+### Step 1
+
+Building SFXR Qt requires installing the following tools:
 
 - Qt 5.7
 - SDL 1.2
-- Python 3 (The application is written in C++ and does not depend on Python,
-  but a part of the build system does)
 - CMake 3.7 (You might be able to build with older versions if you adjust the
   minimum version in the `CMakeLists.txt` file, let me know if you do)
 
-Get the `qpropgen` Git submodule with:
+### Step 2
+
+Building SFXR Qt also requires [qpropgen][], a tool to generate Qt properties.
+For now qpropgen is bundled as a Git submodule, so first get the `qpropgen` Git
+submodule with:
 
     git submodule update --init
 
-Then create a build directory:
+qpropgen is written in Python 3, so make sure you have Python 3 and pip
+installed, then run:
+
+    pip3 install -r qpropgen requirements.txt
+
+### Step 3
+
+You can now build SFXR Qt:
 
     mkdir build
-
-Finally, build and install:
-
     cd build
     cmake ..
-    ninja
-    sudo ninja install
+    make
+
+And install it with:
+
+    sudo make install
 
 ## License
 
 MIT
 
 [SFXR]: http://www.drpetter.se/project_sfxr.html
+[qpropgen]: https://github.com/agateau/qpropgen
