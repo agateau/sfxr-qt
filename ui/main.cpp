@@ -11,6 +11,7 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     app.setOrganizationDomain("agateau.com");
     app.setApplicationName("sfxr-qt");
+    app.setApplicationDisplayName("SFXR Qt");
 
     QIcon icon;
     for(int size: {16, 32, 48}) {
