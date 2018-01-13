@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QIcon>
 #include <QQmlApplicationEngine>
 
 #include "generator.h"
@@ -10,6 +11,12 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     app.setOrganizationDomain("agateau.com");
     app.setApplicationName("sfxr-qt");
+
+    QIcon icon;
+    for(int size: {16, 32, 48}) {
+        icon.addFile(QString(":/icons/sfxr-qt-%1.png").arg(size));
+    }
+    app.setWindowIcon(icon);
 
     QQmlApplicationEngine engine;
     qmlRegisterType<Sound>("sfxr", 1, 0, "Sound");

@@ -7,5 +7,8 @@
         <file>SliderGroup.qml</file>
         <file>FileActions.qml</file>
         <file>TitleLabel.qml</file>
+        <file>icons/sfxr-qt-16.png</file>
+        <file>icons/sfxr-qt-32.png</file>
+        <file>icons/sfxr-qt-48.png</file>
     </qresource>
 </RCC>
