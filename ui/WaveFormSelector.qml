@@ -3,7 +3,7 @@ import QtQuick.Window 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 
-import sfxr2 1.0
+import sfxr 1.0
 
 RowLayout {
     id: root

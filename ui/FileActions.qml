@@ -3,7 +3,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.2
 
-import sfxr2 1.0
+import sfxr 1.0
 
 ColumnLayout {
     id: root

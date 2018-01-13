@@ -9,13 +9,13 @@
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     app.setOrganizationDomain("agateau.com");
-    app.setApplicationName("sfxr2");
+    app.setApplicationName("sfxr-qt");
 
     QQmlApplicationEngine engine;
-    qmlRegisterType<Sound>("sfxr2", 1, 0, "Sound");
-    qmlRegisterType<SoundPlayer>("sfxr2", 1, 0, "SoundPlayer");
-    qmlRegisterType<Generator>("sfxr2", 1, 0, "Generator");
-    qmlRegisterType<WavSaver>("sfxr2", 1, 0, "WavSaver");
+    qmlRegisterType<Sound>("sfxr", 1, 0, "Sound");
+    qmlRegisterType<SoundPlayer>("sfxr", 1, 0, "SoundPlayer");
+    qmlRegisterType<Generator>("sfxr", 1, 0, "Generator");
+    qmlRegisterType<WavSaver>("sfxr", 1, 0, "WavSaver");
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();

@@ -1,4 +1,4 @@
-project(sfxr)
+project(sfxr-qt)
 cmake_minimum_required(VERSION 3.7)
 
 find_package(SDL REQUIRED)
@@ -14,8 +14,8 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/core
 )
 
-set(sfxr2_SRCS
-    ui/sfxr2.cpp
+set(SRCS
+    ui/main.cpp
     core/synthesizer.cpp
     core/generator.cpp
     core/wavsaver.cpp
@@ -23,9 +23,9 @@ set(sfxr2_SRCS
     core/soundplayer.cpp
 )
 
-qpropgen(sfxr2_QPROPGEN core/basesound.yaml core/basewavsaver.yaml)
+qpropgen(QPROPGEN_SRCS core/basesound.yaml core/basewavsaver.yaml)
 
-qt5_add_resources(sfxr2_QRC ui/qml.qrc)
+qt5_add_resources(QRC_SRCS ui/qml.qrc)
 
-add_executable(sfxr2 ${sfxr2_SRCS} ${sfxr2_QPROPGEN} ${sfxr2_QRC})
-target_link_libraries(sfxr2 SDL Qt5::Widgets Qt5::Quick)
+add_executable(sfxr-qt ${SRCS} ${QPROPGEN_SRCS} ${QRC_SRCS})
+target_link_libraries(sfxr-qt SDL Qt5::Widgets Qt5::Quick)
