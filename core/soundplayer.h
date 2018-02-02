@@ -13,6 +13,7 @@ class Synthesizer;
 class SoundPlayer : public QObject {
     Q_OBJECT
     Q_PROPERTY(Sound* sound READ sound WRITE setSound NOTIFY soundChanged)
+    Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged)
 public:
     explicit SoundPlayer(QObject* parent = nullptr);
     ~SoundPlayer();
@@ -22,11 +23,16 @@ public:
     Sound* sound() const;
     void setSound(Sound* value);
 
+    bool loop() const;
+    void setLoop(bool value);
+
 signals:
     void soundChanged(Sound* value);
+    void loopChanged(bool value);
 
 private:
     bool mPlaying = false;
+    bool mLoop = false;
     QTimer* mPlayTimer;
     Sound* mSound = nullptr;
     std::unique_ptr<Synthesizer> mSynth;

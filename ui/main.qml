@@ -247,6 +247,7 @@ Window {
         }
 
         Button {
+            id: playButton
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 bottom: parent.bottom
@@ -260,9 +261,28 @@ Window {
             }
         }
 
+        CheckBox {
+            anchors {
+                left: playButton.right
+                verticalCenter: playButton.verticalCenter
+            }
+            text: qsTr("Loop (L)")
+            checked: soundPlayer.loop
+            onCheckedChanged: {
+                soundPlayer.loop = checked;
+            }
+        }
+
         Shortcut {
             sequence: "Return"
             onActivated: soundPlayer.play();
+        }
+
+        Shortcut {
+            sequence: "L"
+            onActivated: {
+                soundPlayer.loop = !soundPlayer.loop;
+            }
         }
     }
 

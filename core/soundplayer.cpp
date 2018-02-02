@@ -84,6 +84,18 @@ void SoundPlayer::setSound(Sound* value) {
     soundChanged(value);
 }
 
+bool SoundPlayer::loop() const {
+    return mLoop;
+}
+
+void SoundPlayer::setLoop(bool value) {
+    if (mLoop == value) {
+        return;
+    }
+    mLoop = value;
+    loopChanged(value);
+}
+
 void SoundPlayer::play() {
     mPlaying = true;
     mSynth->start();
@@ -104,6 +116,9 @@ void SoundPlayer::sdlAudioCallback(unsigned char* stream, int len) {
         while (l--) {
             float f = qBound(-1.f, fbuf[l], 1.f);
             ((Sint16*)stream)[l] = (Sint16)(f * 32767);
+        }
+        if (mLoop && !mPlaying) {
+            play();
         }
     } else {
         memset(stream, 0, len);
