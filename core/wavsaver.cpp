@@ -51,8 +51,8 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
         return false;
     }
     WavExportStrategy wav;
-    wav.wav_bits = mBits;
-    wav.wav_freq = mFrequency;
+    wav.wav_bits = bits();
+    wav.wav_freq = frequency();
 
     // write wav header
     unsigned int dword = 0;

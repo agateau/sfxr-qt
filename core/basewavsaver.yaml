@@ -1,5 +1,4 @@
-class:
-    name: BaseWavSaver
+class: BaseWavSaver
 properties:
     - name: bits
       type: int
