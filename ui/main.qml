@@ -9,7 +9,7 @@ import sfxr 1.0
 Window {
     id: root
     visible: true
-    width: 1000
+    width: 1100
     height: 800
 
     property real margin: 12
@@ -36,34 +36,41 @@ Window {
         }
     }
 
-    Generators {
-        id: generators
+    ColumnLayout {
+        id: leftColumn
         anchors {
             left: parent.left
             top: parent.top
+            bottom: parent.bottom
             margins: margin
         }
-        generator: generator
-    }
+        width: 150
+        spacing: margin
 
-    HistoryView {
-        model: historyModel
-        anchors {
-            left: generators.left
-            top: generators.bottom
-            right: generators.right
-            bottom: parent.bottom
+        Generators {
+            id: generators
+            generator: generator
         }
-        property Sound currentSound: sound
-        onSoundClicked: {
-            currentSound.fromOther(sound);
+
+        TitleLabel {
+            text: qsTr("History")
+        }
+
+        HistoryView {
+            model: historyModel
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            property Sound currentSound: sound
+            onSoundClicked: {
+                currentSound.fromOther(sound);
+            }
         }
     }
 
     Item {
         id: mainContent
         anchors {
-            left: generators.right
+            left: leftColumn.right
             right: fileActions.left
             top: parent.top
             bottom: parent.bottom
