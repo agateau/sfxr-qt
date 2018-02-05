@@ -6,12 +6,7 @@ import sfxr 1.0
 
 ColumnLayout {
     id: root
-    property Sound sound
-
-    Generator {
-        id: generator
-        sound: root.sound
-    }
+    property Generator generator
 
     TitleLabel {
         id: label
@@ -68,7 +63,7 @@ ColumnLayout {
     }
 
     Item {
-        Layout.fillHeight: true
+        height: 12
     }
 
     Button {

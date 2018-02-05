@@ -26,6 +26,7 @@ public:
 
 signals:
     void soundChanged(Sound* value);
+    void soundGenerated(Sound* value);
 
 private:
     Sound* mSound = nullptr;

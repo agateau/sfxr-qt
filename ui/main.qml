@@ -24,16 +24,40 @@ Window {
         sound: sound
     }
 
+    HistoryModel {
+        id: historyModel
+    }
+
+    Generator {
+        id: generator
+        sound: sound
+        onSoundGenerated: {
+            historyModel.append(sound);
+        }
+    }
+
     Generators {
         id: generators
-        sound: sound
         anchors {
             left: parent.left
             top: parent.top
-            bottom: parent.bottom
             margins: margin
         }
-        Layout.fillHeight: true
+        generator: generator
+    }
+
+    HistoryView {
+        model: historyModel
+        anchors {
+            left: generators.left
+            top: generators.bottom
+            right: generators.right
+            bottom: parent.bottom
+        }
+        property Sound currentSound: sound
+        onSoundClicked: {
+            currentSound.fromOther(sound);
+        }
     }
 
     Item {

@@ -41,6 +41,7 @@ void Generator::generatePickup() {
         mSound->setChangeSpeed(0.5f + frnd(0.2f));
         mSound->setChangeAmount(0.2f + frnd(0.4f));
     }
+    soundGenerated(mSound);
 }
 
 void Generator::generateLaser() {
@@ -81,6 +82,7 @@ void Generator::generateLaser() {
     if (rnd(1)) {
         mSound->setHpFilterCutoff(frnd(0.3f));
     }
+    soundGenerated(mSound);
 }
 
 void Generator::generateExplosion() {
@@ -116,6 +118,7 @@ void Generator::generateExplosion() {
         mSound->setChangeSpeed(0.6f + frnd(0.3f));
         mSound->setChangeAmount(0.8f - frnd(1.6f));
     }
+    soundGenerated(mSound);
 }
 
 void Generator::generatePowerup() {
@@ -140,6 +143,7 @@ void Generator::generatePowerup() {
     mSound->setAttackTime(0.0f);
     mSound->setSustainTime(frnd(0.4f));
     mSound->setDecayTime(0.1f + frnd(0.4f));
+    soundGenerated(mSound);
 }
 
 void Generator::generateHitHurt() {
@@ -159,6 +163,7 @@ void Generator::generateHitHurt() {
     if (rnd(1)) {
         mSound->setHpFilterCutoff(frnd(0.3f));
     }
+    soundGenerated(mSound);
 }
 
 void Generator::generateJump() {
@@ -176,6 +181,7 @@ void Generator::generateJump() {
     if (rnd(1)) {
         mSound->setLpFilterCutoff(1.0f - frnd(0.6f));
     }
+    soundGenerated(mSound);
 }
 
 void Generator::generateBlipSelect() {
@@ -189,6 +195,7 @@ void Generator::generateBlipSelect() {
     mSound->setSustainTime(0.1f + frnd(0.1f));
     mSound->setDecayTime(frnd(0.2f));
     mSound->setHpFilterCutoff(0.1f);
+    soundGenerated(mSound);
 }
 
 void Generator::mutate() {
@@ -200,6 +207,7 @@ void Generator::mutate() {
             property.write(mSound, value);
         }
     }
+    soundGenerated(mSound);
 }
 
 void Generator::randomize() {
@@ -244,4 +252,5 @@ void Generator::randomize() {
 
     mSound->setChangeSpeed(frnd(2.0f) - 1.0f);
     mSound->setChangeAmount(frnd(2.0f) - 1.0f);
+    soundGenerated(mSound);
 }
