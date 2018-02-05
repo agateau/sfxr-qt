@@ -21,6 +21,7 @@ set(SRCS
     core/wavsaver.cpp
     core/sound.cpp
     core/soundplayer.cpp
+    core/historymodel.cpp
 )
 
 qpropgen(QPROPGEN_SRCS core/basesound.yaml core/basewavsaver.yaml)

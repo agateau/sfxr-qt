@@ -1,5 +1,6 @@
 #include "sound.h"
 
+#include <QMetaProperty>
 #include <QUrl>
 
 Sound::Sound(QObject* parent)
@@ -38,6 +39,15 @@ void Sound::resetParams() {
 
     setChangeSpeed(0.0f);
     setChangeAmount(0.0f);
+}
+
+void Sound::fromOther(Sound* other) {
+    QMetaObject mo = BaseSound::staticMetaObject;
+    for (int idx = 0; idx < mo.propertyCount(); ++idx) {
+        QMetaProperty property = mo.property(idx);
+        QVariant value = property.read(other);
+        property.write(this, value);
+    }
 }
 
 bool Sound::load(const QUrl& url) {

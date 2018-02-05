@@ -6,12 +6,7 @@ import sfxr 1.0
 
 ColumnLayout {
     id: root
-    property Sound sound
-
-    Generator {
-        id: generator
-        sound: root.sound
-    }
+    property Generator generator
 
     TitleLabel {
         id: label
@@ -20,6 +15,7 @@ ColumnLayout {
 
     Button {
         text: qsTr("Pickup/Coin")
+        Layout.fillWidth: true
         onClicked: {
             generator.generatePickup();
         }
@@ -27,6 +23,7 @@ ColumnLayout {
 
     Button {
         text: qsTr("Laser/Shoot")
+        Layout.fillWidth: true
         onClicked: {
             generator.generateLaser();
         }
@@ -34,6 +31,7 @@ ColumnLayout {
 
     Button {
         text: qsTr("Explosion")
+        Layout.fillWidth: true
         onClicked: {
             generator.generateExplosion();
         }
@@ -41,6 +39,7 @@ ColumnLayout {
 
     Button {
         text: qsTr("Power Up")
+        Layout.fillWidth: true
         onClicked: {
             generator.generatePowerup();
         }
@@ -48,6 +47,7 @@ ColumnLayout {
 
     Button {
         text: qsTr("Hit/Hurt")
+        Layout.fillWidth: true
         onClicked: {
             generator.generateHitHurt();
         }
@@ -55,6 +55,7 @@ ColumnLayout {
 
     Button {
         text: qsTr("Jump")
+        Layout.fillWidth: true
         onClicked: {
             generator.generateJump();
         }
@@ -62,17 +63,19 @@ ColumnLayout {
 
     Button {
         text: qsTr("Blip/Select")
+        Layout.fillWidth: true
         onClicked: {
             generator.generateBlipSelect();
         }
     }
 
     Item {
-        Layout.fillHeight: true
+        height: 12
     }
 
     Button {
         text: qsTr("Mutate")
+        Layout.fillWidth: true
         onClicked: {
             generator.mutate();
         }
@@ -80,6 +83,7 @@ ColumnLayout {
 
     Button {
         text: qsTr("Randomize")
+        Layout.fillWidth: true
         onClicked: {
             generator.randomize();
         }
