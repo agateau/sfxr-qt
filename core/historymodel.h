@@ -19,10 +19,15 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    Q_INVOKABLE void append(Sound* sound);
+    Q_INVOKABLE void append(const QString& text, Sound* sound);
 
 private:
-    QList<Sound*> mSounds;
+    struct SoundInfo {
+        QString text;
+        Sound* sound;
+    };
+
+    QList<SoundInfo> mItems;
 };
 
 #endif // HISTORYMODEL_H

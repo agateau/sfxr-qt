@@ -32,7 +32,7 @@ Window {
         id: generator
         sound: sound
         onSoundGenerated: {
-            historyModel.append(sound);
+            historyModel.append(name, sound);
         }
     }
 

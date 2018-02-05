@@ -26,7 +26,7 @@ public:
 
 signals:
     void soundChanged(Sound* value);
-    void soundGenerated(Sound* value);
+    void soundGenerated(QString name, Sound* value);
 
 private:
     Sound* mSound = nullptr;
