@@ -5,6 +5,10 @@
 
 class Sound;
 
+/**
+ * Randomly generate sounds. The new sound is passed in the soundGenerated()
+ * signal. Generator is the initial owner of the generated sound.
+ */
 class Generator : public QObject {
     Q_OBJECT
 public:
@@ -22,6 +26,9 @@ public:
 
 signals:
     void soundGenerated(QString name, Sound* sound);
+
+private:
+    Sound* createSound();
 };
 
 #endif // GENERATOR_H

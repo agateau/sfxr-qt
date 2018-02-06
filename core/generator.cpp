@@ -19,7 +19,7 @@ Generator::Generator(QObject* parent)
 }
 
 void Generator::generatePickup() {
-    Sound* sound = new Sound();
+    Sound* sound = createSound();
     sound->setBaseFrequency(0.4f + frnd(0.5f));
     sound->setAttackTime(0.0f);
     sound->setSustainTime(frnd(0.1f));
@@ -33,7 +33,7 @@ void Generator::generatePickup() {
 }
 
 void Generator::generateLaser() {
-    Sound* sound = new Sound();
+    Sound* sound = createSound();
     int wave_type = rnd(2);
     if (wave_type == 2 && rnd(1)) {
         wave_type = rnd(1);
@@ -74,7 +74,7 @@ void Generator::generateLaser() {
 }
 
 void Generator::generateExplosion() {
-    Sound* sound = new Sound();
+    Sound* sound = createSound();
     sound->setWaveType(3);
     if (rnd(1)) {
         sound->setBaseFrequency(0.1f + frnd(0.4f));
@@ -110,7 +110,7 @@ void Generator::generateExplosion() {
 }
 
 void Generator::generatePowerup() {
-    Sound* sound = new Sound();
+    Sound* sound = createSound();
     if (rnd(1)) {
         sound->setWaveType(1);
     } else {
@@ -135,7 +135,7 @@ void Generator::generatePowerup() {
 }
 
 void Generator::generateHitHurt() {
-    Sound* sound = new Sound();
+    Sound* sound = createSound();
     sound->setWaveType(rnd(2));
     if (sound->waveType() == 2) {
         sound->setWaveType(3);
@@ -155,7 +155,7 @@ void Generator::generateHitHurt() {
 }
 
 void Generator::generateJump() {
-    Sound* sound = new Sound();
+    Sound* sound = createSound();
     sound->setWaveType(0);
     sound->setSquareDuty(frnd(0.6f));
     sound->setBaseFrequency(0.3f + frnd(0.3f));
@@ -173,7 +173,7 @@ void Generator::generateJump() {
 }
 
 void Generator::generateBlipSelect() {
-    Sound* sound = new Sound();
+    Sound* sound = createSound();
     sound->setWaveType(rnd(1));
     if (sound->waveType() == 0) {
         sound->setSquareDuty(frnd(0.6f));
@@ -187,7 +187,7 @@ void Generator::generateBlipSelect() {
 }
 
 void Generator::mutate(Sound* source) {
-    Sound* sound = new Sound();
+    Sound* sound = createSound();
     sound->fromOther(source);
     QMetaObject mo = BaseSound::staticMetaObject;
     for (int i = 0; i < mo.propertyCount(); ++i) {
@@ -198,4 +198,9 @@ void Generator::mutate(Sound* source) {
         }
     }
     soundGenerated(tr("Mutated"), sound);
+}
+
+Sound* Generator::createSound() {
+    // Give it a parent so that it is never garbage-collected
+    return new Sound(this);
 }
