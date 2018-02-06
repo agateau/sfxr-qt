@@ -7,12 +7,8 @@ class Sound;
 
 class Generator : public QObject {
     Q_OBJECT
-    Q_PROPERTY(Sound* sound READ sound WRITE setSound NOTIFY soundChanged)
 public:
     explicit Generator(QObject* parent = nullptr);
-
-    Sound* sound() const;
-    void setSound(Sound* value);
 
     Q_INVOKABLE void generatePickup();
     Q_INVOKABLE void generateLaser();
@@ -25,11 +21,7 @@ public:
     Q_INVOKABLE void randomize();
 
 signals:
-    void soundChanged(Sound* value);
-    void soundGenerated(QString name, Sound* value);
-
-private:
-    Sound* mSound = nullptr;
+    void soundGenerated(QString name, Sound* sound);
 };
 
 #endif // GENERATOR_H

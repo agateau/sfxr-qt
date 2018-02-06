@@ -7,12 +7,14 @@ import sfxr 1.0
 Item {
     id: root
     property alias model: listView.model
-    signal soundClicked(Sound sound)
+    property alias currentIndex: listView.currentIndex
+    property Sound currentSound: listView.currentItem.sound
 
     ListView {
         id: listView
         anchors.fill: parent
         clip: true
+        currentIndex: 0
         delegate: ItemDelegate {
             anchors {
                 left: parent.left
@@ -25,11 +27,6 @@ Item {
 
             onClicked: {
                 listView.currentIndex = model.index;
-            }
-        }
-        onCurrentItemChanged: {
-            if (currentItem) {
-                root.soundClicked(currentItem.sound);
             }
         }
 
