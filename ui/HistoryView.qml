@@ -4,14 +4,18 @@ import QtQuick.Controls 2.0
 
 import sfxr 1.0
 
-Frame {
+Item {
     id: root
     property alias model: listView.model
-    signal soundClicked(Sound sound)
+    property alias currentIndex: listView.currentIndex
+    property Sound currentSound: listView.currentItem.sound
+    signal currentSoundClicked()
 
     ListView {
         id: listView
         anchors.fill: parent
+        clip: true
+        currentIndex: 0
         delegate: ItemDelegate {
             anchors {
                 left: parent.left
@@ -23,12 +27,11 @@ Frame {
             property Sound sound: model.sound
 
             onClicked: {
-                listView.currentIndex = model.index;
-            }
-        }
-        onCurrentItemChanged: {
-            if (currentItem) {
-                root.soundClicked(currentItem.sound);
+                if (listView.currentIndex == model.index) {
+                    currentSoundClicked();
+                } else {
+                    listView.currentIndex = model.index;
+                }
             }
         }
 

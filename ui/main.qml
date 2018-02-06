@@ -14,14 +14,20 @@ Window {
 
     property real margin: 12
     property real columnWidth: 350
-
-    Sound {
-        id: sound
-    }
+    property alias sound: historyView.currentSound
 
     SoundPlayer {
         id: soundPlayer
-        sound: sound
+        sound: root.sound
+        property bool startup: true
+        onSoundChanged: {
+            // Hack to avoid playing directly at startup
+            if (startup) {
+                startup = false;
+                return;
+            }
+            play();
+        }
     }
 
     HistoryModel {
@@ -30,9 +36,9 @@ Window {
 
     Generator {
         id: generator
-        sound: sound
         onSoundGenerated: {
             historyModel.append(name, sound);
+            historyView.currentIndex = 0;
         }
     }
 
@@ -50,6 +56,7 @@ Window {
         Generators {
             id: generators
             generator: generator
+            sound: root.sound
         }
 
         TitleLabel {
@@ -57,12 +64,12 @@ Window {
         }
 
         HistoryView {
+            id: historyView
             model: historyModel
             Layout.fillWidth: true
             Layout.fillHeight: true
-            property Sound currentSound: sound
-            onSoundClicked: {
-                currentSound.fromOther(sound);
+            onCurrentSoundClicked: {
+                soundPlayer.play();
             }
         }
     }
@@ -88,7 +95,7 @@ Window {
                 text: qsTr("Wave form")
             }
             WaveFormSelector {
-                sound: sound
+                sound: root.sound
             }
         }
 
@@ -109,7 +116,7 @@ Window {
                 SliderGroup {
                     Layout.fillWidth: true
                     text: qsTr("Envelop")
-                    sound: sound
+                    sound: root.sound
                     model: ListModel {
                         ListElement {
                             text: qsTr("Attack time")
@@ -133,7 +140,7 @@ Window {
                 SliderGroup {
                     Layout.fillWidth: true
                     text: qsTr("Frequency")
-                    sound: sound
+                    sound: root.sound
                     model: ListModel {
                         ListElement {
                             text: qsTr("Start frequency")
@@ -167,7 +174,7 @@ Window {
                 SliderGroup {
                     Layout.fillWidth: true
                     text: qsTr("Change")
-                    sound: sound
+                    sound: root.sound
                     model: ListModel {
                         ListElement {
                             text: qsTr("Change amount")
@@ -189,7 +196,7 @@ Window {
                     Layout.fillWidth: true
                     enabled: sound.waveType === 0
                     text: qsTr("Square")
-                    sound: sound
+                    sound: root.sound
                     model: ListModel {
                         ListElement {
                             text: qsTr("Square duty")
@@ -206,7 +213,7 @@ Window {
                 SliderGroup {
                     Layout.fillWidth: true
                     text: qsTr("Repeat")
-                    sound: sound
+                    sound: root.sound
                     model: ListModel {
                         ListElement {
                             text: qsTr("Repeat speed")
@@ -218,7 +225,7 @@ Window {
                 SliderGroup {
                     Layout.fillWidth: true
                     text: qsTr("Phaser")
-                    sound: sound
+                    sound: root.sound
                     model: ListModel {
                         ListElement {
                             text: qsTr("Phaser offset")
@@ -236,7 +243,7 @@ Window {
                 SliderGroup {
                     Layout.fillWidth: true
                     text: qsTr("Filters")
-                    sound: sound
+                    sound: root.sound
                     model: ListModel {
                         ListElement {
                             text: qsTr("LP filter cutoff")
@@ -266,7 +273,7 @@ Window {
                 SliderGroup {
                     Layout.fillWidth: true
                     text: qsTr("Others")
-                    sound: sound
+                    sound: root.sound
                     model: ListModel {
                         ListElement {
                             text: qsTr("Volume")
@@ -324,6 +331,6 @@ Window {
             right: parent.right
             margins: margin
         }
-        sound: sound
+        sound: root.sound
     }
 }

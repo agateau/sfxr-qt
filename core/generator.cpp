@@ -18,239 +18,189 @@ Generator::Generator(QObject* parent)
     : QObject(parent) {
 }
 
-Sound* Generator::sound() const {
-    return mSound;
-}
-
-void Generator::setSound(Sound* value) {
-    if (mSound == value) {
-        return;
-    }
-    mSound = value;
-    soundChanged(value);
-}
-
 void Generator::generatePickup() {
-    mSound->resetParams();
-    mSound->setBaseFrequency(0.4f + frnd(0.5f));
-    mSound->setAttackTime(0.0f);
-    mSound->setSustainTime(frnd(0.1f));
-    mSound->setDecayTime(0.1f + frnd(0.4f));
-    mSound->setSustainPunch(0.3f + frnd(0.3f));
+    Sound* sound = createSound();
+    sound->setBaseFrequency(0.4f + frnd(0.5f));
+    sound->setAttackTime(0.0f);
+    sound->setSustainTime(frnd(0.1f));
+    sound->setDecayTime(0.1f + frnd(0.4f));
+    sound->setSustainPunch(0.3f + frnd(0.3f));
     if (rnd(1)) {
-        mSound->setChangeSpeed(0.5f + frnd(0.2f));
-        mSound->setChangeAmount(0.2f + frnd(0.4f));
+        sound->setChangeSpeed(0.5f + frnd(0.2f));
+        sound->setChangeAmount(0.2f + frnd(0.4f));
     }
-    soundGenerated(tr("Pickup"), mSound);
+    soundGenerated(tr("Pickup"), sound);
 }
 
 void Generator::generateLaser() {
-    mSound->resetParams();
+    Sound* sound = createSound();
     int wave_type = rnd(2);
     if (wave_type == 2 && rnd(1)) {
         wave_type = rnd(1);
     }
-    mSound->setWaveType(wave_type);
-    mSound->setBaseFrequency(0.5f + frnd(0.5f));
-    mSound->setMinFrequency(mSound->baseFrequency() - 0.2f - frnd(0.6f));
-    if (mSound->minFrequency() < 0.2f) {
-        mSound->setMinFrequency(0.2f);
+    sound->setWaveType(wave_type);
+    sound->setBaseFrequency(0.5f + frnd(0.5f));
+    sound->setMinFrequency(sound->baseFrequency() - 0.2f - frnd(0.6f));
+    if (sound->minFrequency() < 0.2f) {
+        sound->setMinFrequency(0.2f);
     }
-    mSound->setSlide(-0.15f - frnd(0.2f));
+    sound->setSlide(-0.15f - frnd(0.2f));
     if (rnd(2) == 0) {
-        mSound->setBaseFrequency(0.3f + frnd(0.6f));
-        mSound->setMinFrequency(frnd(0.1f));
-        mSound->setSlide(-0.35f - frnd(0.3f));
+        sound->setBaseFrequency(0.3f + frnd(0.6f));
+        sound->setMinFrequency(frnd(0.1f));
+        sound->setSlide(-0.35f - frnd(0.3f));
     }
     if (rnd(1)) {
-        mSound->setSquareDuty(frnd(0.5f));
-        mSound->setDutySweep(frnd(0.2f));
+        sound->setSquareDuty(frnd(0.5f));
+        sound->setDutySweep(frnd(0.2f));
     } else {
-        mSound->setSquareDuty(0.4f + frnd(0.5f));
-        mSound->setDutySweep(-frnd(0.7f));
+        sound->setSquareDuty(0.4f + frnd(0.5f));
+        sound->setDutySweep(-frnd(0.7f));
     }
-    mSound->setAttackTime(0.0f);
-    mSound->setSustainTime(0.1f + frnd(0.2f));
-    mSound->setDecayTime(frnd(0.4f));
+    sound->setAttackTime(0.0f);
+    sound->setSustainTime(0.1f + frnd(0.2f));
+    sound->setDecayTime(frnd(0.4f));
     if (rnd(1)) {
-        mSound->setSustainPunch(frnd(0.3f));
+        sound->setSustainPunch(frnd(0.3f));
     }
     if (rnd(2) == 0) {
-        mSound->setPhaserOffset(frnd(0.2f));
-        mSound->setPhaserSweep(-frnd(0.2f));
+        sound->setPhaserOffset(frnd(0.2f));
+        sound->setPhaserSweep(-frnd(0.2f));
     }
     if (rnd(1)) {
-        mSound->setHpFilterCutoff(frnd(0.3f));
+        sound->setHpFilterCutoff(frnd(0.3f));
     }
-    soundGenerated(tr("Laser"), mSound);
+    soundGenerated(tr("Laser"), sound);
 }
 
 void Generator::generateExplosion() {
-    mSound->resetParams();
-    mSound->setWaveType(3);
+    Sound* sound = createSound();
+    sound->setWaveType(3);
     if (rnd(1)) {
-        mSound->setBaseFrequency(0.1f + frnd(0.4f));
-        mSound->setSlide(-0.1f + frnd(0.4f));
+        sound->setBaseFrequency(0.1f + frnd(0.4f));
+        sound->setSlide(-0.1f + frnd(0.4f));
     } else {
-        mSound->setBaseFrequency(0.2f + frnd(0.7f));
-        mSound->setSlide(-0.2f - frnd(0.2f));
+        sound->setBaseFrequency(0.2f + frnd(0.7f));
+        sound->setSlide(-0.2f - frnd(0.2f));
     }
-    mSound->setBaseFrequency(mSound->baseFrequency() * mSound->baseFrequency());
+    sound->setBaseFrequency(sound->baseFrequency() * sound->baseFrequency());
     if (rnd(4) == 0) {
-        mSound->setSlide(0.0f);
+        sound->setSlide(0.0f);
     }
     if (rnd(2) == 0) {
-        mSound->setRepeatSpeed(0.3f + frnd(0.5f));
+        sound->setRepeatSpeed(0.3f + frnd(0.5f));
     }
-    mSound->setAttackTime(0.0f);
-    mSound->setSustainTime(0.1f + frnd(0.3f));
-    mSound->setDecayTime(frnd(0.5f));
+    sound->setAttackTime(0.0f);
+    sound->setSustainTime(0.1f + frnd(0.3f));
+    sound->setDecayTime(frnd(0.5f));
     if (rnd(1) == 0) {
-        mSound->setPhaserOffset(-0.3f + frnd(0.9f));
-        mSound->setPhaserSweep(-frnd(0.3f));
+        sound->setPhaserOffset(-0.3f + frnd(0.9f));
+        sound->setPhaserSweep(-frnd(0.3f));
     }
-    mSound->setSustainPunch(0.2f + frnd(0.6f));
+    sound->setSustainPunch(0.2f + frnd(0.6f));
     if (rnd(1)) {
-        mSound->setVibratoDepth(frnd(0.7f));
-        mSound->setVibratoSpeed(frnd(0.6f));
+        sound->setVibratoDepth(frnd(0.7f));
+        sound->setVibratoSpeed(frnd(0.6f));
     }
     if (rnd(2) == 0) {
-        mSound->setChangeSpeed(0.6f + frnd(0.3f));
-        mSound->setChangeAmount(0.8f - frnd(1.6f));
+        sound->setChangeSpeed(0.6f + frnd(0.3f));
+        sound->setChangeAmount(0.8f - frnd(1.6f));
     }
-    soundGenerated(tr("Explosion"), mSound);
+    soundGenerated(tr("Explosion"), sound);
 }
 
 void Generator::generatePowerup() {
-    mSound->resetParams();
+    Sound* sound = createSound();
     if (rnd(1)) {
-        mSound->setWaveType(1);
+        sound->setWaveType(1);
     } else {
-        mSound->setSquareDuty(frnd(0.6f));
+        sound->setSquareDuty(frnd(0.6f));
     }
     if (rnd(1)) {
-        mSound->setBaseFrequency(0.2f + frnd(0.3f));
-        mSound->setSlide(0.1f + frnd(0.4f));
-        mSound->setRepeatSpeed(0.4f + frnd(0.4f));
+        sound->setBaseFrequency(0.2f + frnd(0.3f));
+        sound->setSlide(0.1f + frnd(0.4f));
+        sound->setRepeatSpeed(0.4f + frnd(0.4f));
     } else {
-        mSound->setBaseFrequency(0.2f + frnd(0.3f));
-        mSound->setSlide(0.05f + frnd(0.2f));
+        sound->setBaseFrequency(0.2f + frnd(0.3f));
+        sound->setSlide(0.05f + frnd(0.2f));
         if (rnd(1)) {
-            mSound->setVibratoDepth(frnd(0.7f));
-            mSound->setVibratoSpeed(frnd(0.6f));
+            sound->setVibratoDepth(frnd(0.7f));
+            sound->setVibratoSpeed(frnd(0.6f));
         }
     }
-    mSound->setAttackTime(0.0f);
-    mSound->setSustainTime(frnd(0.4f));
-    mSound->setDecayTime(0.1f + frnd(0.4f));
-    soundGenerated(tr("Power up"), mSound);
+    sound->setAttackTime(0.0f);
+    sound->setSustainTime(frnd(0.4f));
+    sound->setDecayTime(0.1f + frnd(0.4f));
+    soundGenerated(tr("Power up"), sound);
 }
 
 void Generator::generateHitHurt() {
-    mSound->resetParams();
-    mSound->setWaveType(rnd(2));
-    if (mSound->waveType() == 2) {
-        mSound->setWaveType(3);
+    Sound* sound = createSound();
+    sound->setWaveType(rnd(2));
+    if (sound->waveType() == 2) {
+        sound->setWaveType(3);
     }
-    if (mSound->waveType() == 0) {
-        mSound->setSquareDuty(frnd(0.6f));
+    if (sound->waveType() == 0) {
+        sound->setSquareDuty(frnd(0.6f));
     }
-    mSound->setBaseFrequency(0.2f + frnd(0.6f));
-    mSound->setSlide(-0.3f - frnd(0.4f));
-    mSound->setAttackTime(0.0f);
-    mSound->setSustainTime(frnd(0.1f));
-    mSound->setDecayTime(0.1f + frnd(0.2f));
+    sound->setBaseFrequency(0.2f + frnd(0.6f));
+    sound->setSlide(-0.3f - frnd(0.4f));
+    sound->setAttackTime(0.0f);
+    sound->setSustainTime(frnd(0.1f));
+    sound->setDecayTime(0.1f + frnd(0.2f));
     if (rnd(1)) {
-        mSound->setHpFilterCutoff(frnd(0.3f));
+        sound->setHpFilterCutoff(frnd(0.3f));
     }
-    soundGenerated(tr("Hit"), mSound);
+    soundGenerated(tr("Hit"), sound);
 }
 
 void Generator::generateJump() {
-    mSound->resetParams();
-    mSound->setWaveType(0);
-    mSound->setSquareDuty(frnd(0.6f));
-    mSound->setBaseFrequency(0.3f + frnd(0.3f));
-    mSound->setSlide(0.1f + frnd(0.2f));
-    mSound->setAttackTime(0.0f);
-    mSound->setSustainTime(0.1f + frnd(0.3f));
-    mSound->setDecayTime(0.1f + frnd(0.2f));
+    Sound* sound = createSound();
+    sound->setWaveType(0);
+    sound->setSquareDuty(frnd(0.6f));
+    sound->setBaseFrequency(0.3f + frnd(0.3f));
+    sound->setSlide(0.1f + frnd(0.2f));
+    sound->setAttackTime(0.0f);
+    sound->setSustainTime(0.1f + frnd(0.3f));
+    sound->setDecayTime(0.1f + frnd(0.2f));
     if (rnd(1)) {
-        mSound->setHpFilterCutoff(frnd(0.3f));
+        sound->setHpFilterCutoff(frnd(0.3f));
     }
     if (rnd(1)) {
-        mSound->setLpFilterCutoff(1.0f - frnd(0.6f));
+        sound->setLpFilterCutoff(1.0f - frnd(0.6f));
     }
-    soundGenerated(tr("Jump"), mSound);
+    soundGenerated(tr("Jump"), sound);
 }
 
 void Generator::generateBlipSelect() {
-    mSound->resetParams();
-    mSound->setWaveType(rnd(1));
-    if (mSound->waveType() == 0) {
-        mSound->setSquareDuty(frnd(0.6f));
+    Sound* sound = createSound();
+    sound->setWaveType(rnd(1));
+    if (sound->waveType() == 0) {
+        sound->setSquareDuty(frnd(0.6f));
     }
-    mSound->setBaseFrequency(0.2f + frnd(0.4f));
-    mSound->setAttackTime(0.0f);
-    mSound->setSustainTime(0.1f + frnd(0.1f));
-    mSound->setDecayTime(frnd(0.2f));
-    mSound->setHpFilterCutoff(0.1f);
-    soundGenerated(tr("Blip"), mSound);
+    sound->setBaseFrequency(0.2f + frnd(0.4f));
+    sound->setAttackTime(0.0f);
+    sound->setSustainTime(0.1f + frnd(0.1f));
+    sound->setDecayTime(frnd(0.2f));
+    sound->setHpFilterCutoff(0.1f);
+    soundGenerated(tr("Blip"), sound);
 }
 
-void Generator::mutate() {
+void Generator::mutate(Sound* source) {
+    Sound* sound = createSound();
+    sound->fromOther(source);
     QMetaObject mo = BaseSound::staticMetaObject;
     for (int i = 0; i < mo.propertyCount(); ++i) {
         QMetaProperty property = mo.property(i);
         if (property.type() == QVariant::Double) {
-            qreal value = property.read(mSound).toReal() + frnd(0.1f) - 0.05f;
-            property.write(mSound, value);
+            qreal value = property.read(sound).toReal() + frnd(0.1f) - 0.05f;
+            property.write(sound, value);
         }
     }
-    soundGenerated(tr("Mutated"), mSound);
+    soundGenerated(tr("Mutated"), sound);
 }
 
-void Generator::randomize() {
-    mSound->setBaseFrequency(pow(frnd(2.0f) - 1.0f, 2.0f));
-    if (rnd(1)) {
-        mSound->setBaseFrequency(pow(frnd(2.0f) - 1.0f, 3.0f) + 0.5f);
-    }
-    mSound->setMinFrequency(0);
-    mSound->setSlide(pow(frnd(2.0f) - 1.0f, 5.0f));
-    if (mSound->baseFrequency() > 0.7f && mSound->slide() > 0.2f) {
-        mSound->setSlide(-mSound->slide());
-    }
-    if (mSound->baseFrequency() < 0.2f && mSound->slide() < -0.05f) {
-        mSound->setSlide(-mSound->slide());
-    }
-    mSound->setDeltaSlide(pow(frnd(2.0f) - 1.0f, 3.0f));
-    mSound->setSquareDuty(frnd(2.0f) - 1.0f);
-    mSound->setDutySweep(pow(frnd(2.0f) - 1.0f, 3.0f));
-    mSound->setVibratoDepth(pow(frnd(2.0f) - 1.0f, 3.0f));
-    mSound->setVibratoSpeed(frnd(2.0f) - 1.0f);
-    mSound->setAttackTime(pow(frnd(2.0f) - 1.0f, 3.0f));
-    mSound->setSustainTime(pow(frnd(2.0f) - 1.0f, 2.0f));
-    mSound->setDecayTime(frnd(2.0f) - 1.0f);
-    mSound->setSustainPunch(pow(frnd(0.8f), 2.0f));
-    if (mSound->attackTime() + mSound->sustainTime() + mSound->decayTime() < 0.2f) {
-        mSound->setSustainTime(mSound->sustainTime() + 0.2f + frnd(0.3f));
-        mSound->setDecayTime(mSound->decayTime() + 0.2f + frnd(0.3f));
-    }
-    mSound->setLpFilterResonance(frnd(2.0f) - 1.0f);
-    mSound->setLpFilterCutoff(1.0f - pow(frnd(1.0f), 3.0f));
-    mSound->setLpFilterCutoffSweep(pow(frnd(2.0f) - 1.0f, 3.0f));
-    if (mSound->lpFilterCutoff() < 0.1f && mSound->lpFilterCutoffSweep() < -0.05f) {
-        mSound->setLpFilterCutoffSweep(-mSound->lpFilterCutoffSweep());
-    }
-    mSound->setHpFilterCutoff(pow(frnd(1.0f), 5.0f));
-    mSound->setHpFilterCutoffSweep(pow(frnd(2.0f) - 1.0f, 5.0f));
-
-    mSound->setPhaserOffset(pow(frnd(2.0f) - 1.0f, 3.0f));
-    mSound->setPhaserSweep(pow(frnd(2.0f) - 1.0f, 3.0f));
-
-    mSound->setRepeatSpeed(frnd(2.0f) - 1.0f);
-
-    mSound->setChangeSpeed(frnd(2.0f) - 1.0f);
-    mSound->setChangeAmount(frnd(2.0f) - 1.0f);
-    soundGenerated(tr("Random"), mSound);
+Sound* Generator::createSound() {
+    // Give it a parent so that it is never garbage-collected
+    return new Sound(this);
 }

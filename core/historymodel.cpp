@@ -6,7 +6,7 @@ static const int HISTORY_MAX_SIZE = 30;
 
 HistoryModel::HistoryModel(QObject* parent)
     : QAbstractListModel(parent) {
-
+    append(tr("Start"), new Sound);
 }
 
 int HistoryModel::rowCount(const QModelIndex& parent) const {
@@ -37,15 +37,15 @@ QHash<int, QByteArray> HistoryModel::roleNames() const {
 
 void HistoryModel::append(const QString& text, Sound* sound) {
     SoundInfo info;
-    if (mItems.length() < HISTORY_MAX_SIZE) {
-        info.sound = new Sound(this);
-    } else {
+    if (mItems.length() == HISTORY_MAX_SIZE) {
         beginRemoveRows(QModelIndex(), mItems.length() - 1, mItems.length() - 1);
         info = mItems.takeLast();
+        delete info.sound;
         endRemoveRows();
     }
+    sound->setParent(this);
+    info.sound = sound;
     info.text = text;
-    info.sound->fromOther(sound);
 
     beginInsertRows(QModelIndex(), 0, 0);
     mItems.prepend(info);
