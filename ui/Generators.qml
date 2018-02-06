@@ -80,12 +80,4 @@ ColumnLayout {
             generator.mutate();
         }
     }
-
-    Button {
-        text: qsTr("Randomize")
-        Layout.fillWidth: true
-        onClicked: {
-            generator.randomize();
-        }
-    }
 }
