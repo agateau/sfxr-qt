@@ -11,6 +11,8 @@ Item {
     property Sound currentSound: listView.currentItem.sound
     signal currentSoundClicked()
 
+    property int innerMargin: 4
+
     ListView {
         id: listView
         anchors.fill: parent
@@ -27,10 +29,26 @@ Item {
             property Sound sound: model.sound
 
             onClicked: {
-                if (listView.currentIndex == model.index) {
+                if (listView.currentIndex === model.index) {
                     currentSoundClicked();
                 } else {
                     listView.currentIndex = model.index;
+                }
+            }
+
+            Button {
+                anchors {
+                    right: parent.right
+                    rightMargin: innerMargin
+                    verticalCenter: parent.verticalCenter
+                }
+                height: parent.height - 2 * innerMargin
+                width: height
+                text: "🗙"
+                enabled: root.model.count > 1
+
+                onClicked: {
+                    root.model.remove(model.index);
                 }
             }
         }

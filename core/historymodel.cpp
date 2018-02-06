@@ -13,6 +13,10 @@ int HistoryModel::rowCount(const QModelIndex& parent) const {
     return parent.isValid() ? 0 : mItems.length();
 }
 
+int HistoryModel::count() const {
+    return mItems.length();
+}
+
 QVariant HistoryModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || row >= mItems.length()) {
@@ -50,4 +54,13 @@ void HistoryModel::append(const QString& text, Sound* sound) {
     beginInsertRows(QModelIndex(), 0, 0);
     mItems.prepend(info);
     endInsertRows();
+
+    countChanged(count());
+}
+
+void HistoryModel::remove(int row) {
+    Q_ASSERT(row >= 0 && row < mItems.length());
+    beginRemoveRows(QModelIndex(), row, row);
+    mItems.removeAt(row);
+    endRemoveRows();
 }

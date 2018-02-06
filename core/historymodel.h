@@ -7,6 +7,7 @@ class Sound;
 
 class HistoryModel : public QAbstractListModel {
     Q_OBJECT
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
     enum Role {
         TextRole,
@@ -20,6 +21,12 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE void append(const QString& text, Sound* sound);
+    Q_INVOKABLE void remove(int row);
+
+    int count() const;
+
+signals:
+    void countChanged(int count);
 
 private:
     struct SoundInfo {
