@@ -19,7 +19,13 @@ Window {
     SoundPlayer {
         id: soundPlayer
         sound: root.sound
+        property bool startup: true
         onSoundChanged: {
+            // Hack to avoid playing directly at startup
+            if (startup) {
+                startup = false;
+                return;
+            }
             play();
         }
     }
