@@ -4,7 +4,7 @@ import QtQuick.Controls 2.0
 
 import sfxr 1.0
 
-Frame {
+Item {
     id: root
     property alias model: listView.model
     signal soundClicked(Sound sound)
@@ -12,6 +12,7 @@ Frame {
     ListView {
         id: listView
         anchors.fill: parent
+        clip: true
         delegate: ItemDelegate {
             anchors {
                 left: parent.left
