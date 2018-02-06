@@ -9,6 +9,7 @@ Item {
     property alias model: listView.model
     property alias currentIndex: listView.currentIndex
     property Sound currentSound: listView.currentItem.sound
+    signal currentSoundClicked()
 
     ListView {
         id: listView
@@ -26,7 +27,11 @@ Item {
             property Sound sound: model.sound
 
             onClicked: {
-                listView.currentIndex = model.index;
+                if (listView.currentIndex == model.index) {
+                    currentSoundClicked();
+                } else {
+                    listView.currentIndex = model.index;
+                }
             }
         }
 

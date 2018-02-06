@@ -68,6 +68,9 @@ Window {
             model: historyModel
             Layout.fillWidth: true
             Layout.fillHeight: true
+            onCurrentSoundClicked: {
+                soundPlayer.play();
+            }
         }
     }
 
