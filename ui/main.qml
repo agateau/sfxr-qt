@@ -50,6 +50,7 @@ Window {
         Generators {
             id: generators
             generator: generator
+            sound: root.sound
         }
 
         TitleLabel {

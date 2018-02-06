@@ -186,8 +186,9 @@ void Generator::generateBlipSelect() {
     soundGenerated(tr("Blip"), sound);
 }
 
-void Generator::mutate() {
+void Generator::mutate(Sound* source) {
     Sound* sound = new Sound();
+    sound->fromOther(source);
     QMetaObject mo = BaseSound::staticMetaObject;
     for (int i = 0; i < mo.propertyCount(); ++i) {
         QMetaProperty property = mo.property(i);

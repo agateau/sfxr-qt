@@ -7,6 +7,7 @@ import sfxr 1.0
 ColumnLayout {
     id: root
     property Generator generator
+    property Sound sound
 
     TitleLabel {
         id: label
@@ -77,7 +78,7 @@ ColumnLayout {
         text: qsTr("Mutate")
         Layout.fillWidth: true
         onClicked: {
-            generator.mutate();
+            generator.mutate(sound);
         }
     }
 }

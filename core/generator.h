@@ -17,7 +17,8 @@ public:
     Q_INVOKABLE void generateHitHurt();
     Q_INVOKABLE void generateJump();
     Q_INVOKABLE void generateBlipSelect();
-    Q_INVOKABLE void mutate();
+
+    Q_INVOKABLE void mutate(Sound* sound);
 
 signals:
     void soundGenerated(QString name, Sound* sound);
