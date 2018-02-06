@@ -54,7 +54,6 @@ void HistoryModel::append(const QString& text, Sound* sound) {
     beginInsertRows(QModelIndex(), 0, 0);
     mItems.prepend(info);
     endInsertRows();
-
     countChanged(count());
 }
 
@@ -63,4 +62,5 @@ void HistoryModel::remove(int row) {
     beginRemoveRows(QModelIndex(), row, row);
     mItems.removeAt(row);
     endRemoveRows();
+    countChanged(count());
 }
