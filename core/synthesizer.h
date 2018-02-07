@@ -1,6 +1,8 @@
 #ifndef SYNTHESIZER_H
 #define SYNTHESIZER_H
 
+#include <memory>
+
 class Sound;
 
 class Synthesizer {
@@ -11,14 +13,15 @@ public:
         virtual void write(float sample) = 0;
     };
 
-    explicit Synthesizer(const Sound* sound);
+    Synthesizer();
     ~Synthesizer();
 
+    void init(const Sound* sound);
     void start();
     bool synthSample(int length, SynthStrategy* strategy);
 
 private:
-    const Sound* mSound = nullptr;
+    std::unique_ptr<Sound> mSound;
 
     // Internal
     int phase;

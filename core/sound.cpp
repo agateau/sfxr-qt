@@ -41,7 +41,7 @@ void Sound::resetParams() {
     setChangeAmount(0.0f);
 }
 
-void Sound::fromOther(Sound* other) {
+void Sound::fromOther(const Sound* other) {
     QMetaObject mo = BaseSound::staticMetaObject;
     for (int idx = 0; idx < mo.propertyCount(); ++idx) {
         QMetaProperty property = mo.property(idx);

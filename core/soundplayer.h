@@ -1,6 +1,7 @@
 #ifndef SOUNDPLAYER_H
 #define SOUNDPLAYER_H
 
+#include <QMutex>
 #include <QObject>
 
 #include <memory>
@@ -35,12 +36,20 @@ private:
     bool mLoop = false;
     QTimer* mPlayTimer;
     Sound* mSound = nullptr;
-    std::unique_ptr<Synthesizer> mSynth;
+
+    mutable QMutex mMutex;
+    struct PlayThreadData {
+        bool playing = false;
+        bool loop = false;
+        std::unique_ptr<Synthesizer> synth;
+    } mPlayThreadData;
 
     void sdlAudioCallback(unsigned char* stream, int len);
     void registerCallback();
     void unregisterCallback();
     void schedulePlay();
+
+    void onSoundModified();
 
     static void staticSdlAudioCallback(void* userdata, unsigned char* stream, int len);
 };

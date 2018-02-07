@@ -19,12 +19,18 @@ inline float frnd(float range) {
 Synthesizer::SynthStrategy::~SynthStrategy() {
 }
 
-Synthesizer::Synthesizer(const Sound* sound)
-    : mSound(sound) {
+Synthesizer::Synthesizer()
+    : mSound(new Sound) {
 }
 
 Synthesizer::~Synthesizer() {
 }
+
+void Synthesizer::init(const Sound* sound) {
+    mSound->fromOther(sound);
+    start();
+}
+
 
 void Synthesizer::resetSample(bool restart) {
     if (!restart) {

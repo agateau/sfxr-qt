@@ -9,7 +9,7 @@ public:
     explicit Sound(QObject* parent = nullptr);
 
     void resetParams();
-    Q_INVOKABLE void fromOther(Sound* other);
+    void fromOther(const Sound* other);
     Q_INVOKABLE bool load(const QUrl& url);
     Q_INVOKABLE bool save(const QUrl& url);
 };

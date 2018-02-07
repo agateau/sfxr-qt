@@ -24,6 +24,8 @@ private:
 SoundPlayer::SoundPlayer(QObject* parent)
     : QObject(parent)
     , mPlayTimer(new QTimer(this)) {
+    mPlayThreadData.synth.reset(new Synthesizer);
+
     mPlayTimer->setInterval(SCHEDULED_PLAY_DELAY);
     mPlayTimer->setSingleShot(true);
     connect(mPlayTimer, &QTimer::timeout, this, &SoundPlayer::play);
@@ -46,41 +48,49 @@ void SoundPlayer::setSound(Sound* value) {
         disconnect(mSound, nullptr, this, nullptr);
     }
     mSound = value;
-    mSynth.reset(new Synthesizer(mSound));
+    if (mSound) {
+        connect(mSound, &Sound::waveTypeChanged, this, &SoundPlayer::onSoundModified);
 
-    connect(mSound, &Sound::waveTypeChanged, this, &SoundPlayer::schedulePlay);
+        connect(mSound, &Sound::attackTimeChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::sustainTimeChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::sustainPunchChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::decayTimeChanged, this, &SoundPlayer::onSoundModified);
 
-    connect(mSound, &Sound::attackTimeChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::sustainTimeChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::sustainPunchChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::decayTimeChanged, this, &SoundPlayer::schedulePlay);
+        connect(mSound, &Sound::baseFrequencyChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::minFrequencyChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::slideChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::deltaSlideChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::vibratoDepthChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::vibratoSpeedChanged, this, &SoundPlayer::onSoundModified);
 
-    connect(mSound, &Sound::baseFrequencyChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::minFrequencyChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::slideChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::deltaSlideChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::vibratoDepthChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::vibratoSpeedChanged, this, &SoundPlayer::schedulePlay);
+        connect(mSound, &Sound::changeAmountChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::changeSpeedChanged, this, &SoundPlayer::onSoundModified);
 
-    connect(mSound, &Sound::changeAmountChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::changeSpeedChanged, this, &SoundPlayer::schedulePlay);
+        connect(mSound, &Sound::squareDutyChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::dutySweepChanged, this, &SoundPlayer::onSoundModified);
 
-    connect(mSound, &Sound::squareDutyChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::dutySweepChanged, this, &SoundPlayer::schedulePlay);
+        connect(mSound, &Sound::repeatSpeedChanged, this, &SoundPlayer::onSoundModified);
 
-    connect(mSound, &Sound::repeatSpeedChanged, this, &SoundPlayer::schedulePlay);
+        connect(mSound, &Sound::phaserOffsetChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::phaserSweepChanged, this, &SoundPlayer::onSoundModified);
 
-    connect(mSound, &Sound::phaserOffsetChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::phaserSweepChanged, this, &SoundPlayer::schedulePlay);
+        connect(mSound, &Sound::lpFilterCutoffChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::lpFilterCutoffSweepChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::lpFilterResonanceChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::hpFilterCutoffChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::hpFilterCutoffSweepChanged, this, &SoundPlayer::onSoundModified);
 
-    connect(mSound, &Sound::lpFilterCutoffChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::lpFilterCutoffSweepChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::lpFilterResonanceChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::hpFilterCutoffChanged, this, &SoundPlayer::schedulePlay);
-    connect(mSound, &Sound::hpFilterCutoffSweepChanged, this, &SoundPlayer::schedulePlay);
-
-    connect(mSound, &Sound::volumeChanged, this, &SoundPlayer::schedulePlay);
-
+        connect(mSound, &Sound::volumeChanged, this, &SoundPlayer::onSoundModified);
+    } else {
+        mPlaying = false;
+    }
+    {
+        QMutexLocker lock(&mMutex);
+        mPlayThreadData.playing = mPlaying;
+        if (mSound) {
+            mPlayThreadData.synth->init(mSound);
+        }
+    }
     soundChanged(value);
 }
 
@@ -93,12 +103,20 @@ void SoundPlayer::setLoop(bool value) {
         return;
     }
     mLoop = value;
+    {
+        QMutexLocker lock(&mMutex);
+        mPlayThreadData.loop = mLoop;
+    }
     loopChanged(value);
 }
 
 void SoundPlayer::play() {
     mPlaying = true;
-    mSynth->start();
+    {
+        QMutexLocker lock(&mMutex);
+        mPlayThreadData.playing = mPlaying;
+        mPlayThreadData.synth->start();
+    }
 }
 
 void SoundPlayer::staticSdlAudioCallback(void* userdata, unsigned char* stream, int len) {
@@ -107,18 +125,20 @@ void SoundPlayer::staticSdlAudioCallback(void* userdata, unsigned char* stream, 
 }
 
 void SoundPlayer::sdlAudioCallback(unsigned char* stream, int len) {
-    if (mPlaying) {
+    QMutexLocker lock(&mMutex);
+    if (mPlayThreadData.playing) {
         unsigned int l = len / 2;
         float fbuf[l];
         memset(fbuf, 0, sizeof(fbuf));
         BufferStrategy strategy(fbuf);
-        mPlaying = mSynth->synthSample(l, &strategy);
+        mPlayThreadData.playing = mPlayThreadData.synth->synthSample(l, &strategy);
         while (l--) {
             float f = qBound(-1.f, fbuf[l], 1.f);
             ((Sint16*)stream)[l] = (Sint16)(f * 32767);
         }
-        if (mLoop && !mPlaying) {
-            play();
+        if (mPlayThreadData.loop && !mPlayThreadData.playing) {
+            mPlayThreadData.playing = true;
+            mPlayThreadData.synth->start();
         }
     } else {
         memset(stream, 0, len);
@@ -142,6 +162,14 @@ void SoundPlayer::registerCallback() {
 
 void SoundPlayer::unregisterCallback() {
     SDL_CloseAudio();
+}
+
+void SoundPlayer::onSoundModified() {
+    {
+        QMutexLocker lock(&mMutex);
+        mPlayThreadData.synth->init(mSound);
+    }
+    schedulePlay();
 }
 
 void SoundPlayer::schedulePlay() {

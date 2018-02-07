@@ -89,8 +89,8 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
     wav.filesample = 0.0f;
     wav.fileacc = 0;
 
-    Synthesizer synth(sound);
-    synth.start();
+    Synthesizer synth;
+    synth.init(sound);
     while (synth.synthSample(256, &wav)) {
     }
 
