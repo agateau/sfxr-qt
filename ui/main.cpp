@@ -3,7 +3,7 @@
 #include <QQmlApplicationEngine>
 
 #include "generator.h"
-#include "historymodel.h"
+#include "soundlistmodel.h"
 #include "sound.h"
 #include "soundplayer.h"
 #include "wavsaver.h"
@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     qmlRegisterType<Sound>("sfxr", 1, 0, "Sound");
     qmlRegisterType<SoundPlayer>("sfxr", 1, 0, "SoundPlayer");
     qmlRegisterType<Generator>("sfxr", 1, 0, "Generator");
-    qmlRegisterType<HistoryModel>("sfxr", 1, 0, "HistoryModel");
+    qmlRegisterType<SoundListModel>("sfxr", 1, 0, "SoundListModel");
     qmlRegisterType<WavSaver>("sfxr", 1, 0, "WavSaver");
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 

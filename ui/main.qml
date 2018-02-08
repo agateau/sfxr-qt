@@ -14,7 +14,7 @@ Window {
 
     property real margin: 12
     property real columnWidth: 350
-    property alias sound: historyView.currentSound
+    property alias sound: soundListModel.currentSound
 
     SoundPlayer {
         id: soundPlayer
@@ -30,15 +30,14 @@ Window {
         }
     }
 
-    HistoryModel {
-        id: historyModel
+    SoundListModel {
+        id: soundListModel
     }
 
     Generator {
         id: generator
         onSoundGenerated: {
-            historyModel.append(name, sound);
-            historyView.currentIndex = 0;
+            soundListModel.addNew(name, sound);
         }
     }
 
@@ -60,12 +59,11 @@ Window {
         }
 
         TitleLabel {
-            text: qsTr("History")
+            text: qsTr("Sounds")
         }
 
-        HistoryView {
-            id: historyView
-            model: historyModel
+        SoundListView {
+            model: soundListModel
             Layout.fillWidth: true
             Layout.fillHeight: true
             onCurrentSoundClicked: {

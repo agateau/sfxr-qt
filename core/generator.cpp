@@ -1,6 +1,7 @@
 #include <generator.h>
 
 #include <QMetaProperty>
+#include <QQmlEngine>
 
 #include <math.h>
 
@@ -201,6 +202,7 @@ void Generator::mutate(Sound* source) {
 }
 
 Sound* Generator::createSound() {
-    // Give it a parent so that it is never garbage-collected
-    return new Sound(this);
+    Sound* sound = new Sound;
+    QQmlEngine::setObjectOwnership(sound, QQmlEngine::CppOwnership);
+    return sound;
 }
