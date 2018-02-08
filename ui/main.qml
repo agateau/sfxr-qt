@@ -14,7 +14,7 @@ Window {
 
     property real margin: 12
     property real columnWidth: 350
-    property alias sound: historyView.currentSound
+    property alias sound: historyModel.currentSound
 
     SoundPlayer {
         id: soundPlayer
@@ -37,8 +37,7 @@ Window {
     Generator {
         id: generator
         onSoundGenerated: {
-            historyModel.append(name, sound);
-            historyView.currentIndex = 0;
+            historyModel.addNew(name, sound);
         }
     }
 

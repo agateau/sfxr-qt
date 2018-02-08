@@ -24,7 +24,11 @@ set(SRCS
     core/historymodel.cpp
 )
 
-qpropgen(QPROPGEN_SRCS core/basesound.yaml core/basewavsaver.yaml)
+qpropgen(QPROPGEN_SRCS
+    core/basesound.yaml
+    core/basehistorymodel.yaml
+    core/basewavsaver.yaml
+)
 
 qt5_add_resources(QRC_SRCS ui/qml.qrc)
 

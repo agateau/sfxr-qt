@@ -8,7 +8,6 @@ Item {
     id: root
     property alias model: listView.model
     property alias currentIndex: listView.currentIndex
-    property Sound currentSound: listView.currentItem.sound
     signal currentSoundClicked()
 
     property int innerMargin: 4
@@ -17,22 +16,19 @@ Item {
         id: listView
         anchors.fill: parent
         clip: true
-        currentIndex: 0
         delegate: ItemDelegate {
             anchors {
                 left: parent.left
                 right: parent.right
             }
             text: model.text
-            highlighted: ListView.isCurrentItem
-
-            property Sound sound: model.sound
+            highlighted: model.sound === root.model.currentSound
 
             onClicked: {
-                if (listView.currentIndex === model.index) {
+                if (highlighted) {
                     currentSoundClicked();
                 } else {
-                    listView.currentIndex = model.index;
+                    root.model.setCurrentRow(model.index);
                 }
             }
 

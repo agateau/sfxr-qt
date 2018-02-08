@@ -1,0 +1,14 @@
+class: BaseHistoryModel
+includes:
+    - QAbstractListModel
+    - sound.h
+baseClass: QAbstractListModel
+properties:
+    - name: count
+      type: int
+      mutability: readonly
+      impl: pure
+    - name: currentSound
+      type: Sound*
+      mutability: readonly
+      impl: pure
