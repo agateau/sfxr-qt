@@ -2,8 +2,6 @@
 
 #include "sound.h"
 
-static const int HISTORY_MAX_SIZE = 30;
-
 HistoryModel::HistoryModel(QObject* parent)
     : BaseHistoryModel(parent) {
     addNew(tr("Start"), new Sound);
@@ -45,11 +43,6 @@ QHash<int, QByteArray> HistoryModel::roleNames() const {
 }
 
 void HistoryModel::addNew(const QString& text, Sound* sound) {
-    if (mItems.size() == HISTORY_MAX_SIZE) {
-        beginRemoveRows(QModelIndex(), mItems.size() - 1, mItems.size() - 1);
-        mItems.pop_back();
-        endRemoveRows();
-    }
     SoundInfo info;
     info.sound.reset(sound);
     info.text = text;
