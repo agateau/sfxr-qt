@@ -10,6 +10,6 @@
         <file>icons/sfxr-qt-16.png</file>
         <file>icons/sfxr-qt-32.png</file>
         <file>icons/sfxr-qt-48.png</file>
-        <file>HistoryView.qml</file>
+        <file>SoundListView.qml</file>
     </qresource>
 </RCC>

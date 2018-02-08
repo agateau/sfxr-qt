@@ -1,13 +1,13 @@
-#ifndef HISTORYMODEL_H
-#define HISTORYMODEL_H
+#ifndef SOUNDLISTMODEL_H
+#define SOUNDLISTMODEL_H
 
-#include "basehistorymodel.h"
+#include "basesoundlistmodel.h"
 
 #include <memory>
 
 class Sound;
 
-class HistoryModel : public BaseHistoryModel {
+class SoundListModel : public BaseSoundListModel {
     Q_OBJECT
 public:
     enum Role {
@@ -15,7 +15,7 @@ public:
         SoundRole,
     };
 
-    HistoryModel(QObject* parent = nullptr);
+    SoundListModel(QObject* parent = nullptr);
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
@@ -41,4 +41,4 @@ private:
     Sound* mCurrentSound = nullptr;
 };
 
-#endif // HISTORYMODEL_H
+#endif // SOUNDLISTMODEL_H

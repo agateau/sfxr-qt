@@ -1,26 +1,26 @@
-#include "historymodel.h"
+#include "soundlistmodel.h"
 
 #include "sound.h"
 
-HistoryModel::HistoryModel(QObject* parent)
-    : BaseHistoryModel(parent) {
+SoundListModel::SoundListModel(QObject* parent)
+    : BaseSoundListModel(parent) {
     addNew(tr("New"), new Sound);
     setCurrentRow(0);
 }
 
-int HistoryModel::rowCount(const QModelIndex& parent) const {
+int SoundListModel::rowCount(const QModelIndex& parent) const {
     return parent.isValid() ? 0 : mItems.size();
 }
 
-int HistoryModel::count() const {
+int SoundListModel::count() const {
     return mItems.size();
 }
 
-Sound* HistoryModel::currentSound() const {
+Sound* SoundListModel::currentSound() const {
     return mCurrentSound;
 }
 
-QVariant HistoryModel::data(const QModelIndex& index, int role) const {
+QVariant SoundListModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
     if (row < 0 || row >= static_cast<int>(mItems.size())) {
         return QVariant();
@@ -35,14 +35,14 @@ QVariant HistoryModel::data(const QModelIndex& index, int role) const {
     return QVariant();
 }
 
-QHash<int, QByteArray> HistoryModel::roleNames() const {
+QHash<int, QByteArray> SoundListModel::roleNames() const {
     return {
         { TextRole, "text" },
         { SoundRole, "sound" },
     };
 }
 
-void HistoryModel::addNew(const QString& text, Sound* sound) {
+void SoundListModel::addNew(const QString& text, Sound* sound) {
     SoundInfo info;
     info.sound.reset(sound);
     info.text = text;
@@ -54,7 +54,7 @@ void HistoryModel::addNew(const QString& text, Sound* sound) {
     setCurrentRow(0);
 }
 
-void HistoryModel::remove(int row) {
+void SoundListModel::remove(int row) {
     int size = static_cast<int>(mItems.size());
     Q_ASSERT(row >= 0 && row < size);
 
@@ -87,7 +87,7 @@ void HistoryModel::remove(int row) {
     countChanged(count());
 }
 
-void HistoryModel::setCurrentRow(int row) {
+void SoundListModel::setCurrentRow(int row) {
     mCurrentSound = mItems.at(row).sound.get();
     currentSoundChanged(mCurrentSound);
 }

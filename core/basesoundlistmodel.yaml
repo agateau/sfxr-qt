@@ -1,4 +1,4 @@
-class: BaseHistoryModel
+class: BaseSoundListModel
 includes:
     - QAbstractListModel
     - sound.h
