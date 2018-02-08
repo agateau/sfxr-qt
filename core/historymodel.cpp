@@ -4,7 +4,7 @@
 
 HistoryModel::HistoryModel(QObject* parent)
     : BaseHistoryModel(parent) {
-    addNew(tr("Start"), new Sound);
+    addNew(tr("New"), new Sound);
     setCurrentRow(0);
 }
 
@@ -57,6 +57,16 @@ void HistoryModel::addNew(const QString& text, Sound* sound) {
 void HistoryModel::remove(int row) {
     int size = static_cast<int>(mItems.size());
     Q_ASSERT(row >= 0 && row < size);
+
+    if (size == 1) {
+        // Never remove the last item, reset it instead
+        SoundInfo& info = mItems.at(0);
+        info.sound->resetParams();
+        info.text = tr("New");
+        QModelIndex idx = index(0);
+        dataChanged(idx, idx);
+        return;
+    }
 
     // If we are removing the current sound, select another one
     Sound* removedSound = mItems.at(row).sound.get();

@@ -40,8 +40,8 @@ Item {
                 }
                 height: parent.height - 2 * innerMargin
                 width: height
+                flat: true
                 text: "🗙"
-                enabled: root.model.count > 1
 
                 onClicked: {
                     root.model.remove(model.index);
