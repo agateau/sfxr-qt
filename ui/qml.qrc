@@ -11,5 +11,6 @@
         <file>icons/sfxr-qt-32.png</file>
         <file>icons/sfxr-qt-48.png</file>
         <file>SoundListView.qml</file>
+        <file>VerticalSpacer.qml</file>
     </qresource>
 </RCC>

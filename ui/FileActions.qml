@@ -49,10 +49,7 @@ ColumnLayout {
         }
     }
 
-    Item {
-        width: 1
-        height: 12
-    }
+    VerticalSpacer {}
 
     TitleLabel {
         text: qsTr("WAV export")

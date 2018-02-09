@@ -4,7 +4,7 @@ import QtQuick.Controls 2.0
 
 import sfxr 1.0
 
-Item {
+ColumnLayout {
     id: root
     property alias model: listView.model
     property alias currentIndex: listView.currentIndex
@@ -12,9 +12,14 @@ Item {
 
     property int innerMargin: 4
 
+    TitleLabel {
+        text: qsTr("Sounds")
+    }
+
     ListView {
         id: listView
-        anchors.fill: parent
+        Layout.fillWidth: true
+        Layout.fillHeight: true
         clip: true
         delegate: ItemDelegate {
             anchors {

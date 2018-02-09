@@ -50,7 +50,6 @@ Window {
             margins: margin
         }
         width: 150
-        spacing: margin
 
         Generators {
             id: generators
@@ -58,9 +57,7 @@ Window {
             sound: root.sound
         }
 
-        TitleLabel {
-            text: qsTr("Sounds")
-        }
+        VerticalSpacer {}
 
         SoundListView {
             model: soundListModel

@@ -70,9 +70,7 @@ ColumnLayout {
         }
     }
 
-    Item {
-        height: 12
-    }
+    VerticalSpacer {}
 
     Button {
         text: qsTr("Mutate")
