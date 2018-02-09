@@ -1,10 +1,26 @@
 # Changelog
 
+## 1.1.0 - 2018-02-09
+
+### Added
+- Multiple sound support: clicking on a generator button creates a new sound.
+  You can switch between the different sounds and easily drop the bad ones.
+
+- Added a way to play a sound in loop.
+
+### Changed
+- Removed randomize, it's useless.
+
+### Fixed
+- Keep noise wave form consistent.
+
 ## 1.0.0 - 2018-01-13
 
 - Ported to QtQuick
 
-# sfxr-sdl changelog
+==============================================================================
+
+# historical sfxr-sdl changelog
 
 ## 1.2.1
 - Fixed bug, the loop function call in main was commented out by Johan Helsing
