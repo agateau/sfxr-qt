@@ -41,7 +41,7 @@ submodule with:
 qpropgen is written in Python 3, so make sure you have Python 3 and pip
 installed, then run:
 
-    pip3 install -r qpropgen requirements.txt
+    pip3 install -r qpropgen/requirements.txt
 
 ### Step 3
 
