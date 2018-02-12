@@ -11,9 +11,6 @@
 ### Changed
 - Removed randomize, it's useless.
 
-### Fixed
-- Keep noise wave form consistent.
-
 ## 1.0.0 - 2018-01-13
 
 - Ported to QtQuick
