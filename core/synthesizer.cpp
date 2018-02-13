@@ -1,5 +1,7 @@
 #include "synthesizer.h"
 
+#include <QDebug>
+
 #include <math.h>
 
 #include "sound.h"
@@ -21,6 +23,7 @@ Synthesizer::SynthStrategy::~SynthStrategy() {
 
 Synthesizer::Synthesizer()
     : mSound(new Sound) {
+    addNoiseBuffer();
 }
 
 Synthesizer::~Synthesizer() {
@@ -29,12 +32,13 @@ Synthesizer::~Synthesizer() {
 void Synthesizer::init(const Sound* sound) {
     mSound->fromOther(sound);
     mRandomSeed = 0;
+    mNoiseBufferIndex = 0;
     start();
 }
 
-
 void Synthesizer::resetSample(bool restart) {
     if (!restart) {
+        mNoiseBufferIndex = 0;
         phase = 0;
     }
     fperiod = 100.0 / (mSound->baseFrequency() * mSound->baseFrequency() + 0.001);
@@ -93,9 +97,7 @@ void Synthesizer::resetSample(bool restart) {
             phaser_buffer[i] = 0.0f;
         }
 
-        for (int i = 0; i < 32; i++) {
-            noise_buffer[i] = frnd(2.0f) - 1.0f;
-        }
+        useNextNoiseBuffer();
 
         rep_time = 0;
         rep_limit = (int)(pow(1.0f - mSound->repeatSpeed(), 2.0f) * 20000 + 32);
@@ -103,6 +105,21 @@ void Synthesizer::resetSample(bool restart) {
             rep_limit = 0;
         }
     }
+}
+
+void Synthesizer::useNextNoiseBuffer() {
+    ++mNoiseBufferIndex;
+    if (mNoiseBufferIndex == mNoiseBuffers.length()) {
+        addNoiseBuffer();
+    }
+}
+
+void Synthesizer::addNoiseBuffer() {
+    NoiseBuffer buffer(NOISE_BUFFER_LENGTH);
+    for (int i = 0; i < buffer.length(); i++) {
+        buffer[i] = frnd(2.0f) - 1.0f;
+    }
+    mNoiseBuffers.append(buffer);
 }
 
 void Synthesizer::start() {
@@ -190,10 +207,9 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             if (phase >= period) {
 //              phase=0;
                 phase %= period;
-                if (mSound->waveType() == 3)
-                    for (int i = 0; i < 32; i++) {
-                        noise_buffer[i] = frnd(2.0f) - 1.0f;
-                    }
+                if (mSound->waveType() == 3) {
+                    useNextNoiseBuffer();
+                }
             }
             // base waveform
             float fp = (float)phase / period;
@@ -211,9 +227,11 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             case 2: // sine
                 sample = (float)sin(fp * 2 * PI);
                 break;
-            case 3: // noise
-                sample = noise_buffer[phase * 32 / period];
+            case 3: { // noise
+                const auto& buffer = mNoiseBuffers.at(mNoiseBufferIndex);
+                sample = buffer[phase * buffer.length() / period];
                 break;
+            }
             }
             // lp filter
             float pp = fltp;
