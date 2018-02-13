@@ -3,14 +3,11 @@
 
 #include <memory>
 
-#include <QList>
 #include <QVarLengthArray>
 
 class Sound;
 
-static const int NOISE_BUFFER_LENGTH = 32;
-
-using NoiseBuffer = QVarLengthArray<float, NOISE_BUFFER_LENGTH>;
+static const int NOISE_BUFFER_PERIOD_LENGTH = 32;
 
 class Synthesizer {
 public:
@@ -48,7 +45,7 @@ private:
     int iphase;
     float phaser_buffer[1024];
     int ipp;
-    QList<NoiseBuffer> mNoiseBuffers;
+    QVarLengthArray<float, 15 * NOISE_BUFFER_PERIOD_LENGTH> mNoiseBuffer;
     float fltp;
     float fltdp;
     float fltw;
@@ -68,15 +65,15 @@ private:
 
     unsigned int mRandomSeed = 0;
 
-    int mNoiseBufferIndex = 0;
+    int mNoiseBufferOffset = 0;
 
     void resetSample(bool restart);
 
     int rnd(int);
     float frnd(float range);
 
-    void useNextNoiseBuffer();
-    void addNoiseBuffer();
+    void moveNoiseBufferOffset();
+    void growNoiseBuffer();
 };
 
 #endif // SYNTHESIZER_H

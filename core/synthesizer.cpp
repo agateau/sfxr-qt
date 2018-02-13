@@ -23,7 +23,7 @@ Synthesizer::SynthStrategy::~SynthStrategy() {
 
 Synthesizer::Synthesizer()
     : mSound(new Sound) {
-    addNoiseBuffer();
+    growNoiseBuffer();
 }
 
 Synthesizer::~Synthesizer() {
@@ -32,13 +32,13 @@ Synthesizer::~Synthesizer() {
 void Synthesizer::init(const Sound* sound) {
     mSound->fromOther(sound);
     mRandomSeed = 0;
-    mNoiseBufferIndex = 0;
+    mNoiseBufferOffset = 0;
     start();
 }
 
 void Synthesizer::resetSample(bool restart) {
     if (!restart) {
-        mNoiseBufferIndex = 0;
+        mNoiseBufferOffset = 0;
         phase = 0;
     }
     fperiod = 100.0 / (mSound->baseFrequency() * mSound->baseFrequency() + 0.001);
@@ -97,7 +97,7 @@ void Synthesizer::resetSample(bool restart) {
             phaser_buffer[i] = 0.0f;
         }
 
-        useNextNoiseBuffer();
+        moveNoiseBufferOffset();
 
         rep_time = 0;
         rep_limit = (int)(pow(1.0f - mSound->repeatSpeed(), 2.0f) * 20000 + 32);
@@ -107,19 +107,19 @@ void Synthesizer::resetSample(bool restart) {
     }
 }
 
-void Synthesizer::useNextNoiseBuffer() {
-    ++mNoiseBufferIndex;
-    if (mNoiseBufferIndex == mNoiseBuffers.length()) {
-        addNoiseBuffer();
+void Synthesizer::moveNoiseBufferOffset() {
+    mNoiseBufferOffset += NOISE_BUFFER_PERIOD_LENGTH;
+    if (mNoiseBufferOffset == mNoiseBuffer.length()) {
+        growNoiseBuffer();
     }
 }
 
-void Synthesizer::addNoiseBuffer() {
-    NoiseBuffer buffer(NOISE_BUFFER_LENGTH);
-    for (int i = 0; i < buffer.length(); i++) {
-        buffer[i] = frnd(2.0f) - 1.0f;
+void Synthesizer::growNoiseBuffer() {
+    int oldSize = mNoiseBuffer.length();
+    mNoiseBuffer.resize(mNoiseBuffer.length() + NOISE_BUFFER_PERIOD_LENGTH);
+    for (int i = oldSize; i < mNoiseBuffer.length(); i++) {
+        mNoiseBuffer[i] = frnd(2.0f) - 1.0f;
     }
-    mNoiseBuffers.append(buffer);
 }
 
 void Synthesizer::start() {
@@ -208,7 +208,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
 //              phase=0;
                 phase %= period;
                 if (mSound->waveType() == 3) {
-                    useNextNoiseBuffer();
+                    moveNoiseBufferOffset();
                 }
             }
             // base waveform
@@ -228,8 +228,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
                 sample = (float)sin(fp * 2 * PI);
                 break;
             case 3: { // noise
-                const auto& buffer = mNoiseBuffers.at(mNoiseBufferIndex);
-                sample = buffer[phase * buffer.length() / period];
+                sample = mNoiseBuffer[mNoiseBufferOffset + phase * NOISE_BUFFER_PERIOD_LENGTH / period];
                 break;
             }
             }
