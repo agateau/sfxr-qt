@@ -59,7 +59,12 @@ private:
     int arp_limit;
     double arp_mod;
 
+    unsigned int mRandomSeed = 0;
+
     void resetSample(bool restart);
+
+    int rnd(int);
+    float frnd(float range);
 };
 
 #endif // SYNTHESIZER_H

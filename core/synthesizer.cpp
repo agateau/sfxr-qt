@@ -8,11 +8,11 @@ static const float PI = 3.14159265f;
 
 static const float MASTER_VOL = 0.05f;
 
-inline int rnd(int n) {
-    return rand() % (n + 1);
+int Synthesizer::rnd(int n) {
+    return rand_r(&mRandomSeed) % (n + 1);
 }
 
-inline float frnd(float range) {
+float Synthesizer::frnd(float range) {
     return (float)rnd(10000) / 10000 * range;
 }
 
@@ -28,6 +28,7 @@ Synthesizer::~Synthesizer() {
 
 void Synthesizer::init(const Sound* sound) {
     mSound->fromOther(sound);
+    mRandomSeed = 0;
     start();
 }
 
