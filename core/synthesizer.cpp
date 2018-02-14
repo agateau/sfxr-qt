@@ -10,21 +10,14 @@ static const float PI = 3.14159265f;
 
 static const float MASTER_VOL = 0.05f;
 
-static const int NOISE_BUFFER_PERIOD_LENGTH = 32;
-
-int Synthesizer::rnd(int n) {
-    return rand_r(&mRandomSeed) % (n + 1);
-}
-
-float Synthesizer::frnd(float range) {
-    return (float)rnd(10000) / 10000 * range;
-}
+static const int NOISE_SAMPLE_COUNT = 32;
 
 Synthesizer::SynthStrategy::~SynthStrategy() {
 }
 
 Synthesizer::Synthesizer()
-    : mSound(new Sound) {
+    : mSound(new Sound)
+    , mNoiseGenerator(NOISE_SAMPLE_COUNT) {
 }
 
 Synthesizer::~Synthesizer() {
@@ -32,14 +25,13 @@ Synthesizer::~Synthesizer() {
 
 void Synthesizer::init(const Sound* sound) {
     mSound->fromOther(sound);
-    mRandomSeed = 0;
-    mLastNoiseIndex = -1;
+    mNoiseGenerator.reset();
     start();
 }
 
 void Synthesizer::resetSample(bool restart) {
     if (!restart) {
-        mLastNoiseIndex = -1;
+        mNoiseGenerator.reset();
         phase = 0;
     }
     fperiod = 100.0 / (mSound->baseFrequency() * mSound->baseFrequency() + 0.001);
@@ -104,15 +96,6 @@ void Synthesizer::resetSample(bool restart) {
             rep_limit = 0;
         }
     }
-}
-
-float Synthesizer::getNoise(float alpha) {
-    int index = NOISE_BUFFER_PERIOD_LENGTH * alpha;
-    if (index != mLastNoiseIndex) {
-        mLastNoiseIndex = index;
-        mLastNoiseValue = frnd(2.0f) - 1.0f;
-    }
-    return mLastNoiseValue;
 }
 
 void Synthesizer::start() {
@@ -218,7 +201,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
                 sample = (float)sin(fp * 2 * PI);
                 break;
             case 3: { // noise
-                sample = getNoise(fp);
+                sample = mNoiseGenerator.get(fp);
                 break;
             }
             }

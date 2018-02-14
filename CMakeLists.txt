@@ -18,6 +18,7 @@ set(SRCS
     ui/main.cpp
     core/synthesizer.cpp
     core/generator.cpp
+    core/noisegenerator.cpp
     core/wavsaver.cpp
     core/sound.cpp
     core/soundplayer.cpp

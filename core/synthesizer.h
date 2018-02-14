@@ -1,6 +1,8 @@
 #ifndef SYNTHESIZER_H
 #define SYNTHESIZER_H
 
+#include "noisegenerator.h"
+
 #include <memory>
 
 class Sound;
@@ -58,17 +60,9 @@ private:
     int arp_limit;
     double arp_mod;
 
-    unsigned int mRandomSeed = 0;
-
-    int mLastNoiseIndex = -1;
-    float mLastNoiseValue = 0;
-
     void resetSample(bool restart);
 
-    int rnd(int);
-    float frnd(float range);
-
-    float getNoise(float alpha);
+    NoiseGenerator mNoiseGenerator;
 };
 
 #endif // SYNTHESIZER_H
