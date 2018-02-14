@@ -10,6 +10,8 @@ static const float PI = 3.14159265f;
 
 static const float MASTER_VOL = 0.05f;
 
+static const int NOISE_BUFFER_PERIOD_LENGTH = 32;
+
 int Synthesizer::rnd(int n) {
     return rand_r(&mRandomSeed) % (n + 1);
 }
@@ -23,7 +25,6 @@ Synthesizer::SynthStrategy::~SynthStrategy() {
 
 Synthesizer::Synthesizer()
     : mSound(new Sound) {
-    growNoiseBuffer();
 }
 
 Synthesizer::~Synthesizer() {
@@ -32,13 +33,13 @@ Synthesizer::~Synthesizer() {
 void Synthesizer::init(const Sound* sound) {
     mSound->fromOther(sound);
     mRandomSeed = 0;
-    mNoiseBufferOffset = 0;
+    mLastNoiseIndex = -1;
     start();
 }
 
 void Synthesizer::resetSample(bool restart) {
     if (!restart) {
-        mNoiseBufferOffset = 0;
+        mLastNoiseIndex = -1;
         phase = 0;
     }
     fperiod = 100.0 / (mSound->baseFrequency() * mSound->baseFrequency() + 0.001);
@@ -97,8 +98,6 @@ void Synthesizer::resetSample(bool restart) {
             phaser_buffer[i] = 0.0f;
         }
 
-        moveNoiseBufferOffset();
-
         rep_time = 0;
         rep_limit = (int)(pow(1.0f - mSound->repeatSpeed(), 2.0f) * 20000 + 32);
         if (mSound->repeatSpeed() == 0.0f) {
@@ -107,19 +106,13 @@ void Synthesizer::resetSample(bool restart) {
     }
 }
 
-void Synthesizer::moveNoiseBufferOffset() {
-    mNoiseBufferOffset += NOISE_BUFFER_PERIOD_LENGTH;
-    if (mNoiseBufferOffset == mNoiseBuffer.length()) {
-        growNoiseBuffer();
+float Synthesizer::getNoise(float alpha) {
+    int index = NOISE_BUFFER_PERIOD_LENGTH * alpha;
+    if (index != mLastNoiseIndex) {
+        mLastNoiseIndex = index;
+        mLastNoiseValue = frnd(2.0f) - 1.0f;
     }
-}
-
-void Synthesizer::growNoiseBuffer() {
-    int oldSize = mNoiseBuffer.length();
-    mNoiseBuffer.resize(mNoiseBuffer.length() + NOISE_BUFFER_PERIOD_LENGTH);
-    for (int i = oldSize; i < mNoiseBuffer.length(); i++) {
-        mNoiseBuffer[i] = frnd(2.0f) - 1.0f;
-    }
+    return mLastNoiseValue;
 }
 
 void Synthesizer::start() {
@@ -207,9 +200,6 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             if (phase >= period) {
 //              phase=0;
                 phase %= period;
-                if (mSound->waveType() == 3) {
-                    moveNoiseBufferOffset();
-                }
             }
             // base waveform
             float fp = (float)phase / period;
@@ -228,7 +218,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
                 sample = (float)sin(fp * 2 * PI);
                 break;
             case 3: { // noise
-                sample = mNoiseBuffer[mNoiseBufferOffset + phase * NOISE_BUFFER_PERIOD_LENGTH / period];
+                sample = getNoise(fp);
                 break;
             }
             }
