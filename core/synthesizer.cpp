@@ -200,10 +200,9 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             case 2: // sine
                 sample = (float)sin(fp * 2 * PI);
                 break;
-            case 3: { // noise
+            case 3: // noise
                 sample = mNoiseGenerator.get(fp);
                 break;
-            }
             }
             // lp filter
             float pp = fltp;
