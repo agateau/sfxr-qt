@@ -31,6 +31,11 @@ ColumnLayout {
         }
     }
 
+    Shortcut {
+        sequence: "CTRL+O"
+        onActivated: loadFileDialog.open();
+    }
+
     Button {
         Layout.fillWidth: true
         FileDialog {
@@ -47,6 +52,11 @@ ColumnLayout {
         onClicked: {
             saveFileDialog.open();
         }
+    }
+
+    Shortcut {
+        sequence: "CTRL+S"
+        onActivated: saveFileDialog.open();
     }
 
     VerticalSpacer {}
