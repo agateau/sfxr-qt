@@ -4,6 +4,7 @@
 #include "noisegenerator.h"
 
 #include <memory>
+#include <unordered_map>
 
 class Sound;
 
@@ -24,6 +25,11 @@ public:
 
 private:
     std::unique_ptr<Sound> mSound;
+    enum EnvelopStage {
+        Attack,
+        Sustain,
+        Decay,
+    };
 
     // Internal
     int phase;
@@ -33,9 +39,9 @@ private:
     double fdslide;
     float square_duty;
     float square_slide;
-    int env_stage;
+    EnvelopStage env_stage;
     int env_time;
-    int env_length[3];
+    std::unordered_map<EnvelopStage, int> env_length;
     float env_vol;
     float fphase;
     float fdphase;

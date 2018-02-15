@@ -69,11 +69,11 @@ void Synthesizer::resetSample(bool restart) {
         vib_amp = mSound->vibratoDepth() * 0.5f;
         // reset envelope
         env_vol = 0.0f;
-        env_stage = 0;
+        env_stage = Attack;
         env_time = 0;
-        env_length[0] = (int)(mSound->attackTime() * mSound->attackTime() * 100000.0f);
-        env_length[1] = (int)(mSound->sustainTime() * mSound->sustainTime() * 100000.0f);
-        env_length[2] = (int)(mSound->decayTime() * mSound->decayTime() * 100000.0f);
+        env_length[Attack] = int(mSound->attackTime() * mSound->attackTime() * 100000.0f);
+        env_length[Sustain] = int(mSound->sustainTime() * mSound->sustainTime() * 100000.0f);
+        env_length[Decay] = int(mSound->decayTime() * mSound->decayTime() * 100000.0f);
 
         fphase = pow(mSound->phaserOffset(), 2.0f) * 1020.0f;
         if (mSound->phaserOffset() < 0.0f) {
@@ -132,20 +132,22 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
         // volume envelope
         env_time++;
         if (env_time > env_length[env_stage]) {
-            env_time = 0;
-            env_stage++;
-            if (env_stage == 3) {
+            if (env_stage == Decay) {
                 return false;
             }
+            env_time = 0;
+            env_stage = EnvelopStage(int(env_stage) + 1);
         }
-        if (env_stage == 0) {
-            env_vol = (float)env_time / env_length[0];
-        }
-        if (env_stage == 1) {
-            env_vol = 1.0f + pow(1.0f - (float)env_time / env_length[1], 1.0f) * 2.0f * mSound->sustainPunch();
-        }
-        if (env_stage == 2) {
-            env_vol = 1.0f - (float)env_time / env_length[2];
+        switch (env_stage) {
+        case Attack:
+            env_vol = (float)env_time / env_length[Attack];
+            break;
+        case Sustain:
+            env_vol = 1.0f + pow(1.0f - (float)env_time / env_length[Sustain], 1.0f) * 2.0f * mSound->sustainPunch();
+            break;
+        case Decay:
+            env_vol = 1.0f - (float)env_time / env_length[Decay];
+            break;
         }
 
         // phaser step
