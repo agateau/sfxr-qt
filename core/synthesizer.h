@@ -6,6 +6,8 @@
 #include <memory>
 #include <unordered_map>
 
+static constexpr int PHASER_BUFFER_LENGTH = 1024;
+
 class Sound;
 
 class Synthesizer {
@@ -45,7 +47,7 @@ private:
     float env_vol;
     float fphase;
     float fdphase;
-    float phaser_buffer[1024];
+    float phaser_buffer[PHASER_BUFFER_LENGTH];
     int ipp;
     float fltp;
     float fltdp;

@@ -84,7 +84,7 @@ void Synthesizer::resetSample(bool restart) {
             fdphase = -fdphase;
         }
         ipp = 0;
-        for (int i = 0; i < 1024; i++) {
+        for (int i = 0; i < PHASER_BUFFER_LENGTH; i++) {
             phaser_buffer[i] = 0.0f;
         }
 
@@ -152,7 +152,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
 
         // phaser step
         fphase += fdphase;
-        int iphase = std::min(abs((int)fphase), 1023);
+        int iphase = std::min(abs((int)fphase), PHASER_BUFFER_LENGTH - 1);
 
         if (flthp_d != 0.0f) {
             flthp *= flthp_d;
@@ -207,9 +207,9 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             fltphp -= fltphp * flthp;
             sample = fltphp;
             // phaser
-            phaser_buffer[ipp & 1023] = sample;
-            sample += phaser_buffer[(ipp - iphase + 1024) & 1023];
-            ipp = (ipp + 1) & 1023;
+            phaser_buffer[ipp % PHASER_BUFFER_LENGTH] = sample;
+            sample += phaser_buffer[(ipp - iphase + PHASER_BUFFER_LENGTH) % PHASER_BUFFER_LENGTH];
+            ipp = (ipp + 1) % PHASER_BUFFER_LENGTH;
             // final accumulation and envelope application
             ssample += sample * env_vol;
         }
