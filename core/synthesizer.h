@@ -31,7 +31,6 @@ private:
     double fmaxperiod;
     double fslide;
     double fdslide;
-    int period;
     float square_duty;
     float square_slide;
     int env_stage;
@@ -40,7 +39,6 @@ private:
     float env_vol;
     float fphase;
     float fdphase;
-    int iphase;
     float phaser_buffer[1024];
     int ipp;
     float fltp;

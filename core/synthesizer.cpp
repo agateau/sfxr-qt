@@ -35,7 +35,6 @@ void Synthesizer::resetSample(bool restart) {
         phase = 0;
     }
     fperiod = 100.0 / (mSound->baseFrequency() * mSound->baseFrequency() + 0.001);
-    period = (int)fperiod;
     fmaxperiod = 100.0 / (mSound->minFrequency() * mSound->minFrequency() + 0.001);
     fslide = 1.0 - pow((double)mSound->slide(), 3.0) * 0.01;
     fdslide = -pow((double)mSound->deltaSlide(), 3.0) * 0.000001;
@@ -84,7 +83,6 @@ void Synthesizer::resetSample(bool restart) {
         if (mSound->phaserSweep() < 0.0f) {
             fdphase = -fdphase;
         }
-        iphase = abs((int)fphase);
         ipp = 0;
         for (int i = 0; i < 1024; i++) {
             phaser_buffer[i] = 0.0f;
@@ -129,17 +127,8 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             vib_phase += vib_speed;
             rfperiod = fperiod * (1.0 + sin(vib_phase) * vib_amp);
         }
-        period = (int)rfperiod;
-        if (period < 8) {
-            period = 8;
-        }
-        square_duty += square_slide;
-        if (square_duty < 0.0f) {
-            square_duty = 0.0f;
-        }
-        if (square_duty > 0.5f) {
-            square_duty = 0.5f;
-        }
+        int period = std::max((int)rfperiod, 8);
+        square_duty = qBound(0.0f, square_duty + square_slide, 0.5f);
         // volume envelope
         env_time++;
         if (env_time > env_length[env_stage]) {
@@ -161,10 +150,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
 
         // phaser step
         fphase += fdphase;
-        iphase = abs((int)fphase);
-        if (iphase > 1023) {
-            iphase = 1023;
-        }
+        int iphase = std::min(abs((int)fphase), 1023);
 
         if (flthp_d != 0.0f) {
             flthp *= flthp_d;
@@ -181,7 +167,6 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             float sample = 0.0f;
             phase++;
             if (phase >= period) {
-//              phase=0;
                 phase %= period;
             }
             // base waveform
@@ -206,13 +191,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             }
             // lp filter
             float pp = fltp;
-            fltw *= fltw_d;
-            if (fltw < 0.0f) {
-                fltw = 0.0f;
-            }
-            if (fltw > 0.1f) {
-                fltw = 0.1f;
-            }
+            fltw = qBound(0.0f, fltw * fltw_d, 0.1f);
             if (mSound->lpFilterCutoff() != 1.0f) {
                 fltdp += (sample - fltp) * fltw;
                 fltdp -= fltdp * fltdmp;
