@@ -1,6 +1,8 @@
 #ifndef SYNTHESIZER_H
 #define SYNTHESIZER_H
 
+#include "noisegenerator.h"
+
 #include <memory>
 
 class Sound;
@@ -41,7 +43,6 @@ private:
     int iphase;
     float phaser_buffer[1024];
     int ipp;
-    float noise_buffer[32];
     float fltp;
     float fltdp;
     float fltw;
@@ -60,6 +61,8 @@ private:
     double arp_mod;
 
     void resetSample(bool restart);
+
+    NoiseGenerator mNoiseGenerator;
 };
 
 #endif // SYNTHESIZER_H

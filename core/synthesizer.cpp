@@ -1,5 +1,7 @@
 #include "synthesizer.h"
 
+#include <QDebug>
+
 #include <math.h>
 
 #include "sound.h"
@@ -8,19 +10,14 @@ static const float PI = 3.14159265f;
 
 static const float MASTER_VOL = 0.05f;
 
-inline int rnd(int n) {
-    return rand() % (n + 1);
-}
-
-inline float frnd(float range) {
-    return (float)rnd(10000) / 10000 * range;
-}
+static const int NOISE_SAMPLE_COUNT = 32;
 
 Synthesizer::SynthStrategy::~SynthStrategy() {
 }
 
 Synthesizer::Synthesizer()
-    : mSound(new Sound) {
+    : mSound(new Sound)
+    , mNoiseGenerator(NOISE_SAMPLE_COUNT) {
 }
 
 Synthesizer::~Synthesizer() {
@@ -28,12 +25,13 @@ Synthesizer::~Synthesizer() {
 
 void Synthesizer::init(const Sound* sound) {
     mSound->fromOther(sound);
+    mNoiseGenerator.reset();
     start();
 }
 
-
 void Synthesizer::resetSample(bool restart) {
     if (!restart) {
+        mNoiseGenerator.reset();
         phase = 0;
     }
     fperiod = 100.0 / (mSound->baseFrequency() * mSound->baseFrequency() + 0.001);
@@ -90,10 +88,6 @@ void Synthesizer::resetSample(bool restart) {
         ipp = 0;
         for (int i = 0; i < 1024; i++) {
             phaser_buffer[i] = 0.0f;
-        }
-
-        for (int i = 0; i < 32; i++) {
-            noise_buffer[i] = frnd(2.0f) - 1.0f;
         }
 
         rep_time = 0;
@@ -189,10 +183,6 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             if (phase >= period) {
 //              phase=0;
                 phase %= period;
-                if (mSound->waveType() == 3)
-                    for (int i = 0; i < 32; i++) {
-                        noise_buffer[i] = frnd(2.0f) - 1.0f;
-                    }
             }
             // base waveform
             float fp = (float)phase / period;
@@ -211,7 +201,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
                 sample = (float)sin(fp * 2 * PI);
                 break;
             case 3: // noise
-                sample = noise_buffer[phase * 32 / period];
+                sample = mNoiseGenerator.get(fp);
                 break;
             }
             // lp filter
