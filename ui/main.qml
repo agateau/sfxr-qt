@@ -12,6 +12,9 @@ Window {
     width: 1100
     height: 800
 
+    SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
+    color: myPalette.window
+
     property real margin: 12
     property real columnWidth: 350
     property alias sound: soundListModel.currentSound
@@ -329,3 +332,4 @@ Window {
         sound: root.sound
     }
 }
+
