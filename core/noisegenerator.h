@@ -12,7 +12,7 @@ private:
     int mLastIndex = -1;
     float mLastValue = 0;
 
-    float frnd(float range);
+    float randomRange(float range);
 };
 
 #endif // NOISEGENERATOR_H
