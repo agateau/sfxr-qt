@@ -1,12 +1,11 @@
 import QtQuick 2.7
-import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.0
 import QtQuick.Dialogs 1.2
 
 import sfxr 1.0
 
-Window {
+ApplicationWindow {
     id: root
     visible: true
     width: 1100
