@@ -46,7 +46,7 @@ ColumnLayout {
                 height: parent.height - 2 * innerMargin
                 width: height
                 flat: true
-                text: "🗙"
+                text: "⨯"
 
                 onClicked: {
                     root.model.remove(model.index);
