@@ -5,7 +5,6 @@
 SoundListModel::SoundListModel(QObject* parent)
     : BaseSoundListModel(parent) {
     addNew(tr("New"), new Sound);
-    setCurrentRow(0);
 }
 
 int SoundListModel::rowCount(const QModelIndex& parent) const {
@@ -16,8 +15,8 @@ int SoundListModel::count() const {
     return mItems.size();
 }
 
-Sound* SoundListModel::currentSound() const {
-    return mCurrentSound;
+Sound* SoundListModel::soundForRow(int row) const {
+    return mItems.at(row).sound.get();
 }
 
 QVariant SoundListModel::data(const QModelIndex& index, int role) const {
@@ -51,34 +50,11 @@ void SoundListModel::addNew(const QString& text, Sound* sound) {
     mItems.insert(mItems.begin(), std::move(info));
     endInsertRows();
     countChanged(count());
-    setCurrentRow(0);
 }
 
 void SoundListModel::remove(int row) {
     int size = static_cast<int>(mItems.size());
     Q_ASSERT(row >= 0 && row < size);
-
-    if (size == 1) {
-        // Never remove the last item, reset it instead
-        SoundInfo& info = mItems.at(0);
-        info.sound->resetParams();
-        info.text = tr("New");
-        QModelIndex idx = index(0);
-        dataChanged(idx, idx);
-        return;
-    }
-
-    // If we are removing the current sound, select another one
-    Sound* removedSound = mItems.at(row).sound.get();
-    if (removedSound == mCurrentSound) {
-        if (row == size - 1) {
-            // Removing the last row, select the previous one
-            setCurrentRow(row - 1);
-        } else {
-            // Select the next one
-            setCurrentRow(row + 1);
-        }
-    }
 
     beginRemoveRows(QModelIndex(), row, row);
     mItems.erase(mItems.begin() + row);
@@ -87,7 +63,10 @@ void SoundListModel::remove(int row) {
     countChanged(count());
 }
 
-void SoundListModel::setCurrentRow(int row) {
-    mCurrentSound = mItems.at(row).sound.get();
-    currentSoundChanged(mCurrentSound);
+void SoundListModel::resetSoundAtRow(int row) {
+    SoundInfo& info = mItems.at(row);
+    info.sound->resetParams();
+    info.text = tr("New");
+    QModelIndex idx = index(row);
+    dataChanged(idx, idx);
 }

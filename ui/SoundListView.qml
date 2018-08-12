@@ -27,13 +27,13 @@ ColumnLayout {
                 right: parent.right
             }
             text: model.text
-            highlighted: model.sound === root.model.currentSound
+            highlighted: model.index === listView.currentIndex
 
             onClicked: {
                 if (highlighted) {
                     currentSoundClicked();
                 } else {
-                    root.model.setCurrentRow(model.index);
+                    listView.currentIndex = model.index;
                 }
             }
 
@@ -49,7 +49,24 @@ ColumnLayout {
                 text: "⨯"
 
                 onClicked: {
+                    if (listView.count === 1) {
+                        // If the item is alone, reset it, do not remove it
+                        root.model.resetSoundAtRow(0);
+                        return;
+                    }
+
+                    if (model.index === listView.currentIndex) {
+                        selectAnother();
+                    }
                     root.model.remove(model.index);
+                }
+
+                function selectAnother() {
+                    if (model.index < listView.count - 1) {
+                        listView.currentIndex = model.index + 1;
+                    } else {
+                        listView.currentIndex = model.index - 1;
+                    }
                 }
             }
         }

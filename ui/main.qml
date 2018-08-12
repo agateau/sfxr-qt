@@ -14,7 +14,10 @@ ApplicationWindow {
     property real margin: 12
     property real sideColumnWidth: 200
     property real columnWidth: 350
-    property alias sound: soundListModel.currentSound
+    property Sound sound: {
+        var row = soundListView.currentIndex;
+        row >= 0 ? soundListModel.soundForRow(row) : null;
+    }
 
     SoundPlayer {
         id: soundPlayer
@@ -38,6 +41,7 @@ ApplicationWindow {
         id: generator
         onSoundGenerated: {
             soundListModel.addNew(name, sound);
+            soundListView.currentIndex = 0;
         }
     }
 
@@ -62,6 +66,7 @@ ApplicationWindow {
             VerticalSpacer {}
 
             SoundListView {
+                id: soundListView
                 model: soundListModel
                 Layout.fillWidth: true
                 Layout.fillHeight: true

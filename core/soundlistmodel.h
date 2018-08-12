@@ -23,11 +23,10 @@ public:
 
     Q_INVOKABLE void addNew(const QString& text, Sound* sound);
     Q_INVOKABLE void remove(int row);
-    Q_INVOKABLE void setCurrentRow(int row);
+    Q_INVOKABLE Sound* soundForRow(int row) const;
+    Q_INVOKABLE void resetSoundAtRow(int row);
 
     int count() const override;
-
-    Sound* currentSound() const override;
 
 private:
     struct SoundInfo {
@@ -36,9 +35,6 @@ private:
     };
 
     std::vector<SoundInfo> mItems;
-    // We store the current sound as a pointer rather than a row so that it
-    // does not change when rows are removed before it.
-    Sound* mCurrentSound = nullptr;
 };
 
 #endif // SOUNDLISTMODEL_H
