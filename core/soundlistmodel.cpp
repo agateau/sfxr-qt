@@ -2,9 +2,11 @@
 
 #include "sound.h"
 
+#include <algorithm>
+
 SoundListModel::SoundListModel(QObject* parent)
     : BaseSoundListModel(parent) {
-    addNew(tr("New"), new Sound);
+    addNew(new Sound);
 }
 
 int SoundListModel::rowCount(const QModelIndex& parent) const {
@@ -16,7 +18,7 @@ int SoundListModel::count() const {
 }
 
 Sound* SoundListModel::soundForRow(int row) const {
-    return mItems.at(row).sound.get();
+    return mItems.at(row).get();
 }
 
 QVariant SoundListModel::data(const QModelIndex& index, int role) const {
@@ -24,12 +26,12 @@ QVariant SoundListModel::data(const QModelIndex& index, int role) const {
     if (row < 0 || row >= static_cast<int>(mItems.size())) {
         return QVariant();
     }
-    const SoundInfo& info = mItems.at(row);
+    Sound* sound = soundForRow(row);
     switch (role) {
     case TextRole:
-        return info.text;
+        return sound->name();
     case SoundRole:
-        return QVariant::fromValue(info.sound.get());
+        return QVariant::fromValue(sound);
     }
     return QVariant();
 }
@@ -41,14 +43,13 @@ QHash<int, QByteArray> SoundListModel::roleNames() const {
     };
 }
 
-void SoundListModel::addNew(const QString& text, Sound* sound) {
-    SoundInfo info;
-    info.sound.reset(sound);
-    info.text = text;
-
+void SoundListModel::addNew(Sound* sound) {
     beginInsertRows(QModelIndex(), 0, 0);
-    mItems.insert(mItems.begin(), std::move(info));
+    mItems.insert(mItems.begin(), std::unique_ptr<Sound>(sound));
     endInsertRows();
+    connect(sound, &Sound::nameChanged, this, [this, sound] {
+        onSoundNameChanged(sound);
+    });
     countChanged(count());
 }
 
@@ -64,9 +65,17 @@ void SoundListModel::remove(int row) {
 }
 
 void SoundListModel::resetSoundAtRow(int row) {
-    SoundInfo& info = mItems.at(row);
-    info.sound->resetParams();
-    info.text = tr("New");
+    soundForRow(row)->resetParams();
+    QModelIndex idx = index(row);
+    dataChanged(idx, idx);
+}
+
+void SoundListModel::onSoundNameChanged(Sound* sound) {
+    auto it = std::find_if(mItems.begin(), mItems.end(), [sound](const std::unique_ptr<Sound>& rowSound) {
+        return sound == rowSound.get();
+    });
+    Q_ASSERT(it != mItems.end());
+    int row = int(std::distance(mItems.begin(), it));
     QModelIndex idx = index(row);
     dataChanged(idx, idx);
 }

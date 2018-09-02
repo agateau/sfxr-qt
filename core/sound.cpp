@@ -3,12 +3,15 @@
 #include <QMetaProperty>
 #include <QUrl>
 
+static const char UNSAVED_SCHEME[] = "unsaved";
+
 Sound::Sound(QObject* parent)
     : BaseSound(parent) {
     resetParams();
 }
 
 void Sound::resetParams() {
+    setUnsavedName("New");
     setWaveType(0);
 
     setBaseFrequency(0.3f);
@@ -117,6 +120,8 @@ bool Sound::load(const QUrl& url) {
     }
 
     fclose(file);
+
+    setUrl(url);
     return true;
 }
 
@@ -174,5 +179,21 @@ bool Sound::save(const QUrl& url) {
     writeFloat(p_arp_mod);
 
     fclose(file);
+    setUrl(url);
     return true;
+}
+
+QString Sound::name() const {
+    QString fileName = mUrl.fileName();
+    return fileName.section(".", 0, -2);
+}
+
+void Sound::setUrl(const QUrl& url) {
+    BaseSound::setUrl(url);
+    nameChanged(name());
+}
+
+void Sound::setUnsavedName(const QString& name) {
+    auto urlString = QString("%1:///%2.sfxr").arg(UNSAVED_SCHEME).arg(name);
+    setUrl(urlString);
 }

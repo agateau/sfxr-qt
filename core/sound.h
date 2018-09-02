@@ -12,6 +12,15 @@ public:
     void fromOther(const Sound* other);
     Q_INVOKABLE bool load(const QUrl& url);
     Q_INVOKABLE bool save(const QUrl& url);
+
+    QString name() const override;
+
+    void setUrl(const QUrl& url) override;
+
+    /**
+     * Set the name of the sound until it is saved
+     */
+    void setUnsavedName(const QString& name);
 };
 
 Q_DECLARE_METATYPE(Sound*)

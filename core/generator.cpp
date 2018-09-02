@@ -20,7 +20,7 @@ Generator::Generator(QObject* parent)
 }
 
 void Generator::generatePickup() {
-    Sound* sound = createSound();
+    Sound* sound = createSound(tr("Pickup"));
     sound->setBaseFrequency(0.4f + frnd(0.5f));
     sound->setAttackTime(0.0f);
     sound->setSustainTime(frnd(0.1f));
@@ -30,11 +30,11 @@ void Generator::generatePickup() {
         sound->setChangeSpeed(0.5f + frnd(0.2f));
         sound->setChangeAmount(0.2f + frnd(0.4f));
     }
-    soundGenerated(tr("Pickup"), sound);
+    soundGenerated(sound);
 }
 
 void Generator::generateLaser() {
-    Sound* sound = createSound();
+    Sound* sound = createSound(tr("Laser"));
     int wave_type = rnd(2);
     if (wave_type == 2 && rnd(1)) {
         wave_type = rnd(1);
@@ -71,11 +71,11 @@ void Generator::generateLaser() {
     if (rnd(1)) {
         sound->setHpFilterCutoff(frnd(0.3f));
     }
-    soundGenerated(tr("Laser"), sound);
+    soundGenerated(sound);
 }
 
 void Generator::generateExplosion() {
-    Sound* sound = createSound();
+    Sound* sound = createSound(tr("Explosion"));
     sound->setWaveType(3);
     if (rnd(1)) {
         sound->setBaseFrequency(0.1f + frnd(0.4f));
@@ -107,11 +107,11 @@ void Generator::generateExplosion() {
         sound->setChangeSpeed(0.6f + frnd(0.3f));
         sound->setChangeAmount(0.8f - frnd(1.6f));
     }
-    soundGenerated(tr("Explosion"), sound);
+    soundGenerated(sound);
 }
 
 void Generator::generatePowerup() {
-    Sound* sound = createSound();
+    Sound* sound = createSound(tr("Power up"));
     if (rnd(1)) {
         sound->setWaveType(1);
     } else {
@@ -132,11 +132,11 @@ void Generator::generatePowerup() {
     sound->setAttackTime(0.0f);
     sound->setSustainTime(frnd(0.4f));
     sound->setDecayTime(0.1f + frnd(0.4f));
-    soundGenerated(tr("Power up"), sound);
+    soundGenerated(sound);
 }
 
 void Generator::generateHitHurt() {
-    Sound* sound = createSound();
+    Sound* sound = createSound(tr("Hit"));
     sound->setWaveType(rnd(2));
     if (sound->waveType() == 2) {
         sound->setWaveType(3);
@@ -152,11 +152,11 @@ void Generator::generateHitHurt() {
     if (rnd(1)) {
         sound->setHpFilterCutoff(frnd(0.3f));
     }
-    soundGenerated(tr("Hit"), sound);
+    soundGenerated(sound);
 }
 
 void Generator::generateJump() {
-    Sound* sound = createSound();
+    Sound* sound = createSound(tr("Jump"));
     sound->setWaveType(0);
     sound->setSquareDuty(frnd(0.6f));
     sound->setBaseFrequency(0.3f + frnd(0.3f));
@@ -170,11 +170,11 @@ void Generator::generateJump() {
     if (rnd(1)) {
         sound->setLpFilterCutoff(1.0f - frnd(0.6f));
     }
-    soundGenerated(tr("Jump"), sound);
+    soundGenerated(sound);
 }
 
 void Generator::generateBlipSelect() {
-    Sound* sound = createSound();
+    Sound* sound = createSound(tr("Blip"));
     sound->setWaveType(rnd(1));
     if (sound->waveType() == 0) {
         sound->setSquareDuty(frnd(0.6f));
@@ -184,11 +184,11 @@ void Generator::generateBlipSelect() {
     sound->setSustainTime(0.1f + frnd(0.1f));
     sound->setDecayTime(frnd(0.2f));
     sound->setHpFilterCutoff(0.1f);
-    soundGenerated(tr("Blip"), sound);
+    soundGenerated(sound);
 }
 
 void Generator::mutate(Sound* source) {
-    Sound* sound = createSound();
+    Sound* sound = createSound(tr("Mutated"));
     sound->fromOther(source);
     QMetaObject mo = BaseSound::staticMetaObject;
     for (int i = 0; i < mo.propertyCount(); ++i) {
@@ -198,11 +198,12 @@ void Generator::mutate(Sound* source) {
             property.write(sound, value);
         }
     }
-    soundGenerated(tr("Mutated"), sound);
+    soundGenerated(sound);
 }
 
-Sound* Generator::createSound() {
+Sound* Generator::createSound(const QString& name) {
     Sound* sound = new Sound;
+    sound->setUnsavedName(name);
     QQmlEngine::setObjectOwnership(sound, QQmlEngine::CppOwnership);
     return sound;
 }

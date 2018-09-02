@@ -21,7 +21,7 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    Q_INVOKABLE void addNew(const QString& text, Sound* sound);
+    Q_INVOKABLE void addNew(Sound* sound);
     Q_INVOKABLE void remove(int row);
     Q_INVOKABLE Sound* soundForRow(int row) const;
     Q_INVOKABLE void resetSoundAtRow(int row);
@@ -29,12 +29,9 @@ public:
     int count() const override;
 
 private:
-    struct SoundInfo {
-        QString text;
-        std::unique_ptr<Sound> sound;
-    };
+    void onSoundNameChanged(Sound* sound);
 
-    std::vector<SoundInfo> mItems;
+    std::vector<std::unique_ptr<Sound>> mItems;
 };
 
 #endif // SOUNDLISTMODEL_H

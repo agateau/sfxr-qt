@@ -1,8 +1,18 @@
 class: BaseSound
+includes:
+    - QUrl
 defaults:
     access: protected
     type: qreal
 properties:
+    - name: url
+      type: QUrl
+      impl: virtual
+    - name: name
+      type: QString
+      mutability: readonly
+      impl: pure
+
     - name: waveType
       type: int
       value: 0

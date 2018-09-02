@@ -40,7 +40,7 @@ ApplicationWindow {
     Generator {
         id: generator
         onSoundGenerated: {
-            soundListModel.addNew(name, sound);
+            soundListModel.addNew(sound);
             soundListView.currentIndex = 0;
         }
     }

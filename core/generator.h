@@ -25,10 +25,10 @@ public:
     Q_INVOKABLE void mutate(Sound* sound);
 
 signals:
-    void soundGenerated(QString name, Sound* sound);
+    void soundGenerated(Sound* sound);
 
 private:
-    Sound* createSound();
+    Sound* createSound(const QString& name);
 };
 
 #endif // GENERATOR_H
