@@ -38,6 +38,15 @@ ColumnLayout {
 
     Button {
         Layout.fillWidth: true
+        enabled: sound.hasRealUrl
+        text: qsTr("Save")
+        onClicked: {
+            saveSound();
+        }
+    }
+
+    Button {
+        Layout.fillWidth: true
         FileDialog {
             id: saveFileDialog
             title: qsTr("Save SFXR sound")
@@ -56,7 +65,13 @@ ColumnLayout {
 
     Shortcut {
         sequence: "CTRL+S"
-        onActivated: saveFileDialog.open();
+        onActivated: {
+            if (sound.hasRealUrl) {
+                saveSound();
+            } else {
+                saveFileDialog.open();
+            }
+        }
     }
 
     VerticalSpacer {}
@@ -101,5 +116,9 @@ ColumnLayout {
         onClicked: {
             exportWavFileDialog.open();
         }
+    }
+
+    function saveSound() {
+        sound.save(sound.url);
     }
 }

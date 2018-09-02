@@ -188,9 +188,14 @@ QString Sound::name() const {
     return fileName.section(".", 0, -2);
 }
 
+bool Sound::hasRealUrl() const {
+    return mUrl.scheme() != UNSAVED_SCHEME;
+}
+
 void Sound::setUrl(const QUrl& url) {
     BaseSound::setUrl(url);
     nameChanged(name());
+    hasRealUrlChanged(hasRealUrl());
 }
 
 void Sound::setUnsavedName(const QString& name) {

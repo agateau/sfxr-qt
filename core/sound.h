@@ -15,6 +15,8 @@ public:
 
     QString name() const override;
 
+    bool hasRealUrl() const override;
+
     void setUrl(const QUrl& url) override;
 
     /**

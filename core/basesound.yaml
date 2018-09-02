@@ -12,6 +12,10 @@ properties:
       type: QString
       mutability: readonly
       impl: pure
+    - name: hasRealUrl
+      type: bool
+      mutability: readonly
+      impl: pure
 
     - name: waveType
       type: int
