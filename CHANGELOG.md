@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.2.0 - 2018-10-29
+
+### Added
+
+- Added a "Save" button.
+- You can now open the file-open dialog with Ctrl+O and the file-save dialog
+  with Ctrl+S.
+- Show real filename in sound buttons.
+
+### Changed
+
+- Rework noise buffer so that output is reproducible: when looping the same
+  sound should be replayed.
+- Draw a thin line in the middle of bipolar sliders.
+
+### Fixed
+
+- Follow OS color theme, making the application usable if the theme is dark.
+- Fixed invisible "close sound" button by using a different symbol, which works
+  in all tested themes.
+- Make sure user interface elements do not overlap.
+- Fixed pip install doc (thanks to feinstaub).
+- Workaround for a bug with Slider which made it behave strangely when values
+  became negative.
+
 ## 1.1.0 - 2018-02-09
 
 ### Added
