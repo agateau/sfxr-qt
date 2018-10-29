@@ -8,7 +8,7 @@ import sfxr 1.0
 ApplicationWindow {
     id: root
     visible: true
-    minimumHeight: 800
+    minimumHeight: 600
     minimumWidth: leftColumn.width + mainContent.implicitWidth + fileActions.width + 2 * margin
 
     property real margin: 12
