@@ -1,5 +1,6 @@
 #include "sound.h"
 
+#include <QFile>
 #include <QMetaProperty>
 #include <QUrl>
 
@@ -55,19 +56,19 @@ void Sound::fromOther(const Sound* other) {
 
 bool Sound::load(const QUrl& url) {
     QString path = url.path();
-    FILE* file = fopen(path.toLocal8Bit().constData(), "rb");
-    if (!file) {
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly)) {
         return false;
     }
 
-    auto readFloat = [file] {
+    auto readFloat = [&file] {
         float value;
-        fread(&value, 1, sizeof(float), file);
+        file.read(reinterpret_cast<char*>(&value), sizeof(float));
         return value;
     };
-    auto readInt = [file] {
+    auto readInt = [&file] {
         int value;
-        fread(&value, 1, sizeof(int), file);
+        file.read(reinterpret_cast<char*>(&value), sizeof(int));
         return value;
     };
 
@@ -101,7 +102,7 @@ bool Sound::load(const QUrl& url) {
 
     // filter_on, unused
     bool unused;
-    fread(&unused, 1, sizeof(bool), file);
+    file.read(reinterpret_cast<char*>(&unused), sizeof(bool));
 
     setLpFilterResonance(readFloat());
     setLpFilterCutoff(readFloat());
@@ -119,29 +120,30 @@ bool Sound::load(const QUrl& url) {
         setChangeAmount(readFloat());
     }
 
-    fclose(file);
-
     setUrl(url);
     return true;
 }
 
 bool Sound::save(const QUrl& url) {
     QString path = url.path();
-    FILE* file = fopen(path.toLocal8Bit().constData(), "wb");
-    if (!file) {
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly)) {
         return false;
     }
 
     // File format uses float, but we use qreal, so we need to round the value down
-    auto writeFloat = [file](qreal value) {
+    auto writeFloat = [&file](qreal value) {
         float fvalue = float(value);
-        fwrite(&fvalue, 1, sizeof(float), file);
+        file.write(reinterpret_cast<char*>(&fvalue), sizeof(float));
+    };
+
+    auto writeInt = [&file](int value) {
+        file.write(reinterpret_cast<char*>(&value), sizeof(int));
     };
 
     int version = 102;
-    fwrite(&version, 1, sizeof(int), file);
-
-    fwrite(&wave_type, 1, sizeof(int), file);
+    writeInt(version);
+    writeInt(wave_type);
 
     writeFloat(sound_vol);
 
@@ -163,7 +165,7 @@ bool Sound::save(const QUrl& url) {
     writeFloat(p_env_punch);
 
     bool filter_on = false;
-    fwrite(&filter_on, 1, sizeof(bool), file);
+    file.write(reinterpret_cast<char*>(&filter_on), sizeof(bool));
     writeFloat(p_lpf_resonance);
     writeFloat(p_lpf_freq);
     writeFloat(p_lpf_ramp);
@@ -178,7 +180,6 @@ bool Sound::save(const QUrl& url) {
     writeFloat(p_arp_speed);
     writeFloat(p_arp_mod);
 
-    fclose(file);
     setUrl(url);
     return true;
 }
