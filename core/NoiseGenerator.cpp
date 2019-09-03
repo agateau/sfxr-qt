@@ -1,4 +1,4 @@
-#include "noisegenerator.h"
+#include "NoiseGenerator.h"
 
 #include <stdlib.h>
 

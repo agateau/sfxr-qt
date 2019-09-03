@@ -1,7 +1,7 @@
 #ifndef SOUND_H
 #define SOUND_H
 
-#include "basesound.h"
+#include "BaseSound.h"
 
 class Sound : public BaseSound {
     Q_OBJECT

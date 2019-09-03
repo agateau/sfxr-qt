@@ -1,9 +1,9 @@
-#include "wavsaver.h"
+#include "WavSaver.h"
 
 #include <QUrl>
 
-#include "sound.h"
-#include "synthesizer.h"
+#include "Sound.h"
+#include "Synthesizer.h"
 
 class WavExportStrategy : public Synthesizer::SynthStrategy {
 public:

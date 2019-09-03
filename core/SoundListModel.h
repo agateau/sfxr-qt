@@ -1,7 +1,7 @@
 #ifndef SOUNDLISTMODEL_H
 #define SOUNDLISTMODEL_H
 
-#include "basesoundlistmodel.h"
+#include "BaseSoundListModel.h"
 
 #include <memory>
 

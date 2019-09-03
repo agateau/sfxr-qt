@@ -1,7 +1,7 @@
 #ifndef SYNTHESIZER_H
 #define SYNTHESIZER_H
 
-#include "noisegenerator.h"
+#include "NoiseGenerator.h"
 
 #include <memory>
 #include <unordered_map>

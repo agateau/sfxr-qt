@@ -2,11 +2,11 @@
 #include <QIcon>
 #include <QQmlApplicationEngine>
 
-#include "generator.h"
-#include "soundlistmodel.h"
-#include "sound.h"
-#include "soundplayer.h"
-#include "wavsaver.h"
+#include "Generator.h"
+#include "SoundListModel.h"
+#include "Sound.h"
+#include "SoundPlayer.h"
+#include "WavSaver.h"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);

@@ -16,19 +16,19 @@ include_directories(
 
 set(SRCS
     ui/main.cpp
-    core/synthesizer.cpp
-    core/generator.cpp
-    core/noisegenerator.cpp
-    core/wavsaver.cpp
-    core/sound.cpp
-    core/soundplayer.cpp
-    core/soundlistmodel.cpp
+    core/Synthesizer.cpp
+    core/Generator.cpp
+    core/NoiseGenerator.cpp
+    core/WavSaver.cpp
+    core/Sound.cpp
+    core/SoundPlayer.cpp
+    core/SoundListModel.cpp
 )
 
 qpropgen(QPROPGEN_SRCS
-    core/basesound.yaml
-    core/basesoundlistmodel.yaml
-    core/basewavsaver.yaml
+    core/BaseSound.yaml
+    core/BaseSoundListModel.yaml
+    core/BaseWavSaver.yaml
 )
 
 qt5_add_resources(QRC_SRCS ui/qml.qrc)

@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <basewavsaver.h>
+#include <BaseWavSaver.h>
 
 class QUrl;
 

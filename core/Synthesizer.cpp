@@ -1,10 +1,10 @@
-#include "synthesizer.h"
+#include "Synthesizer.h"
 
 #include <QDebug>
 
 #include <math.h>
 
-#include "sound.h"
+#include "Sound.h"
 
 static const float PI = 3.14159265f;
 

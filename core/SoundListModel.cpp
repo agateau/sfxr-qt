@@ -1,6 +1,6 @@
-#include "soundlistmodel.h"
+#include "SoundListModel.h"
 
-#include "sound.h"
+#include "Sound.h"
 
 #include <algorithm>
 

@@ -1,11 +1,11 @@
-#include <generator.h>
+#include <Generator.h>
 
 #include <QMetaProperty>
 #include <QQmlEngine>
 
 #include <math.h>
 
-#include <sound.h>
+#include <Sound.h>
 
 inline int rnd(int n) {
     return rand() % (n + 1);
