@@ -1,5 +1,6 @@
 #include "Sound.h"
 
+#include <QDebug>
 #include <QFile>
 #include <QMetaProperty>
 #include <QUrl>
@@ -128,6 +129,7 @@ bool Sound::save(const QUrl& url) {
     QString path = url.path();
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
+        qWarning() << "Cannot write to" << path;
         return false;
     }
 
