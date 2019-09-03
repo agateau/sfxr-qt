@@ -3,11 +3,14 @@
 
 #include <QObject>
 
+#include <memory>
+
 class Sound;
 
 /**
- * Randomly generate sounds. The new sound is passed in the soundGenerated()
- * signal. Generator is the initial owner of the generated sound.
+ * QML wrapper over SoundUtils functions.
+ * The new sound is passed in the soundGenerated() signal. Generator is the
+ * initial owner of the generated sound.
  */
 class Generator : public QObject {
     Q_OBJECT
@@ -28,7 +31,7 @@ signals:
     void soundGenerated(Sound* sound);
 
 private:
-    Sound* createSound(const QString& name);
+    void finish(std::unique_ptr<Sound> soundPtr, const QString& name);
 };
 
 #endif // GENERATOR_H
