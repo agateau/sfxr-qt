@@ -1,3 +1,3 @@
 [submodule "qpropgen"]
-	path = qpropgen
+	path = 3rdparty/qpropgen
 	url = https://github.com/agateau/qpropgen
