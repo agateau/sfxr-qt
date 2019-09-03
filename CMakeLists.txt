@@ -2,8 +2,9 @@ project(sfxr-qt)
 cmake_minimum_required(VERSION 3.7)
 
 find_package(SDL REQUIRED)
-find_package(Qt5 REQUIRED Gui Quick Widgets)
+find_package(Qt5 REQUIRED Gui Quick Widgets Test)
 include(3rdparty/qpropgen/cmake/qpropgen.cmake)
+add_subdirectory(3rdparty/catch2)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual -std=c++11")
@@ -14,8 +15,8 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/core
 )
 
-set(SRCS
-    ui/main.cpp
+# sfxr-qt-lib
+set(sfxr_qt_lib_SRCS
     core/Synthesizer.cpp
     core/Generator.cpp
     core/NoiseGenerator.cpp
@@ -31,10 +32,17 @@ qpropgen(QPROPGEN_SRCS
     core/BaseWavSaver.yaml
 )
 
+add_library(sfxr-qt-lib STATIC ${sfxr_qt_lib_SRCS} ${QPROPGEN_SRCS})
+target_link_libraries(sfxr-qt-lib SDL Qt5::Core Qt5::Widgets Qt5::Quick)
+
+# sfxr-qt
+set(sfxr_qt_app_SRCS ui/main.cpp)
 qt5_add_resources(QRC_SRCS ui/qml.qrc)
 
-add_executable(sfxr-qt ${SRCS} ${QPROPGEN_SRCS} ${QRC_SRCS})
-target_link_libraries(sfxr-qt SDL Qt5::Widgets Qt5::Quick)
+add_executable(sfxr-qt ${sfxr_qt_app_SRCS} ${QRC_SRCS})
+target_link_libraries(sfxr-qt sfxr-qt-lib)
+
+add_subdirectory(tests)
 
 # Installation
 install(TARGETS sfxr-qt RUNTIME DESTINATION bin)
