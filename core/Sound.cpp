@@ -18,34 +18,34 @@ void Sound::resetParams() {
     setUnsavedName("New");
     setWaveType(0);
 
-    setBaseFrequency(0.3f);
-    setMinFrequency(0.0f);
-    setSlide(0.0f);
-    setDeltaSlide(0.0f);
-    setSquareDuty(0.0f);
-    setDutySweep(0.0f);
+    setBaseFrequency(0.3);
+    setMinFrequency(0.0);
+    setSlide(0.0);
+    setDeltaSlide(0.0);
+    setSquareDuty(0.0);
+    setDutySweep(0.0);
 
-    setVibratoDepth(0.0f);
-    setVibratoSpeed(0.0f);
+    setVibratoDepth(0.0);
+    setVibratoSpeed(0.0);
 
-    setAttackTime(0.0f);
-    setSustainTime(0.3f);
-    setDecayTime(0.4f);
-    setSustainPunch(0.0f);
+    setAttackTime(0.0);
+    setSustainTime(0.3);
+    setDecayTime(0.4);
+    setSustainPunch(0.0);
 
-    setLpFilterResonance(0.0f);
-    setLpFilterCutoff(1.0f);
-    setLpFilterCutoffSweep(0.0f);
-    setHpFilterCutoff(0.0f);
-    setHpFilterCutoffSweep(0.0f);
+    setLpFilterResonance(0.0);
+    setLpFilterCutoff(1.0);
+    setLpFilterCutoffSweep(0.0);
+    setHpFilterCutoff(0.0);
+    setHpFilterCutoffSweep(0.0);
 
-    setPhaserOffset(0.0f);
-    setPhaserSweep(0.0f);
+    setPhaserOffset(0.0);
+    setPhaserSweep(0.0);
 
-    setRepeatSpeed(0.0f);
+    setRepeatSpeed(0.0);
 
-    setChangeSpeed(0.0f);
-    setChangeAmount(0.0f);
+    setChangeSpeed(0.0);
+    setChangeAmount(0.0);
 }
 
 void Sound::fromOther(const Sound* other) {

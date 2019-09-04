@@ -14,10 +14,10 @@ bool load(Sound* sound, const QUrl& url) {
         return false;
     }
 
-    auto readFloat = [&file] {
+    auto readQReal = [&file] {
         float value;
         file.read(reinterpret_cast<char*>(&value), sizeof(float));
-        return value;
+        return qreal(value);
     };
     auto readInt = [&file] {
         int value;
@@ -32,45 +32,45 @@ bool load(Sound* sound, const QUrl& url) {
 
     sound->setWaveType(readInt());
 
-    sound->setVolume(version == 102 ? readFloat() : 0.5f);
+    sound->setVolume(version == 102 ? readQReal() : 0.5);
 
-    sound->setBaseFrequency(readFloat());
-    sound->setMinFrequency(readFloat());
-    sound->setSlide(readFloat());
+    sound->setBaseFrequency(readQReal());
+    sound->setMinFrequency(readQReal());
+    sound->setSlide(readQReal());
     if (version >= 101) {
-        sound->setDeltaSlide(readFloat());
+        sound->setDeltaSlide(readQReal());
     }
-    sound->setSquareDuty(readFloat());
-    sound->setDutySweep(readFloat());
+    sound->setSquareDuty(readQReal());
+    sound->setDutySweep(readQReal());
 
-    sound->setVibratoDepth(readFloat());
-    sound->setVibratoSpeed(readFloat());
+    sound->setVibratoDepth(readQReal());
+    sound->setVibratoSpeed(readQReal());
     // p_vib_delay, unused
-    readFloat();
+    readQReal();
 
-    sound->setAttackTime(readFloat());
-    sound->setSustainTime(readFloat());
-    sound->setDecayTime(readFloat());
-    sound->setSustainPunch(readFloat());
+    sound->setAttackTime(readQReal());
+    sound->setSustainTime(readQReal());
+    sound->setDecayTime(readQReal());
+    sound->setSustainPunch(readQReal());
 
     // filter_on, unused
     bool unused;
     file.read(reinterpret_cast<char*>(&unused), sizeof(bool));
 
-    sound->setLpFilterResonance(readFloat());
-    sound->setLpFilterCutoff(readFloat());
-    sound->setLpFilterCutoffSweep(readFloat());
-    sound->setHpFilterCutoff(readFloat());
-    sound->setHpFilterCutoffSweep(readFloat());
+    sound->setLpFilterResonance(readQReal());
+    sound->setLpFilterCutoff(readQReal());
+    sound->setLpFilterCutoffSweep(readQReal());
+    sound->setHpFilterCutoff(readQReal());
+    sound->setHpFilterCutoffSweep(readQReal());
 
-    sound->setPhaserOffset(readFloat());
-    sound->setPhaserSweep(readFloat());
+    sound->setPhaserOffset(readQReal());
+    sound->setPhaserSweep(readQReal());
 
-    sound->setRepeatSpeed(readFloat());
+    sound->setRepeatSpeed(readQReal());
 
     if (version >= 101) {
-        sound->setChangeSpeed(readFloat());
-        sound->setChangeAmount(readFloat());
+        sound->setChangeSpeed(readQReal());
+        sound->setChangeAmount(readQReal());
     }
 
     sound->setUrl(url);
@@ -87,7 +87,7 @@ bool save(const Sound* sound, const QUrl& url) {
     }
 
     // File format uses float, but we use qreal, so we need to round the value down
-    auto writeFloat = [&file](qreal value) {
+    auto writeQReal = [&file](qreal value) {
         float fvalue = float(value);
         file.write(reinterpret_cast<char*>(&fvalue), sizeof(float));
     };
@@ -100,40 +100,40 @@ bool save(const Sound* sound, const QUrl& url) {
     writeInt(version);
     writeInt(sound->waveType());
 
-    writeFloat(sound->volume());
+    writeQReal(sound->volume());
 
-    writeFloat(sound->baseFrequency());
-    writeFloat(sound->minFrequency());
-    writeFloat(sound->slide());
-    writeFloat(sound->deltaSlide());
-    writeFloat(sound->squareDuty());
-    writeFloat(sound->dutySweep());
+    writeQReal(sound->baseFrequency());
+    writeQReal(sound->minFrequency());
+    writeQReal(sound->slide());
+    writeQReal(sound->deltaSlide());
+    writeQReal(sound->squareDuty());
+    writeQReal(sound->dutySweep());
 
-    writeFloat(sound->vibratoDepth());
-    writeFloat(sound->vibratoSpeed());
+    writeQReal(sound->vibratoDepth());
+    writeQReal(sound->vibratoSpeed());
     qreal p_vib_delay = 0;
-    writeFloat(p_vib_delay);
+    writeQReal(p_vib_delay);
 
-    writeFloat(sound->attackTime());
-    writeFloat(sound->sustainTime());
-    writeFloat(sound->decayTime());
-    writeFloat(sound->sustainPunch());
+    writeQReal(sound->attackTime());
+    writeQReal(sound->sustainTime());
+    writeQReal(sound->decayTime());
+    writeQReal(sound->sustainPunch());
 
     bool filter_on = false;
     file.write(reinterpret_cast<char*>(&filter_on), sizeof(bool));
-    writeFloat(sound->lpFilterResonance());
-    writeFloat(sound->lpFilterCutoff());
-    writeFloat(sound->lpFilterCutoffSweep());
-    writeFloat(sound->hpFilterCutoff());
-    writeFloat(sound->hpFilterCutoffSweep());
+    writeQReal(sound->lpFilterResonance());
+    writeQReal(sound->lpFilterCutoff());
+    writeQReal(sound->lpFilterCutoffSweep());
+    writeQReal(sound->hpFilterCutoff());
+    writeQReal(sound->hpFilterCutoffSweep());
 
-    writeFloat(sound->phaserOffset());
-    writeFloat(sound->phaserSweep());
+    writeQReal(sound->phaserOffset());
+    writeQReal(sound->phaserSweep());
 
-    writeFloat(sound->repeatSpeed());
+    writeQReal(sound->repeatSpeed());
 
-    writeFloat(sound->changeSpeed());
-    writeFloat(sound->changeAmount());
+    writeQReal(sound->changeSpeed());
+    writeQReal(sound->changeAmount());
 
     return true;
 }
