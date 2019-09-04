@@ -173,7 +173,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             }
             // base waveform
             float fp = (float)phase / period;
-            switch (mSound->waveType()) {
+            switch (mSound->waveForm()) {
             case 0: // square
                 if (fp < square_duty) {
                     sample = 0.5f;

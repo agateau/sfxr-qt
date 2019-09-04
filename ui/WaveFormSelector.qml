@@ -10,11 +10,11 @@ RowLayout {
 
     ButtonGroup {
         buttons: root.children
-        checkedButton: buttons[sound.waveType]
+        checkedButton: buttons[sound.waveForm]
         onCheckedButtonChanged: {
             for (var i = 0; i < buttons.length; ++i) {
                 if (buttons[i].checked) {
-                    sound.waveType = i;
+                    sound.waveForm = i;
                     return;
                 }
             }

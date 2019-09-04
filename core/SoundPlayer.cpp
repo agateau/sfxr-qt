@@ -49,7 +49,7 @@ void SoundPlayer::setSound(Sound* value) {
     }
     mSound = value;
     if (mSound) {
-        connect(mSound, &Sound::waveTypeChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::waveFormChanged, this, &SoundPlayer::onSoundModified);
 
         connect(mSound, &Sound::attackTimeChanged, this, &SoundPlayer::onSoundModified);
         connect(mSound, &Sound::sustainTimeChanged, this, &SoundPlayer::onSoundModified);

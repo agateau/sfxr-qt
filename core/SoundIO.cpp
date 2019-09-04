@@ -30,7 +30,7 @@ bool load(Sound* sound, const QUrl& url) {
         return false;
     }
 
-    sound->setWaveType(readInt());
+    sound->setWaveForm(readInt());
 
     sound->setVolume(version == 102 ? readQReal() : 0.5);
 
@@ -98,7 +98,7 @@ bool save(const Sound* sound, const QUrl& url) {
 
     int version = 102;
     writeInt(version);
-    writeInt(sound->waveType());
+    writeInt(sound->waveForm());
 
     writeQReal(sound->volume());
 

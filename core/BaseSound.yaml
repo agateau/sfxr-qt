@@ -17,7 +17,7 @@ properties:
       mutability: readonly
       impl: pure
 
-    - name: waveType
+    - name: waveForm
       type: int
       value: 0
 
