@@ -20,81 +20,57 @@ properties:
     - name: waveType
       type: int
       value: 0
-      varName: wave_type
 
     - name: attackTime
       value: 0
-      varName: p_env_attack
     - name: sustainTime
       value: 0.3
-      varName: p_env_sustain
     - name: sustainPunch
       value: 0
-      varName: p_env_punch
     - name: decayTime
       value: 0.4
-      varName: p_env_decay
 
     - name: baseFrequency
       value: 0.3
-      varName: p_base_freq
     - name: minFrequency
       value: 0
-      varName: p_freq_limit
     - name: slide
       value: 0
-      varName: p_freq_ramp
     - name: deltaSlide
       value: 0
-      varName: p_freq_dramp
     - name: vibratoDepth
       value: 0
-      varName: p_vib_strength
     - name: vibratoSpeed
       value: 0
-      varName: p_vib_speed
 
     - name: changeAmount
       value: 0
-      varName: p_arp_mod
     - name: changeSpeed
       value: 0
-      varName: p_arp_speed
 
     - name: squareDuty
       value: 0
-      varName: p_duty
     - name: dutySweep
       value: 0
-      varName: p_duty_ramp
 
     - name: repeatSpeed
       value: 0
-      varName: p_repeat_speed
 
     - name: phaserOffset
       value: 0
-      varName: p_pha_offset
     - name: phaserSweep
       value: 0
-      varName: p_pha_ramp
 
     - name: lpFilterCutoff
       value: 1
-      varName: p_lpf_freq
     - name: lpFilterCutoffSweep
       value: 0
-      varName: p_lpf_ramp
     - name: lpFilterResonance
       value: 0
-      varName: p_lpf_resonance
     - name: hpFilterCutoff
       value: 0
-      varName: p_hpf_freq
     - name: hpFilterCutoffSweep
       value: 0
-      varName: p_hpf_ramp
 
     - name: volume
       value: 0.5f
-      varName: sound_vol
