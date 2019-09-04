@@ -19,6 +19,7 @@ set(sfxr_qt_lib_SRCS
     core/SoundUtils.cpp
     core/SoundPlayer.cpp
     core/SoundListModel.cpp
+    core/SoundIO.cpp
 )
 
 qpropgen(QPROPGEN_SRCS
