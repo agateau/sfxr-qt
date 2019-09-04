@@ -1,11 +1,12 @@
-#include <Generator.h>
+#include <SoundUtils.h>
 
 #include <QMetaProperty>
-#include <QQmlEngine>
 
 #include <math.h>
 
 #include <Sound.h>
+
+namespace SoundUtils {
 
 inline int rnd(int n) {
     return rand() % (n + 1);
@@ -15,12 +16,8 @@ inline float frnd(float range) {
     return (float)rnd(10000) / 10000 * range;
 }
 
-Generator::Generator(QObject* parent)
-    : QObject(parent) {
-}
-
-void Generator::generatePickup() {
-    Sound* sound = createSound(tr("Pickup"));
+std::unique_ptr<Sound> generatePickup() {
+    auto sound = std::make_unique<Sound>();
     sound->setBaseFrequency(0.4f + frnd(0.5f));
     sound->setAttackTime(0.0f);
     sound->setSustainTime(frnd(0.1f));
@@ -30,11 +27,11 @@ void Generator::generatePickup() {
         sound->setChangeSpeed(0.5f + frnd(0.2f));
         sound->setChangeAmount(0.2f + frnd(0.4f));
     }
-    soundGenerated(sound);
+    return sound;
 }
 
-void Generator::generateLaser() {
-    Sound* sound = createSound(tr("Laser"));
+std::unique_ptr<Sound> generateLaser() {
+    auto sound = std::make_unique<Sound>();
     int wave_type = rnd(2);
     if (wave_type == 2 && rnd(1)) {
         wave_type = rnd(1);
@@ -71,11 +68,11 @@ void Generator::generateLaser() {
     if (rnd(1)) {
         sound->setHpFilterCutoff(frnd(0.3f));
     }
-    soundGenerated(sound);
+    return sound;
 }
 
-void Generator::generateExplosion() {
-    Sound* sound = createSound(tr("Explosion"));
+std::unique_ptr<Sound> generateExplosion() {
+    auto sound = std::make_unique<Sound>();
     sound->setWaveType(3);
     if (rnd(1)) {
         sound->setBaseFrequency(0.1f + frnd(0.4f));
@@ -107,11 +104,11 @@ void Generator::generateExplosion() {
         sound->setChangeSpeed(0.6f + frnd(0.3f));
         sound->setChangeAmount(0.8f - frnd(1.6f));
     }
-    soundGenerated(sound);
+    return sound;
 }
 
-void Generator::generatePowerup() {
-    Sound* sound = createSound(tr("Power up"));
+std::unique_ptr<Sound> generatePowerup() {
+    auto sound = std::make_unique<Sound>();
     if (rnd(1)) {
         sound->setWaveType(1);
     } else {
@@ -132,11 +129,11 @@ void Generator::generatePowerup() {
     sound->setAttackTime(0.0f);
     sound->setSustainTime(frnd(0.4f));
     sound->setDecayTime(0.1f + frnd(0.4f));
-    soundGenerated(sound);
+    return sound;
 }
 
-void Generator::generateHitHurt() {
-    Sound* sound = createSound(tr("Hit"));
+std::unique_ptr<Sound> generateHitHurt() {
+    auto sound = std::make_unique<Sound>();
     sound->setWaveType(rnd(2));
     if (sound->waveType() == 2) {
         sound->setWaveType(3);
@@ -152,11 +149,11 @@ void Generator::generateHitHurt() {
     if (rnd(1)) {
         sound->setHpFilterCutoff(frnd(0.3f));
     }
-    soundGenerated(sound);
+    return sound;
 }
 
-void Generator::generateJump() {
-    Sound* sound = createSound(tr("Jump"));
+std::unique_ptr<Sound> generateJump() {
+    auto sound = std::make_unique<Sound>();
     sound->setWaveType(0);
     sound->setSquareDuty(frnd(0.6f));
     sound->setBaseFrequency(0.3f + frnd(0.3f));
@@ -170,11 +167,11 @@ void Generator::generateJump() {
     if (rnd(1)) {
         sound->setLpFilterCutoff(1.0f - frnd(0.6f));
     }
-    soundGenerated(sound);
+    return sound;
 }
 
-void Generator::generateBlipSelect() {
-    Sound* sound = createSound(tr("Blip"));
+std::unique_ptr<Sound> generateBlipSelect() {
+    auto sound = std::make_unique<Sound>();
     sound->setWaveType(rnd(1));
     if (sound->waveType() == 0) {
         sound->setSquareDuty(frnd(0.6f));
@@ -184,12 +181,10 @@ void Generator::generateBlipSelect() {
     sound->setSustainTime(0.1f + frnd(0.1f));
     sound->setDecayTime(frnd(0.2f));
     sound->setHpFilterCutoff(0.1f);
-    soundGenerated(sound);
+    return sound;
 }
 
-void Generator::mutate(Sound* source) {
-    Sound* sound = createSound(tr("Mutated"));
-    sound->fromOther(source);
+void mutate(Sound* sound) {
     QMetaObject mo = BaseSound::staticMetaObject;
     for (int i = 0; i < mo.propertyCount(); ++i) {
         QMetaProperty property = mo.property(i);
@@ -198,12 +193,6 @@ void Generator::mutate(Sound* source) {
             property.write(sound, value);
         }
     }
-    soundGenerated(sound);
 }
 
-Sound* Generator::createSound(const QString& name) {
-    Sound* sound = new Sound;
-    sound->setUnsavedName(name);
-    QQmlEngine::setObjectOwnership(sound, QQmlEngine::CppOwnership);
-    return sound;
-}
+} // namespace
