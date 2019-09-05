@@ -26,6 +26,8 @@ int main(int argc, char* argv[]) {
     qmlRegisterType<Generator>("sfxr", 1, 0, "Generator");
     qmlRegisterType<SoundListModel>("sfxr", 1, 0, "SoundListModel");
     qmlRegisterType<WavSaver>("sfxr", 1, 0, "WavSaver");
+    WaveForm::registerType();
+
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();

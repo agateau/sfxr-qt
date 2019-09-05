@@ -8,36 +8,44 @@ RowLayout {
     id: root
     property Sound sound
 
-    ButtonGroup {
-        buttons: root.children
-        checkedButton: buttons[sound.waveForm]
-        onCheckedButtonChanged: {
-            for (var i = 0; i < buttons.length; ++i) {
-                if (buttons[i].checked) {
-                    sound.waveForm = i;
-                    return;
-                }
-            }
+    ListModel {
+        id: waveFormModel
+        // Must be kept in sync with WaveForm::Enum in WaveForm.h
+        ListElement {
+            waveForm: WaveForm.Square
+            text: qsTr("Square")
+        }
+        ListElement {
+            waveForm: WaveForm.Sawtooth
+            text: qsTr("Sawtooth")
+        }
+        ListElement {
+            waveForm: WaveForm.Sine
+            text: qsTr("Sine")
+        }
+        ListElement {
+            waveForm: WaveForm.Noise
+            text: qsTr("Noise")
         }
     }
 
-    Button {
-        checkable: true
-        text: qsTr("Square")
+    ButtonGroup {
+        id: buttonGroup
     }
 
-    Button {
-        checkable: true
-        text: qsTr("Sawtooth")
-    }
-
-    Button {
-        checkable: true
-        text: qsTr("Sine")
-    }
-
-    Button {
-        checkable: true
-        text: qsTr("Noise")
+    Repeater {
+        model: waveFormModel
+        Button {
+            checkable: true
+            // Need to cast because waveFormModel.waveForm is an int
+            checked: Number(sound.waveForm) === model.waveForm
+            text: model.text
+            ButtonGroup.group: buttonGroup
+            onCheckedChanged: {
+                if (checked) {
+                    sound.waveForm = model.waveForm;
+                }
+            }
+        }
     }
 }

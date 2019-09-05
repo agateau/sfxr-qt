@@ -20,6 +20,7 @@ set(sfxr_qt_lib_SRCS
     core/SoundPlayer.cpp
     core/SoundListModel.cpp
     core/SoundIO.cpp
+    core/WaveForm.cpp
 )
 
 qpropgen(QPROPGEN_SRCS
@@ -32,6 +33,7 @@ add_library(sfxr-qt-lib STATIC ${sfxr_qt_lib_SRCS} ${QPROPGEN_SRCS})
 
 target_link_libraries(sfxr-qt-lib
     SDL
+    Qt5::Qml
     Qt5::Core
 )
 

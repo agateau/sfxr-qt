@@ -16,7 +16,7 @@ Sound::Sound(QObject* parent)
 
 void Sound::resetParams() {
     setUnsavedName("New");
-    setWaveForm(0);
+    setWaveForm(WaveForm::Square);
 
     setBaseFrequency(0.3);
     setMinFrequency(0.0);

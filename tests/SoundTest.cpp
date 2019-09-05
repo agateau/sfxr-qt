@@ -31,6 +31,7 @@ static bool fuzzyEq(const Sound& s1, const Sound& s2) {
 }
 
 TEST_CASE("Sound") {
+    WaveForm::registerType();
     SECTION("load sfxr") {
         Sound sound;
         auto path = QUrl::fromLocalFile(QString(TEST_FIXTURES_DIR) + "/pickup.sfxr");

@@ -1,6 +1,7 @@
 class: BaseSound
 includes:
     - QUrl
+    - WaveForm.h
 defaults:
     access: protected
     type: qreal
@@ -18,8 +19,8 @@ properties:
       impl: pure
 
     - name: waveForm
-      type: int
-      value: 0
+      type: WaveForm::Enum
+      value: WaveForm::Square
 
     - name: attackTime
       value: 0

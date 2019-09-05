@@ -30,7 +30,7 @@ bool load(Sound* sound, const QUrl& url) {
         return false;
     }
 
-    sound->setWaveForm(readInt());
+    sound->setWaveForm(static_cast<WaveForm::Enum>(readInt()));
 
     sound->setVolume(version == 102 ? readQReal() : 0.5);
 
