@@ -4,13 +4,9 @@
 
 namespace WaveForm {
 
-static int rnd(int n) {
-    return rand() % (n + 1);
-}
-
-Enum random(int max) {
-    Q_ASSERT(max <= Last);
-    return static_cast<Enum>(rnd(max));
+Enum random(const std::vector<Enum>& values) {
+    int idx = std::rand() % values.size();
+    return values.at(idx);
 }
 
 void registerType() {

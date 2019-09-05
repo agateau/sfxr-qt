@@ -32,7 +32,9 @@ std::unique_ptr<Sound> generatePickup() {
 
 std::unique_ptr<Sound> generateLaser() {
     auto sound = std::make_unique<Sound>();
-    sound->setWaveForm(WaveForm::random(2));
+    sound->setWaveForm(WaveForm::random({WaveForm::Square,
+                                         WaveForm::Sawtooth,
+                                         WaveForm::Sine}));
     sound->setBaseFrequency(0.5f + frnd(0.5f));
     sound->setMinFrequency(sound->baseFrequency() - 0.2f - frnd(0.6f));
     if (sound->minFrequency() < 0.2f) {
@@ -130,10 +132,9 @@ std::unique_ptr<Sound> generatePowerup() {
 
 std::unique_ptr<Sound> generateHitHurt() {
     auto sound = std::make_unique<Sound>();
-    sound->setWaveForm(WaveForm::random(2));
-    if (sound->waveForm() == WaveForm::Sine) {
-        sound->setWaveForm(WaveForm::Noise);
-    }
+    sound->setWaveForm(WaveForm::random({WaveForm::Square,
+                                         WaveForm::Sawtooth,
+                                         WaveForm::Noise}));
     if (sound->waveForm() == WaveForm::Square) {
         sound->setSquareDuty(frnd(0.6f));
     }
@@ -168,7 +169,7 @@ std::unique_ptr<Sound> generateJump() {
 
 std::unique_ptr<Sound> generateBlipSelect() {
     auto sound = std::make_unique<Sound>();
-    sound->setWaveForm(WaveForm::random(1));
+    sound->setWaveForm(WaveForm::random({WaveForm::Square, WaveForm::Sawtooth}));
     if (sound->waveForm() == WaveForm::Square) {
         sound->setSquareDuty(frnd(0.6f));
     }

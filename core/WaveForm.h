@@ -15,7 +15,7 @@ enum Enum {
     Last = Noise,
 };
 
-Enum random(int max);
+Enum random(const std::vector<Enum>& values);
 
 void registerType();
 
