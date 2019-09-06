@@ -43,9 +43,20 @@ TEST_CASE("Sound") {
         CHECK(sound.phaserOffset() == 0);
     }
 
-    SECTION("load/save sfxr") {
+    SECTION("load sfxj") {
+        Sound sound;
+        auto path = QUrl::fromLocalFile(QString(TEST_FIXTURES_DIR) + "/pickup.sfxj");
+        REQUIRE(sound.load(path));
+        CHECK(sound.waveForm() == 0);
+        CHECK(sound.sustainTime() == Approx(0.05916));
+        CHECK(sound.baseFrequency() == Approx(0.5019));
+        CHECK(sound.changeSpeed() == Approx(0.54938));
+        CHECK(sound.phaserOffset() == 0);
+    }
+
+    SECTION("load/save sfxj") {
         QTemporaryDir tempDir;
-        auto path = tempDir.filePath("test.sfxr");
+        auto path = tempDir.filePath("test.sfxj");
         Sound sound1;
         SoundUtils::mutate(&sound1);
         REQUIRE(sound1.save(path));

@@ -2,6 +2,10 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMetaProperty>
 #include <QUrl>
 
 #include <Sound.h>
@@ -9,19 +13,38 @@
 namespace SoundIO {
 
 bool load(Sound* sound, const QUrl& url) {
-    QFile file(url.path());
+    QString path = url.path();
+    QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "Cannot open file";
         return false;
     }
+    QString ext = path.section(".", -1);
+    if (ext == "sfxr") {
+        if (!loadSfxr(sound, &file)) {
+            return false;
+        }
+    } else if (ext == "sfxj") {
+        if (!loadSfxj(sound, &file)) {
+            return false;
+        }
+    } else {
+        qWarning() << "Can't load from" << ext;
+        return false;
+    }
+    sound->setUrl(url);
+    return true;
+}
 
-    auto readQReal = [&file] {
+bool loadSfxr(Sound* sound, QIODevice* device) {
+    auto readQReal = [device] {
         float value;
-        file.read(reinterpret_cast<char*>(&value), sizeof(float));
+        device->read(reinterpret_cast<char*>(&value), sizeof(float));
         return qreal(value);
     };
-    auto readInt = [&file] {
+    auto readInt = [device] {
         int value;
-        file.read(reinterpret_cast<char*>(&value), sizeof(int));
+        device->read(reinterpret_cast<char*>(&value), sizeof(int));
         return value;
     };
 
@@ -55,7 +78,7 @@ bool load(Sound* sound, const QUrl& url) {
 
     // filter_on, unused
     bool unused;
-    file.read(reinterpret_cast<char*>(&unused), sizeof(bool));
+    device->read(reinterpret_cast<char*>(&unused), sizeof(bool));
 
     sound->setLpFilterResonance(readQReal());
     sound->setLpFilterCutoff(readQReal());
@@ -72,9 +95,6 @@ bool load(Sound* sound, const QUrl& url) {
         sound->setChangeSpeed(readQReal());
         sound->setChangeAmount(readQReal());
     }
-
-    sound->setUrl(url);
-
     return true;
 }
 
@@ -85,15 +105,26 @@ bool save(const Sound* sound, const QUrl& url) {
         qWarning() << "Cannot write to" << path;
         return false;
     }
+    QString ext = path.section(".", -1);
+    if (ext == "sfxr") {
+        return saveSfxr(sound, &file);
+    } else if (ext == "sfxj") {
+        return saveSfxj(sound, &file);
+    } else {
+        qWarning() << "Can't save to" << ext;
+        return false;
+    }
+}
 
+bool saveSfxr(const Sound* sound, QIODevice* device) {
     // File format uses float, but we use qreal, so we need to round the value down
-    auto writeQReal = [&file](qreal value) {
+    auto writeQReal = [device](qreal value) {
         float fvalue = float(value);
-        file.write(reinterpret_cast<char*>(&fvalue), sizeof(float));
+        device->write(reinterpret_cast<char*>(&fvalue), sizeof(float));
     };
 
-    auto writeInt = [&file](int value) {
-        file.write(reinterpret_cast<char*>(&value), sizeof(int));
+    auto writeInt = [device](int value) {
+        device->write(reinterpret_cast<char*>(&value), sizeof(int));
     };
 
     int version = 102;
@@ -120,7 +151,7 @@ bool save(const Sound* sound, const QUrl& url) {
     writeQReal(sound->sustainPunch());
 
     bool filter_on = false;
-    file.write(reinterpret_cast<char*>(&filter_on), sizeof(bool));
+    device->write(reinterpret_cast<char*>(&filter_on), sizeof(bool));
     writeQReal(sound->lpFilterResonance());
     writeQReal(sound->lpFilterCutoff());
     writeQReal(sound->lpFilterCutoffSweep());
@@ -135,6 +166,57 @@ bool save(const Sound* sound, const QUrl& url) {
     writeQReal(sound->changeSpeed());
     writeQReal(sound->changeAmount());
 
+    return true;
+}
+
+static constexpr std::array<int, 2> SUPPORTED_VERSION = {1, 0};
+
+bool loadSfxj(Sound* sound, QIODevice* device) {
+    auto json = device->readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(json);
+    if (!doc.isObject()) {
+        qWarning() << "Invalid json";
+        return false;
+    }
+    auto root = doc.object();
+    auto versionArray = root["version"].toArray();
+    if (versionArray.size() != 2) {
+        qWarning() << "Invalid json";
+        return false;
+    }
+    int maj = versionArray.at(0).toInt();
+    int min = versionArray.at(1).toInt();
+    if (maj != SUPPORTED_VERSION[0] || min < SUPPORTED_VERSION[1]) {
+        qWarning() << "Unsupported version" << maj << min;
+        return false;
+    }
+
+    auto props = root["properties"].toObject();
+    auto it = props.constBegin(), end = props.constEnd();
+    for (; it != end; ++it) {
+        sound->setProperty(it.key().toUtf8(), it.value().toVariant());
+    }
+    return true;
+}
+
+bool saveSfxj(const Sound* sound, QIODevice* device) {
+    QJsonObject root;
+    root["version"] = QJsonArray({1, 0});
+    QJsonObject props;
+    QMetaObject mo = BaseSound::staticMetaObject;
+    for (int i = 0; i < mo.propertyCount(); ++i) {
+        QMetaProperty property = mo.property(i);
+        QString name = property.name();
+        if (name == "url") {
+            // We don't want to save this property
+            continue;
+        }
+        props[name] = QJsonValue::fromVariant(property.read(sound));
+    }
+    root["properties"] = props;
+
+    auto json = QJsonDocument(root).toJson();
+    device->write(json);
     return true;
 }
 

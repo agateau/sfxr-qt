@@ -19,7 +19,9 @@ ColumnLayout {
         FileDialog {
             id: loadFileDialog
             title: qsTr("Load SFXR sound")
-            nameFilters: [qsTr("sfxr files") + " (*.sfxr)",
+            nameFilters: [
+                qsTr("New format (*.sfxj)") + " (*.sfxj)",
+                qsTr("Old format (*.sfxr)") + " (*.sfxr)",
                 qsTr("All files") + " (*)"]
             onAccepted: {
                 sound.load(fileUrl);
@@ -51,7 +53,9 @@ ColumnLayout {
             id: saveFileDialog
             title: qsTr("Save SFXR sound")
             selectExisting: false
-            nameFilters: [qsTr("sfxr files") + " (*.sfxr)",
+            nameFilters: [
+                qsTr("New format (*.sfxj)") + " (*.sfxj)",
+                qsTr("Old format (*.sfxr)") + " (*.sfxr)",
                 qsTr("All files") + " (*)"]
             onAccepted: {
                 sound.save(fileUrl);
