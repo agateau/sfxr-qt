@@ -189,7 +189,7 @@ ApplicationWindow {
 
                     SliderGroup {
                         Layout.fillWidth: true
-                        enabled: sound.waveType === 0
+                        enabled: Number(sound.waveForm) === WaveForm.Square
                         text: qsTr("Square")
                         sound: root.sound
                         model: ListModel {
