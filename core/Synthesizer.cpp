@@ -174,20 +174,20 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             // base waveform
             float fp = (float)phase / period;
             switch (mSound->waveForm()) {
-            case 0: // square
+            case WaveForm::Square:
                 if (fp < square_duty) {
                     sample = 0.5f;
                 } else {
                     sample = -0.5f;
                 }
                 break;
-            case 1: // sawtooth
+            case WaveForm::Sawtooth:
                 sample = 1.0f - fp * 2;
                 break;
-            case 2: // sine
+            case WaveForm::Sine:
                 sample = (float)sin(fp * 2 * PI);
                 break;
-            case 3: // noise
+            case WaveForm::Noise:
                 sample = mNoiseGenerator.get(fp);
                 break;
             }
