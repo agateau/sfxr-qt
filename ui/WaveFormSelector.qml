@@ -20,6 +20,10 @@ RowLayout {
             text: qsTr("Sawtooth")
         }
         ListElement {
+            waveForm: WaveForm.Triangle
+            text: qsTr("Triangle")
+        }
+        ListElement {
             waveForm: WaveForm.Sine
             text: qsTr("Sine")
         }

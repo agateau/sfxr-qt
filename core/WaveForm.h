@@ -13,6 +13,7 @@ enum Enum {
     Sawtooth=1,
     Sine=2,
     Noise=3,
+    Triangle,
 };
 
 Enum random(const std::vector<Enum>& values);

@@ -12,6 +12,11 @@ static const float MASTER_VOL = 0.05f;
 
 static const int NOISE_SAMPLE_COUNT = 32;
 
+inline float ramp(float x, float x1, float x2, float y1, float y2) {
+    float k = (x - x1) / (x2 - x1); // k goes from 0 to 1
+    return y1 + k * (y2 - y1);
+}
+
 Synthesizer::SynthStrategy::~SynthStrategy() {
 }
 
@@ -189,6 +194,9 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
                 break;
             case WaveForm::Noise:
                 sample = mNoiseGenerator.get(fp);
+                break;
+            case WaveForm::Triangle:
+                sample = fp < 0.5f ? ramp(fp, 0, 0.5, -1, 1) : ramp(fp, 0.5, 1, 1, -1);
                 break;
             }
             // lp filter
