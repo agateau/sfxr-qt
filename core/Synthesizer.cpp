@@ -4,6 +4,7 @@
 
 #include <math.h>
 
+#include "NoiseGenerator.h"
 #include "Sound.h"
 
 static const qreal PI = 3.14159265;
@@ -17,12 +18,56 @@ inline qreal ramp(qreal x, qreal x1, qreal x2, qreal y1, qreal y2) {
     return y1 + k * (y2 - y1);
 }
 
+class WaveFormGenerator {
+public:
+    WaveFormGenerator() : mNoiseGenerator(NOISE_SAMPLE_COUNT) {}
+
+    void setSound(const Sound* sound) {
+        mSound = sound;
+        mNoiseGenerator.reset();
+    }
+
+    qreal generate(int phase, int period) {
+        qreal fp = qreal(phase) / period;
+
+        switch (mSound->waveForm()) {
+        case WaveForm::Square:
+            return fp < mSquareDuty ? 0.5 : -0.5;
+        case WaveForm::Sawtooth:
+            return 1.0 - fp * 2;
+        case WaveForm::Sine:
+            return sin(fp * 2 * PI);
+        case WaveForm::Noise:
+            return mNoiseGenerator.get(fp);
+        case WaveForm::Triangle:
+            return fp < 0.5 ? ramp(fp, 0, 0.5, -1, 1) : ramp(fp, 0.5, 1, 1, -1);
+        }
+        Q_UNREACHABLE();
+    }
+
+    void onResetSample() {
+        mSquareDuty = 0.5 - mSound->squareDuty() * 0.5;
+    }
+
+    void update() {
+        if (mSound->waveForm() != WaveForm::Square) {
+            return;
+        }
+        mSquareDuty = qBound(0.0, mSquareDuty - mSound->dutySweep() * 0.00005, 0.5);
+    }
+
+private:
+    const Sound* mSound = nullptr;
+    qreal mSquareDuty = 0;
+    NoiseGenerator mNoiseGenerator;
+};
+
 Synthesizer::SynthStrategy::~SynthStrategy() {
 }
 
 Synthesizer::Synthesizer()
     : mSound(new Sound)
-    , mNoiseGenerator(NOISE_SAMPLE_COUNT) {
+    , mWaveFormGenerator(new WaveFormGenerator) {
 }
 
 Synthesizer::~Synthesizer() {
@@ -30,21 +75,16 @@ Synthesizer::~Synthesizer() {
 
 void Synthesizer::init(const Sound* sound) {
     mSound->fromOther(sound);
-    mNoiseGenerator.reset();
+    mWaveFormGenerator->setSound(sound);
     start();
 }
 
 void Synthesizer::resetSample(bool restart) {
-    if (!restart) {
-        mNoiseGenerator.reset();
-        phase = 0;
-    }
     fperiod = 100.0 / (mSound->baseFrequency() * mSound->baseFrequency() + 0.001);
     fmaxperiod = 100.0 / (mSound->minFrequency() * mSound->minFrequency() + 0.001);
     fslide = 1.0 - pow(mSound->slide(), 3.0) * 0.01;
     fdslide = -pow(mSound->deltaSlide(), 3.0) * 0.000001;
-    square_duty = 0.5 - mSound->squareDuty() * 0.5;
-    square_slide = -mSound->dutySweep() * 0.00005;
+    mWaveFormGenerator->onResetSample();
     if (mSound->changeAmount() >= 0.0) {
         arp_mod = 1.0 - pow(mSound->changeAmount(), 2.0) * 0.9;
     } else {
@@ -102,6 +142,7 @@ void Synthesizer::resetSample(bool restart) {
 }
 
 void Synthesizer::start() {
+    phase = 0;
     resetSample(false);
 }
 
@@ -133,7 +174,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             rfperiod = fperiod * (1.0 + sin(vib_phase) * vib_amp);
         }
         int period = std::max(int(rfperiod), 8);
-        square_duty = qBound(0.0, square_duty + square_slide, 0.5);
+        mWaveFormGenerator->update();
         // volume envelope
         env_time++;
         if (env_time > env_length[env_stage]) {
@@ -171,34 +212,13 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
 
         qreal ssample = 0.0;
         for (int si = 0; si < 8; si++) { // 8x supersampling
-            qreal sample = 0.0;
             phase++;
             if (phase >= period) {
                 phase %= period;
             }
             // base waveform
-            qreal fp = qreal(phase) / period;
-            switch (mSound->waveForm()) {
-            case WaveForm::Square:
-                if (fp < square_duty) {
-                    sample = 0.5;
-                } else {
-                    sample = -0.5;
-                }
-                break;
-            case WaveForm::Sawtooth:
-                sample = 1.0 - fp * 2;
-                break;
-            case WaveForm::Sine:
-                sample = sin(fp * 2 * PI);
-                break;
-            case WaveForm::Noise:
-                sample = mNoiseGenerator.get(fp);
-                break;
-            case WaveForm::Triangle:
-                sample = fp < 0.5 ? ramp(fp, 0, 0.5, -1, 1) : ramp(fp, 0.5, 1, 1, -1);
-                break;
-            }
+            qreal sample = mWaveFormGenerator->generate(phase, period);
+
             // lp filter
             qreal pp = fltp;
             fltw = qBound(0.0, fltw * fltw_d, 0.1);

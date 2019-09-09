@@ -1,8 +1,6 @@
 #ifndef SYNTHESIZER_H
 #define SYNTHESIZER_H
 
-#include "NoiseGenerator.h"
-
 #include <memory>
 #include <unordered_map>
 
@@ -10,6 +8,7 @@
 
 static constexpr int PHASER_BUFFER_LENGTH = 1024;
 
+class WaveFormGenerator;
 class Sound;
 
 class Synthesizer {
@@ -42,7 +41,6 @@ private:
     qreal fslide;
     qreal fdslide;
     qreal square_duty;
-    qreal square_slide;
     EnvelopStage env_stage;
     int env_time;
     std::unordered_map<EnvelopStage, int> env_length;
@@ -70,7 +68,7 @@ private:
 
     void resetSample(bool restart);
 
-    NoiseGenerator mNoiseGenerator;
+    std::unique_ptr<WaveFormGenerator> mWaveFormGenerator;
 };
 
 #endif // SYNTHESIZER_H
