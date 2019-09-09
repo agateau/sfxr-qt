@@ -11,14 +11,14 @@ static const int SCHEDULED_PLAY_DELAY = 200;
 
 class BufferStrategy : public Synthesizer::SynthStrategy {
 public:
-    BufferStrategy(float* buffer)
+    BufferStrategy(qreal* buffer)
         : buffer(buffer) {
     }
-    void write(float ssample) override {
-        *buffer++ = qBound(-1.f, ssample, 1.f);;
+    void write(qreal ssample) override {
+        *buffer++ = qBound(-1., ssample, 1.);
     }
 private:
-    float* buffer;
+    qreal* buffer;
 };
 
 SoundPlayer::SoundPlayer(QObject* parent)
@@ -128,12 +128,12 @@ void SoundPlayer::sdlAudioCallback(unsigned char* stream, int len) {
     QMutexLocker lock(&mMutex);
     if (mPlayThreadData.playing) {
         unsigned int l = len / 2;
-        float fbuf[l];
+        qreal fbuf[l];
         memset(fbuf, 0, sizeof(fbuf));
         BufferStrategy strategy(fbuf);
         mPlayThreadData.playing = mPlayThreadData.synth->synthSample(l, &strategy);
         while (l--) {
-            float f = qBound(-1.f, fbuf[l], 1.f);
+            qreal f = qBound(-1., fbuf[l], 1.);
             ((Sint16*)stream)[l] = (Sint16)(f * 32767);
         }
         if (mPlayThreadData.loop && !mPlayThreadData.playing) {

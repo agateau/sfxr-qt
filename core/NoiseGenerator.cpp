@@ -11,15 +11,15 @@ void NoiseGenerator::reset() {
     mLastIndex = -1;
 }
 
-float NoiseGenerator::get(float alpha) {
-    int index = mSampleCount * alpha;
+qreal NoiseGenerator::get(qreal alpha) {
+    int index = int(mSampleCount * alpha);
     if (index != mLastIndex) {
         mLastIndex = index;
-        mLastValue = randomRange(2.0f) - 1.0f;
+        mLastValue = randomRange(2.0) - 1.0;
     }
     return mLastValue;
 }
 
-float NoiseGenerator::randomRange(float range) {
-    return rand_r(&mRandomSeed) / float(RAND_MAX) * range;
+qreal NoiseGenerator::randomRange(qreal range) {
+    return rand_r(&mRandomSeed) / qreal(RAND_MAX) * range;
 }

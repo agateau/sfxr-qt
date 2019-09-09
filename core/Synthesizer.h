@@ -15,7 +15,7 @@ public:
     class SynthStrategy {
     public:
         virtual ~SynthStrategy();
-        virtual void write(float sample) = 0;
+        virtual void write(qreal sample) = 0;
     };
 
     Synthesizer();
@@ -35,36 +35,36 @@ private:
 
     // Internal
     int phase;
-    double fperiod;
-    double fmaxperiod;
-    double fslide;
-    double fdslide;
-    float square_duty;
-    float square_slide;
+    qreal fperiod;
+    qreal fmaxperiod;
+    qreal fslide;
+    qreal fdslide;
+    qreal square_duty;
+    qreal square_slide;
     EnvelopStage env_stage;
     int env_time;
     std::unordered_map<EnvelopStage, int> env_length;
-    float env_vol;
-    float fphase;
-    float fdphase;
-    float phaser_buffer[PHASER_BUFFER_LENGTH];
+    qreal env_vol;
+    qreal fphase;
+    qreal fdphase;
+    qreal phaser_buffer[PHASER_BUFFER_LENGTH];
     int ipp;
-    float fltp;
-    float fltdp;
-    float fltw;
-    float fltw_d;
-    float fltdmp;
-    float fltphp;
-    float flthp;
-    float flthp_d;
-    float vib_phase;
-    float vib_speed;
-    float vib_amp;
+    qreal fltp;
+    qreal fltdp;
+    qreal fltw;
+    qreal fltw_d;
+    qreal fltdmp;
+    qreal fltphp;
+    qreal flthp;
+    qreal flthp_d;
+    qreal vib_phase;
+    qreal vib_speed;
+    qreal vib_amp;
     int rep_time;
     int rep_limit;
     int arp_time;
     int arp_limit;
-    double arp_mod;
+    qreal arp_mod;
 
     void resetSample(bool restart);
 

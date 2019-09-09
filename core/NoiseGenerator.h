@@ -1,6 +1,8 @@
 #ifndef NOISEGENERATOR_H
 #define NOISEGENERATOR_H
 
+#include <QtGlobal>
+
 /**
  * Generates a reproducible sequence of random values between -1 and 1
  * for a period.
@@ -17,14 +19,14 @@ class NoiseGenerator {
 public:
     explicit NoiseGenerator(int sampleCount);
     void reset();
-    float get(float alpha);
+    qreal get(qreal alpha);
 private:
     const int mSampleCount;
     unsigned int mRandomSeed = 0;
     int mLastIndex = -1;
-    float mLastValue = 0;
+    qreal mLastValue = 0;
 
-    float randomRange(float range);
+    qreal randomRange(qreal range);
 };
 
 #endif // NOISEGENERATOR_H

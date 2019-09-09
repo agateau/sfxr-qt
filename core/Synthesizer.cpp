@@ -6,14 +6,14 @@
 
 #include "Sound.h"
 
-static const float PI = 3.14159265f;
+static const qreal PI = 3.14159265;
 
-static const float MASTER_VOL = 0.05f;
+static const qreal MASTER_VOL = 0.05;
 
 static const int NOISE_SAMPLE_COUNT = 32;
 
-inline float ramp(float x, float x1, float x2, float y1, float y2) {
-    float k = (x - x1) / (x2 - x1); // k goes from 0 to 1
+inline qreal ramp(qreal x, qreal x1, qreal x2, qreal y1, qreal y2) {
+    qreal k = (x - x1) / (x2 - x1); // k goes from 0 to 1
     return y1 + k * (y2 - y1);
 }
 
@@ -41,61 +41,61 @@ void Synthesizer::resetSample(bool restart) {
     }
     fperiod = 100.0 / (mSound->baseFrequency() * mSound->baseFrequency() + 0.001);
     fmaxperiod = 100.0 / (mSound->minFrequency() * mSound->minFrequency() + 0.001);
-    fslide = 1.0 - pow((double)mSound->slide(), 3.0) * 0.01;
-    fdslide = -pow((double)mSound->deltaSlide(), 3.0) * 0.000001;
-    square_duty = 0.5f - mSound->squareDuty() * 0.5f;
-    square_slide = -mSound->dutySweep() * 0.00005f;
-    if (mSound->changeAmount() >= 0.0f) {
-        arp_mod = 1.0 - pow((double)mSound->changeAmount(), 2.0) * 0.9;
+    fslide = 1.0 - pow(mSound->slide(), 3.0) * 0.01;
+    fdslide = -pow(mSound->deltaSlide(), 3.0) * 0.000001;
+    square_duty = 0.5 - mSound->squareDuty() * 0.5;
+    square_slide = -mSound->dutySweep() * 0.00005;
+    if (mSound->changeAmount() >= 0.0) {
+        arp_mod = 1.0 - pow(mSound->changeAmount(), 2.0) * 0.9;
     } else {
-        arp_mod = 1.0 + pow((double)mSound->changeAmount(), 2.0) * 10.0;
+        arp_mod = 1.0 + pow(mSound->changeAmount(), 2.0) * 10.0;
     }
     arp_time = 0;
-    arp_limit = (int)(pow(1.0f - mSound->changeSpeed(), 2.0f) * 20000 + 32);
-    if (mSound->changeSpeed() == 1.0f) {
+    arp_limit = int(pow(1.0 - mSound->changeSpeed(), 2.0) * 20000 + 32);
+    if (mSound->changeSpeed() == 1.0) {
         arp_limit = 0;
     }
     if (!restart) {
         // reset filter
-        fltp = 0.0f;
-        fltdp = 0.0f;
-        fltw = pow(mSound->lpFilterCutoff(), 3.0f) * 0.1f;
-        fltw_d = 1.0f + mSound->lpFilterCutoffSweep() * 0.0001f;
-        fltdmp = 5.0f / (1.0f + pow(mSound->lpFilterResonance(), 2.0f) * 20.0f) * (0.01f + fltw);
-        if (fltdmp > 0.8f) {
-            fltdmp = 0.8f;
+        fltp = 0.0;
+        fltdp = 0.0;
+        fltw = pow(mSound->lpFilterCutoff(), 3.0) * 0.1;
+        fltw_d = 1.0 + mSound->lpFilterCutoffSweep() * 0.0001;
+        fltdmp = 5.0 / (1.0 + pow(mSound->lpFilterResonance(), 2.0) * 20.0) * (0.01 + fltw);
+        if (fltdmp > 0.8) {
+            fltdmp = 0.8;
         }
-        fltphp = 0.0f;
-        flthp = pow(mSound->hpFilterCutoff(), 2.0f) * 0.1f;
-        flthp_d = 1.0 + mSound->hpFilterCutoffSweep() * 0.0003f;
+        fltphp = 0.0;
+        flthp = pow(mSound->hpFilterCutoff(), 2.0) * 0.1;
+        flthp_d = 1.0 + mSound->hpFilterCutoffSweep() * 0.0003;
         // reset vibrato
-        vib_phase = 0.0f;
-        vib_speed = pow(mSound->vibratoSpeed(), 2.0f) * 0.01f;
-        vib_amp = mSound->vibratoDepth() * 0.5f;
+        vib_phase = 0.0;
+        vib_speed = pow(mSound->vibratoSpeed(), 2.0) * 0.01;
+        vib_amp = mSound->vibratoDepth() * 0.5;
         // reset envelope
-        env_vol = 0.0f;
+        env_vol = 0.0;
         env_stage = Attack;
         env_time = 0;
-        env_length[Attack] = int(mSound->attackTime() * mSound->attackTime() * 100000.0f);
-        env_length[Sustain] = int(mSound->sustainTime() * mSound->sustainTime() * 100000.0f);
-        env_length[Decay] = int(mSound->decayTime() * mSound->decayTime() * 100000.0f);
+        env_length[Attack] = int(mSound->attackTime() * mSound->attackTime() * 100000.0);
+        env_length[Sustain] = int(mSound->sustainTime() * mSound->sustainTime() * 100000.0);
+        env_length[Decay] = int(mSound->decayTime() * mSound->decayTime() * 100000.0);
 
-        fphase = pow(mSound->phaserOffset(), 2.0f) * 1020.0f;
-        if (mSound->phaserOffset() < 0.0f) {
+        fphase = pow(mSound->phaserOffset(), 2.0) * 1020.0;
+        if (mSound->phaserOffset() < 0.0) {
             fphase = -fphase;
         }
-        fdphase = pow(mSound->phaserSweep(), 2.0f) * 1.0f;
-        if (mSound->phaserSweep() < 0.0f) {
+        fdphase = pow(mSound->phaserSweep(), 2.0) * 1.0;
+        if (mSound->phaserSweep() < 0.0) {
             fdphase = -fdphase;
         }
         ipp = 0;
         for (int i = 0; i < PHASER_BUFFER_LENGTH; i++) {
-            phaser_buffer[i] = 0.0f;
+            phaser_buffer[i] = 0.0;
         }
 
         rep_time = 0;
-        rep_limit = (int)(pow(1.0f - mSound->repeatSpeed(), 2.0f) * 20000 + 32);
-        if (mSound->repeatSpeed() == 0.0f) {
+        rep_limit = int(pow(1.0 - mSound->repeatSpeed(), 2.0) * 20000 + 32);
+        if (mSound->repeatSpeed() == 0.0) {
             rep_limit = 0;
         }
     }
@@ -123,17 +123,17 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
         fperiod *= fslide;
         if (fperiod > fmaxperiod) {
             fperiod = fmaxperiod;
-            if (mSound->minFrequency() > 0.0f) {
+            if (mSound->minFrequency() > 0.0) {
                 return false;
             }
         }
-        float rfperiod = fperiod;
-        if (vib_amp > 0.0f) {
+        qreal rfperiod = fperiod;
+        if (vib_amp > 0.0) {
             vib_phase += vib_speed;
             rfperiod = fperiod * (1.0 + sin(vib_phase) * vib_amp);
         }
-        int period = std::max((int)rfperiod, 8);
-        square_duty = qBound(0.0f, square_duty + square_slide, 0.5f);
+        int period = std::max(int(rfperiod), 8);
+        square_duty = qBound(0.0, square_duty + square_slide, 0.5);
         // volume envelope
         env_time++;
         if (env_time > env_length[env_stage]) {
@@ -145,69 +145,69 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
         }
         switch (env_stage) {
         case Attack:
-            env_vol = (float)env_time / env_length[Attack];
+            env_vol = qreal(env_time) / env_length[Attack];
             break;
         case Sustain:
-            env_vol = 1.0f + pow(1.0f - (float)env_time / env_length[Sustain], 1.0f) * 2.0f * mSound->sustainPunch();
+            env_vol = 1.0 + pow(1.0 - qreal(env_time) / env_length[Sustain], 1.0) * 2.0 * mSound->sustainPunch();
             break;
         case Decay:
-            env_vol = 1.0f - (float)env_time / env_length[Decay];
+            env_vol = 1.0 - qreal(env_time) / env_length[Decay];
             break;
         }
 
         // phaser step
         fphase += fdphase;
-        int iphase = std::min(abs((int)fphase), PHASER_BUFFER_LENGTH - 1);
+        int iphase = std::min(abs(int(fphase)), PHASER_BUFFER_LENGTH - 1);
 
-        if (flthp_d != 0.0f) {
+        if (flthp_d != 0.0) {
             flthp *= flthp_d;
-            if (flthp < 0.00001f) {
-                flthp = 0.00001f;
+            if (flthp < 0.00001) {
+                flthp = 0.00001;
             }
-            if (flthp > 0.1f) {
-                flthp = 0.1f;
+            if (flthp > 0.1) {
+                flthp = 0.1;
             }
         }
 
-        float ssample = 0.0f;
+        qreal ssample = 0.0;
         for (int si = 0; si < 8; si++) { // 8x supersampling
-            float sample = 0.0f;
+            qreal sample = 0.0;
             phase++;
             if (phase >= period) {
                 phase %= period;
             }
             // base waveform
-            float fp = (float)phase / period;
+            qreal fp = qreal(phase) / period;
             switch (mSound->waveForm()) {
             case WaveForm::Square:
                 if (fp < square_duty) {
-                    sample = 0.5f;
+                    sample = 0.5;
                 } else {
-                    sample = -0.5f;
+                    sample = -0.5;
                 }
                 break;
             case WaveForm::Sawtooth:
-                sample = 1.0f - fp * 2;
+                sample = 1.0 - fp * 2;
                 break;
             case WaveForm::Sine:
-                sample = (float)sin(fp * 2 * PI);
+                sample = sin(fp * 2 * PI);
                 break;
             case WaveForm::Noise:
                 sample = mNoiseGenerator.get(fp);
                 break;
             case WaveForm::Triangle:
-                sample = fp < 0.5f ? ramp(fp, 0, 0.5, -1, 1) : ramp(fp, 0.5, 1, 1, -1);
+                sample = fp < 0.5 ? ramp(fp, 0, 0.5, -1, 1) : ramp(fp, 0.5, 1, 1, -1);
                 break;
             }
             // lp filter
-            float pp = fltp;
-            fltw = qBound(0.0f, fltw * fltw_d, 0.1f);
-            if (mSound->lpFilterCutoff() != 1.0f) {
+            qreal pp = fltp;
+            fltw = qBound(0.0, fltw * fltw_d, 0.1);
+            if (mSound->lpFilterCutoff() != 1.0) {
                 fltdp += (sample - fltp) * fltw;
                 fltdp -= fltdp * fltdmp;
             } else {
                 fltp = sample;
-                fltdp = 0.0f;
+                fltdp = 0.0;
             }
             fltp += fltdp;
             // hp filter
@@ -223,7 +223,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
         }
         ssample = ssample / 8 * MASTER_VOL;
 
-        ssample *= 2.0f * mSound->volume();
+        ssample *= 2.0 * mSound->volume();
 
         strategy->write(ssample);
     }

@@ -9,19 +9,19 @@ class WavExportStrategy : public Synthesizer::SynthStrategy {
 public:
     FILE* file;
     int file_sampleswritten;
-    float filesample = 0.0f;
+    qreal filesample = 0.0f;
     int fileacc = 0;
     int wav_bits = 16;
     int wav_freq = 44100;
 
-    void write(float sample) override;
+    void write(qreal sample) override;
 };
 
-void WavExportStrategy::write(float ssample) {
+void WavExportStrategy::write(qreal ssample) {
     // quantize depending on format
     // accumulate/count to accomodate variable sample rate?
-    ssample *= 4.0f; // arbitrary gain to get reasonable output volume...
-    ssample = qBound(-1.f, ssample, 1.f);
+    ssample *= 4.0; // arbitrary gain to get reasonable output volume...
+    ssample = qBound(-1.0, ssample, 1.0);
     filesample += ssample;
     fileacc++;
     if (wav_freq == 44100 || fileacc == 2) {
@@ -34,7 +34,7 @@ void WavExportStrategy::write(float ssample) {
             unsigned char isample = (unsigned char)(filesample * 127 + 128);
             fwrite(&isample, 1, 1, file);
         }
-        filesample = 0.0f;
+        filesample = 0.0;
     }
     file_sampleswritten++;
 }
@@ -86,7 +86,7 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
     // write sample data
     wav.file = foutput;
     wav.file_sampleswritten = 0;
-    wav.filesample = 0.0f;
+    wav.filesample = 0.0;
     wav.fileacc = 0;
 
     Synthesizer synth;
