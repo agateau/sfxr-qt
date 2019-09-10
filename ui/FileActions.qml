@@ -18,7 +18,7 @@ ColumnLayout {
         Layout.fillWidth: true
         FileDialog {
             id: loadFileDialog
-            title: qsTr("Load SFXR sound")
+            title: qsTr("Load sound")
             nameFilters: [
                 qsTr("Supported formats (*.sfxj, *.sfxr)") + " (*.sfxj *.sfxr)",
                 qsTr("All files") + " (*)"]
@@ -50,7 +50,7 @@ ColumnLayout {
         Layout.fillWidth: true
         FileDialog {
             id: saveFileDialog
-            title: qsTr("Save SFXR sound")
+            title: qsTr("Save sound")
             selectExisting: false
             nameFilters: [
                 qsTr("New format (*.sfxj)") + " (*.sfxj)",
