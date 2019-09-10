@@ -20,8 +20,7 @@ ColumnLayout {
             id: loadFileDialog
             title: qsTr("Load SFXR sound")
             nameFilters: [
-                qsTr("New format (*.sfxj)") + " (*.sfxj)",
-                qsTr("Old format (*.sfxr)") + " (*.sfxr)",
+                qsTr("Supported formats (*.sfxj, *.sfxr)") + " (*.sfxj *.sfxr)",
                 qsTr("All files") + " (*)"]
             onAccepted: {
                 sound.load(fileUrl);
