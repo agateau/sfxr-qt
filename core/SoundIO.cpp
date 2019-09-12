@@ -16,7 +16,7 @@ bool load(Sound* sound, const QUrl& url) {
     QString path = url.path();
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
-        qWarning() << "Cannot open file";
+        qWarning() << "Cannot open file" << path;
         return false;
     }
     QString ext = path.section(".", -1);
