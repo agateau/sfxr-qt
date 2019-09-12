@@ -7,14 +7,14 @@
         "decayTime": 0.40632,
         "deltaSlide": 0,
         "dutySweep": 0,
-        "hasRealUrl": false,
+        "hasRealUrl": true,
         "hpFilterCutoff": 0,
         "hpFilterCutoffSweep": 0,
         "lpFilterCutoff": 1,
         "lpFilterCutoffSweep": 0,
         "lpFilterResonance": 0,
         "minFrequency": 0.2242857142857142,
-        "name": "Power up",
+        "name": "power-up-sine",
         "objectName": "",
         "phaserOffset": 0,
         "phaserSweep": 0,
@@ -28,8 +28,5 @@
         "volume": 0.5,
         "waveForm": "Sine"
     },
-    "version": [
-        1,
-        0
-    ]
+    "version": 1
 }

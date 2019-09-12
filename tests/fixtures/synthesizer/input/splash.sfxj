@@ -28,8 +28,5 @@
         "volume": 0.5,
         "waveForm": "Noise"
     },
-    "version": [
-        1,
-        0
-    ]
+    "version": 1
 }

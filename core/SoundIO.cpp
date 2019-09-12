@@ -12,6 +12,8 @@
 
 namespace SoundIO {
 
+static constexpr int MAX_SUPPORTED_VERSION = 1;
+
 bool load(Sound* sound, const QUrl& url) {
     QString path = url.path();
     QFile file(path);
@@ -169,8 +171,6 @@ bool saveSfxr(const Sound* sound, QIODevice* device) {
     return true;
 }
 
-static constexpr std::array<int, 2> SUPPORTED_VERSION = {1, 0};
-
 bool loadSfxj(Sound* sound, QIODevice* device) {
     auto json = device->readAll();
     QJsonDocument doc = QJsonDocument::fromJson(json);
@@ -179,15 +179,15 @@ bool loadSfxj(Sound* sound, QIODevice* device) {
         return false;
     }
     auto root = doc.object();
-    auto versionArray = root["version"].toArray();
-    if (versionArray.size() != 2) {
-        qWarning() << "Invalid json";
+    auto versionValue = root["version"];
+    if (!versionValue.isDouble()) {
+        qWarning() << "Invalid version field";
         return false;
     }
-    int maj = versionArray.at(0).toInt();
-    int min = versionArray.at(1).toInt();
-    if (maj != SUPPORTED_VERSION[0] || min < SUPPORTED_VERSION[1]) {
-        qWarning() << "Unsupported version" << maj << min;
+    auto version = versionValue.toInt();
+    if (version > MAX_SUPPORTED_VERSION) {
+        qWarning() << "Unsupported version:" << version;
+        qWarning() << "This version only supports files up to version" << MAX_SUPPORTED_VERSION;
         return false;
     }
 
@@ -201,7 +201,7 @@ bool loadSfxj(Sound* sound, QIODevice* device) {
 
 bool saveSfxj(const Sound* sound, QIODevice* device) {
     QJsonObject root;
-    root["version"] = QJsonArray({1, 0});
+    root["version"] = MAX_SUPPORTED_VERSION;
     QJsonObject props;
     QMetaObject mo = BaseSound::staticMetaObject;
     for (int i = 0; i < mo.propertyCount(); ++i) {

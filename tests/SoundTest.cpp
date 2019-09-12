@@ -1,5 +1,6 @@
 #include <Sound.h>
 
+#include <QBuffer>
 #include <QMetaProperty>
 #include <QTemporaryDir>
 #include <QUrl>
@@ -7,7 +8,9 @@
 #include <catch2/catch.hpp>
 
 #include <TestConfig.h>
+#include <TestUtils.h>
 
+#include <SoundIO.h>
 #include <SoundUtils.h>
 
 static bool fuzzyEq(const Sound& s1, const Sound& s2) {
@@ -65,5 +68,16 @@ TEST_CASE("Sound") {
         REQUIRE(sound2.load(path));
 
         REQUIRE(fuzzyEq(sound1, sound2));
+    }
+
+    SECTION("loading an sfxj with a version too recent fails") {
+        Sound sound;
+        QByteArray json = "{ \"version\": 2000000 }";
+        QBuffer buffer(&json);
+        REQUIRE(buffer.open(QIODevice::ReadOnly));
+        {
+            QtDebugSilencer silencer;
+            REQUIRE(!SoundIO::loadSfxj(&sound, &buffer));
+        }
     }
 }
