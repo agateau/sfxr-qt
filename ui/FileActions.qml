@@ -53,8 +53,8 @@ ColumnLayout {
             title: qsTr("Save sound")
             selectExisting: false
             nameFilters: [
-                qsTr("New format (*.sfxj)") + " (*.sfxj)",
-                qsTr("Old format (*.sfxr)") + " (*.sfxr)",
+                qsTr("SFXR Json (*.sfxj)") + " (*.sfxj)",
+                qsTr("SFXR Binary (old) (*.sfxr)") + " (*.sfxr)",
                 qsTr("All files") + " (*)"]
             onAccepted: {
                 sound.save(fileUrl);
