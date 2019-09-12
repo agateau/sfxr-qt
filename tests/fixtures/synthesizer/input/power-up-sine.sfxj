@@ -1,0 +1,35 @@
+{
+    "properties": {
+        "attackTime": 0,
+        "baseFrequency": 0.4299999999999999,
+        "changeAmount": 0,
+        "changeSpeed": 0,
+        "decayTime": 0.40632,
+        "deltaSlide": 0,
+        "dutySweep": 0,
+        "hasRealUrl": false,
+        "hpFilterCutoff": 0,
+        "hpFilterCutoffSweep": 0,
+        "lpFilterCutoff": 1,
+        "lpFilterCutoffSweep": 0,
+        "lpFilterResonance": 0,
+        "minFrequency": 0.2242857142857142,
+        "name": "Power up",
+        "objectName": "",
+        "phaserOffset": 0,
+        "phaserSweep": 0,
+        "repeatSpeed": 0.47616,
+        "slide": 0.18100000000000002,
+        "squareDuty": 0.00756,
+        "sustainPunch": 0.10857142857142849,
+        "sustainTime": 0.25148000000000004,
+        "vibratoDepth": 0,
+        "vibratoSpeed": 0,
+        "volume": 0.5,
+        "waveForm": "Sine"
+    },
+    "version": [
+        1,
+        0
+    ]
+}

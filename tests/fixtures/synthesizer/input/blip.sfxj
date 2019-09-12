@@ -1,0 +1,35 @@
+{
+    "properties": {
+        "attackTime": 0,
+        "baseFrequency": 0.44808000000000003,
+        "changeAmount": 0,
+        "changeSpeed": 0,
+        "decayTime": 0.10938000000000002,
+        "deltaSlide": 0,
+        "dutySweep": 0,
+        "hasRealUrl": false,
+        "hpFilterCutoff": 0.1,
+        "hpFilterCutoffSweep": 0,
+        "lpFilterCutoff": 1,
+        "lpFilterCutoffSweep": 0,
+        "lpFilterResonance": 0,
+        "minFrequency": 0,
+        "name": "Blip",
+        "objectName": "",
+        "phaserOffset": 0,
+        "phaserSweep": 0,
+        "repeatSpeed": 0,
+        "slide": 0,
+        "squareDuty": 0,
+        "sustainPunch": 0,
+        "sustainTime": 0.14625000000000002,
+        "vibratoDepth": 0,
+        "vibratoSpeed": 0,
+        "volume": 0.5,
+        "waveForm": "Sawtooth"
+    },
+    "version": [
+        1,
+        1
+    ]
+}

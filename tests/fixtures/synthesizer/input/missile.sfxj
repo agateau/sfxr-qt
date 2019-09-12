@@ -1,0 +1,35 @@
+{
+    "properties": {
+        "attackTime": 0.0357142873108387,
+        "baseFrequency": 0.1599999964237213,
+        "changeAmount": 0,
+        "changeSpeed": 0.47285714745521545,
+        "decayTime": 0.691428542137146,
+        "deltaSlide": -1,
+        "dutySweep": -0.09714286029338837,
+        "hasRealUrl": true,
+        "hpFilterCutoff": 0.18142856657505035,
+        "hpFilterCutoffSweep": 0.04857143014669418,
+        "lpFilterCutoff": 1,
+        "lpFilterCutoffSweep": 0.20000000298023224,
+        "lpFilterResonance": 0.631428599357605,
+        "minFrequency": 0,
+        "name": "missile",
+        "objectName": "",
+        "phaserOffset": 0.2199999988079071,
+        "phaserSweep": 0.10000000149011612,
+        "repeatSpeed": 0.772857129573822,
+        "slide": -0.334285706281662,
+        "squareDuty": 0.2971428632736206,
+        "sustainPunch": 0.5671428442001343,
+        "sustainTime": 0.4471428692340851,
+        "vibratoDepth": 0.44285714626312256,
+        "vibratoSpeed": 0.5714285969734192,
+        "volume": 0.8757143020629883,
+        "waveForm": "Noise"
+    },
+    "version": [
+        1,
+        0
+    ]
+}
