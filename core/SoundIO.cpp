@@ -200,15 +200,17 @@ bool loadSfxj(Sound* sound, QIODevice* device) {
 }
 
 bool saveSfxj(const Sound* sound, QIODevice* device) {
+    static const QSet<QString> IGNORED_PROPERTIES = {"url", "name", "objectName", "hasRealUrl"};
+
     QJsonObject root;
     root["version"] = MAX_SUPPORTED_VERSION;
+
     QJsonObject props;
     QMetaObject mo = BaseSound::staticMetaObject;
     for (int i = 0; i < mo.propertyCount(); ++i) {
         QMetaProperty property = mo.property(i);
         QString name = property.name();
-        if (name == "url") {
-            // We don't want to save this property
+        if (IGNORED_PROPERTIES.contains(name)) {
             continue;
         }
         props[name] = QJsonValue::fromVariant(property.read(sound));
