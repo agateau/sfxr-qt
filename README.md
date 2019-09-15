@@ -14,10 +14,18 @@ all the hard work, I just refactored and plugged a new UI on top of it.
 Start the application and click on one of the generator buttons. Then play with
 the sliders to produce the sound you want. When you are happy with the result,
 use the "Export as..." button to create a wav file, or the "Save as..." button
-to save it in SFXR format, so that you can work on it later.
+to save it in [SFXJ format][format], so that you can work on it later.
+
+[format]: docs/file-formats.md
 
 For more details, you should read the original [SFXR
 readme.txt](readme-sfxr-sdl.txt).
+
+## Precompiled binaries
+
+Precompiled binaries for Linux are available in the [releases section][ghr].
+
+[ghr]: https://github.com/agateau/sfxr-qt/releases
 
 ## Building
 
