@@ -12,15 +12,15 @@ namespace SoundIO {
 
 Result load(Sound* sound, const QUrl& url);
 
-bool save(const Sound* sound, const QUrl& url);
+Result save(const Sound* sound, const QUrl& url);
 
 Result loadSfxr(Sound* sound, QIODevice* device);
 
 Result loadSfxj(Sound* sound, QIODevice* device);
 
-bool saveSfxr(const Sound* sound, QIODevice* device);
+Result saveSfxr(const Sound* sound, QIODevice* device);
 
-bool saveSfxj(const Sound* sound, QIODevice* device);
+Result saveSfxj(const Sound* sound, QIODevice* device);
 
 } // namespace SoundIO
 

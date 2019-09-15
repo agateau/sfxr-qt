@@ -135,7 +135,11 @@ ColumnLayout {
     }
 
     function saveSound(url) {
-        sound.save(url);
+        var result = sound.save(url);
+        if (!result.ok) {
+            var message = qsTr("Could not save file to \"%1\".\n%2").arg(url).arg(result.message);
+            showError(qsTr("Error saving file"), message);
+        }
     }
 
     function loadSound(url) {

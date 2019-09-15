@@ -60,12 +60,13 @@ Result Sound::load(const QUrl& url) {
     return SoundIO::load(this, url);
 }
 
-bool Sound::save(const QUrl& url) {
-    if (!SoundIO::save(this, url)) {
-        return false;
+Result Sound::save(const QUrl& url) {
+    auto result = SoundIO::save(this, url);
+    if (!result) {
+        return result;
     }
     setUrl(url);
-    return true;
+    return {};
 }
 
 QString Sound::name() const {

@@ -108,25 +108,24 @@ Result loadSfxr(Sound* sound, QIODevice* device) {
     return {};
 }
 
-bool save(const Sound* sound, const QUrl& url) {
+Result save(const Sound* sound, const QUrl& url) {
     QString path = url.path();
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
-        qWarning() << "Cannot write to" << path;
-        return false;
+        auto message = QCoreApplication::translate("SoundIO", "Cannot write file.");
+        return Result::createError(message);
     }
     QString ext = path.section(".", -1);
     if (ext == "sfxr") {
         return saveSfxr(sound, &file);
     } else if (ext == "sfxj") {
         return saveSfxj(sound, &file);
-    } else {
-        qWarning() << "Can't save to" << ext;
-        return false;
     }
+    auto message = QCoreApplication::translate("SoundIO", "Cannot save to format \"%1\".").arg(ext);
+    return Result::createError(message);
 }
 
-bool saveSfxr(const Sound* sound, QIODevice* device) {
+Result saveSfxr(const Sound* sound, QIODevice* device) {
     // File format uses float, but we use qreal, so we need to round the value down
     auto writeQReal = [device](qreal value) {
         float fvalue = float(value);
@@ -176,7 +175,7 @@ bool saveSfxr(const Sound* sound, QIODevice* device) {
     writeQReal(sound->changeSpeed());
     writeQReal(sound->changeAmount());
 
-    return true;
+    return {};
 }
 
 Result loadSfxj(Sound* sound, QIODevice* device) {
@@ -210,7 +209,7 @@ Result loadSfxj(Sound* sound, QIODevice* device) {
     return {};
 }
 
-bool saveSfxj(const Sound* sound, QIODevice* device) {
+Result saveSfxj(const Sound* sound, QIODevice* device) {
     static const QSet<QString> IGNORED_PROPERTIES = {"url", "name", "objectName", "hasRealUrl"};
 
     QJsonObject root;
@@ -229,8 +228,12 @@ bool saveSfxj(const Sound* sound, QIODevice* device) {
     root["properties"] = props;
 
     auto json = QJsonDocument(root).toJson();
-    device->write(json);
-    return true;
+    if (device->write(json) == -1) {
+        auto message = QCoreApplication::translate("SoundIO", "Failed to save file: %1.")
+                           .arg(device->errorString());
+        return Result::createError(message);
+    }
+    return {};
 }
 
 } // namespace SoundIO

@@ -13,7 +13,7 @@ public:
     void resetParams();
     void fromOther(const Sound* other);
     Q_INVOKABLE Result load(const QUrl& url);
-    Q_INVOKABLE bool save(const QUrl& url);
+    Q_INVOKABLE Result save(const QUrl& url);
 
     QString name() const override;
 
