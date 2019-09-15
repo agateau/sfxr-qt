@@ -11,19 +11,17 @@ static const int SCHEDULED_PLAY_DELAY = 200;
 
 class BufferStrategy : public Synthesizer::SynthStrategy {
 public:
-    BufferStrategy(qreal* buffer)
-        : buffer(buffer) {
+    BufferStrategy(qreal* buffer) : buffer(buffer) {
     }
     void write(qreal ssample) override {
         *buffer++ = qBound(-1., ssample, 1.);
     }
+
 private:
     qreal* buffer;
 };
 
-SoundPlayer::SoundPlayer(QObject* parent)
-    : QObject(parent)
-    , mPlayTimer(new QTimer(this)) {
+SoundPlayer::SoundPlayer(QObject* parent) : QObject(parent), mPlayTimer(new QTimer(this)) {
     mPlayThreadData.synth.reset(new Synthesizer);
 
     mPlayTimer->setInterval(SCHEDULED_PLAY_DELAY);

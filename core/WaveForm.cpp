@@ -11,9 +11,8 @@ Enum random(const std::vector<Enum>& values) {
 
 void registerType() {
     qRegisterMetaType<WaveForm::Enum>();
-    qmlRegisterUncreatableMetaObject(WaveForm::staticMetaObject,
-                                     "sfxr", 1, 0, "WaveForm",
-                                     "Only enums");
+    qmlRegisterUncreatableMetaObject(
+        WaveForm::staticMetaObject, "sfxr", 1, 0, "WaveForm", "Only enums");
 }
 
-} // namespace
+} // namespace WaveForm

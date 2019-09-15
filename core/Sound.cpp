@@ -9,8 +9,7 @@
 
 static const char UNSAVED_SCHEME[] = "unsaved";
 
-Sound::Sound(QObject* parent)
-    : BaseSound(parent) {
+Sound::Sound(QObject* parent) : BaseSound(parent) {
     resetParams();
 }
 

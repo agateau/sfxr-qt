@@ -10,8 +10,8 @@
 #include "TestUtils.h"
 
 #include <Sound.h>
-#include <WaveForm.h>
 #include <WavSaver.h>
+#include <WaveForm.h>
 
 static constexpr char FIXTURES_DIR[] = TEST_FIXTURES_DIR "/synthesizer";
 
@@ -41,7 +41,7 @@ void updateExpectedFiles() {
     }
 }
 
-}
+} // namespace SynthesizerTest
 
 TEST_CASE("Synthesizer") {
     WaveForm::registerType();

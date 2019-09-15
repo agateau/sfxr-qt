@@ -13,8 +13,7 @@ QByteArray loadFile(const QString& path) {
 }
 
 QtDebugSilencer::QtDebugSilencer() {
-    auto silentHandler = [](QtMsgType, const QMessageLogContext&, const QString&) {
-    };
+    auto silentHandler = [](QtMsgType, const QMessageLogContext&, const QString&) {};
     mOldHandler = qInstallMessageHandler(silentHandler);
 }
 
@@ -22,12 +21,12 @@ QtDebugSilencer::~QtDebugSilencer() {
     qInstallMessageHandler(mOldHandler);
 }
 
-std::ostream &operator<<(std::ostream &ostr, const QString &str) {
+std::ostream& operator<<(std::ostream& ostr, const QString& str) {
     ostr << '"' << str.toStdString() << '"';
     return ostr;
 }
 
-std::ostream &operator<<(std::ostream &ostr, const QUrl &url) {
+std::ostream& operator<<(std::ostream& ostr, const QUrl& url) {
     ostr << '"' << url.toEncoded().constData() << '"';
     return ostr;
 }

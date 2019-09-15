@@ -20,6 +20,7 @@ public:
     explicit NoiseGenerator(int sampleCount);
     void reset();
     qreal get(qreal alpha);
+
 private:
     const int mSampleCount;
     unsigned int mRandomSeed = 0;

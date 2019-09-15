@@ -3,8 +3,8 @@
 #include <QQmlApplicationEngine>
 
 #include "Generator.h"
-#include "SoundListModel.h"
 #include "Sound.h"
+#include "SoundListModel.h"
 #include "SoundPlayer.h"
 #include "WavSaver.h"
 
@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
     app.setApplicationDisplayName("SFXR Qt");
 
     QIcon icon;
-    for(int size: {16, 32, 48}) {
+    for (int size : {16, 32, 48}) {
         icon.addFile(QString(":/icons/sfxr-qt-%1.png").arg(size));
     }
     app.setWindowIcon(icon);

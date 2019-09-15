@@ -20,6 +20,6 @@ std::unique_ptr<Sound> generateBlipSelect();
 
 void mutate(Sound* sound);
 
-}
+} // namespace SoundUtils
 
 #endif /* SOUNDUTILS_H */

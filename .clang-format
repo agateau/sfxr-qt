@@ -1,0 +1,60 @@
+---
+Language: Cpp
+Standard: Cpp11
+BasedOnStyle: Google
+
+# Line breaks
+ColumnLimit: 100
+BreakBeforeBraces: Attach
+AlwaysBreakTemplateDeclarations: false
+AlwaysBreakBeforeMultilineStrings: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeTernaryOperators: true
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakComment: 300
+PenaltyBreakString: 1000
+PenaltyBreakFirstLessLess: 120
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 60
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+BinPackArguments: false
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: true
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# Indentation
+UseTab: Never
+IndentWidth: 4
+TabWidth: 4
+AccessModifierOffset: -4
+ConstructorInitializerIndentWidth: 8
+IndentCaseLabels: false
+IndentFunctionDeclarationAfterType: false
+NamespaceIndentation: None
+
+# Spaces
+SpacesBeforeTrailingComments: 1
+SpacesInParentheses: false
+SpacesInAngles: false
+SpaceInEmptyParentheses: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+PointerAlignment: Left
+DerivePointerAlignment: false
+AlignEscapedNewlines: DontAlign
+AlignTrailingComments: true
+Cpp11BracedListStyle: true
+
+# Misc
+ForEachMacros: [ foreach, Q_FOREACH, BOOST_FOREACH ]
+...
+

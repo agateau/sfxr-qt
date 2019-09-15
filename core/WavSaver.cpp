@@ -39,9 +39,7 @@ void WavExportStrategy::write(qreal ssample) {
     file_sampleswritten++;
 }
 
-
-WavSaver::WavSaver(QObject* parent)
-    : BaseWavSaver(parent) {
+WavSaver::WavSaver(QObject* parent) : BaseWavSaver(parent) {
 }
 
 bool WavSaver::save(Sound* sound, const QUrl& url) {

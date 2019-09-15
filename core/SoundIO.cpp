@@ -220,4 +220,4 @@ bool saveSfxj(const Sound* sound, QIODevice* device) {
     return true;
 }
 
-} // namespace
+} // namespace SoundIO

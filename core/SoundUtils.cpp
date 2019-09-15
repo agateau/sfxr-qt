@@ -30,9 +30,7 @@ std::unique_ptr<Sound> generatePickup() {
 
 std::unique_ptr<Sound> generateLaser() {
     auto sound = std::make_unique<Sound>();
-    sound->setWaveForm(WaveForm::random({WaveForm::Square,
-                                         WaveForm::Sawtooth,
-                                         WaveForm::Sine}));
+    sound->setWaveForm(WaveForm::random({WaveForm::Square, WaveForm::Sawtooth, WaveForm::Sine}));
     sound->setBaseFrequency(0.5 + frnd(0.5));
     sound->setMinFrequency(sound->baseFrequency() - 0.2 - frnd(0.6));
     if (sound->minFrequency() < 0.2) {
@@ -130,9 +128,7 @@ std::unique_ptr<Sound> generatePowerup() {
 
 std::unique_ptr<Sound> generateHitHurt() {
     auto sound = std::make_unique<Sound>();
-    sound->setWaveForm(WaveForm::random({WaveForm::Square,
-                                         WaveForm::Sawtooth,
-                                         WaveForm::Noise}));
+    sound->setWaveForm(WaveForm::random({WaveForm::Square, WaveForm::Sawtooth, WaveForm::Noise}));
     if (sound->waveForm() == WaveForm::Square) {
         sound->setSquareDuty(frnd(0.6));
     }
@@ -190,4 +186,4 @@ void mutate(Sound* sound) {
     }
 }
 
-} // namespace
+} // namespace SoundUtils

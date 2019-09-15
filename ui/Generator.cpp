@@ -7,8 +7,7 @@
 
 using std::move;
 
-Generator::Generator(QObject* parent)
-    : QObject(parent) {
+Generator::Generator(QObject* parent) : QObject(parent) {
 }
 
 void Generator::generatePickup() {

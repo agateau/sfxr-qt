@@ -2,8 +2,7 @@
 
 #include <stdlib.h>
 
-NoiseGenerator::NoiseGenerator(int sampleCount)
-    : mSampleCount(sampleCount) {
+NoiseGenerator::NoiseGenerator(int sampleCount) : mSampleCount(sampleCount) {
 }
 
 void NoiseGenerator::reset() {

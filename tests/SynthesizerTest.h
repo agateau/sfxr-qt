@@ -4,7 +4,6 @@
 namespace SynthesizerTest {
 
 void updateExpectedFiles();
-
 }
 
 #endif /* SYNTHESIZERTEST_H */

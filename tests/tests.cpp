@@ -6,8 +6,7 @@
 
 #include <SynthesizerTest.h>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[]) {
     QCoreApplication app(argc, argv);
     if (app.arguments().contains("--update")) {
         SynthesizerTest::updateExpectedFiles();

@@ -21,6 +21,6 @@ bool saveSfxr(const Sound* sound, QIODevice* device);
 
 bool saveSfxj(const Sound* sound, QIODevice* device);
 
-} // SoundIO
+} // namespace SoundIO
 
 #endif // SOUNDIO_H

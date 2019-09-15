@@ -20,7 +20,8 @@ inline qreal ramp(qreal x, qreal x1, qreal x2, qreal y1, qreal y2) {
 
 class WaveFormGenerator {
 public:
-    WaveFormGenerator() : mNoiseGenerator(NOISE_SAMPLE_COUNT) {}
+    WaveFormGenerator() : mNoiseGenerator(NOISE_SAMPLE_COUNT) {
+    }
 
     void setSound(const Sound* sound) {
         mSound = sound;
@@ -65,9 +66,7 @@ private:
 Synthesizer::SynthStrategy::~SynthStrategy() {
 }
 
-Synthesizer::Synthesizer()
-    : mSound(new Sound)
-    , mWaveFormGenerator(new WaveFormGenerator) {
+Synthesizer::Synthesizer() : mSound(new Sound), mWaveFormGenerator(new WaveFormGenerator) {
 }
 
 Synthesizer::~Synthesizer() {
@@ -189,7 +188,9 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
             env_vol = qreal(env_time) / env_length[Attack];
             break;
         case Sustain:
-            env_vol = 1.0 + pow(1.0 - qreal(env_time) / env_length[Sustain], 1.0) * 2.0 * mSound->sustainPunch();
+            env_vol = 1.0
+                      + pow(1.0 - qreal(env_time) / env_length[Sustain], 1.0) * 2.0
+                            * mSound->sustainPunch();
             break;
         case Decay:
             env_vol = 1.0 - qreal(env_time) / env_length[Decay];
