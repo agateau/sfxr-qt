@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+ROOT_DIR=$(dirname $0)/..
+cd $ROOT_DIR/ci
+./build-docker-image
+./docker-build-app
