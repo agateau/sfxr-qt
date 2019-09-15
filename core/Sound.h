@@ -3,6 +3,8 @@
 
 #include "BaseSound.h"
 
+#include <Result.h>
+
 class Sound : public BaseSound {
     Q_OBJECT
 public:
@@ -10,7 +12,7 @@ public:
 
     void resetParams();
     void fromOther(const Sound* other);
-    Q_INVOKABLE bool load(const QUrl& url);
+    Q_INVOKABLE Result load(const QUrl& url);
     Q_INVOKABLE bool save(const QUrl& url);
 
     QString name() const override;

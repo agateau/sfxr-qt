@@ -1,5 +1,6 @@
 #include <SoundIO.h>
 
+#include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
 #include <QJsonArray>
@@ -8,37 +9,42 @@
 #include <QMetaProperty>
 #include <QUrl>
 
+#include <Result.h>
 #include <Sound.h>
 
 namespace SoundIO {
 
 static constexpr int MAX_SUPPORTED_VERSION = 1;
 
-bool load(Sound* sound, const QUrl& url) {
+Result load(Sound* sound, const QUrl& url) {
     QString path = url.path();
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
-        qWarning() << "Cannot open file" << path;
-        return false;
+        auto message = QCoreApplication::translate("SoundIO", "Cannot open file.");
+        return Result::createError(message);
     }
     QString ext = path.section(".", -1);
     if (ext == "sfxr") {
-        if (!loadSfxr(sound, &file)) {
-            return false;
+        auto result = loadSfxr(sound, &file);
+        if (!result) {
+            return result;
         }
     } else if (ext == "sfxj") {
-        if (!loadSfxj(sound, &file)) {
-            return false;
+        auto result = loadSfxj(sound, &file);
+        if (!result) {
+            return result;
         }
     } else {
-        qWarning() << "Can't load from" << ext;
-        return false;
+        auto message =
+            QCoreApplication::translate("SoundIO", "Cannot load file with extension \"%1\".")
+                .arg(ext);
+        return Result::createError(message);
     }
     sound->setUrl(url);
-    return true;
+    return {};
 }
 
-bool loadSfxr(Sound* sound, QIODevice* device) {
+Result loadSfxr(Sound* sound, QIODevice* device) {
     auto readQReal = [device] {
         float value;
         device->read(reinterpret_cast<char*>(&value), sizeof(float));
@@ -52,7 +58,9 @@ bool loadSfxr(Sound* sound, QIODevice* device) {
 
     int version = readInt();
     if (version != 100 && version != 101 && version != 102) {
-        return false;
+        auto message =
+            QCoreApplication::translate("SoundIO", "Invalid version value: %1.").arg(version);
+        return Result::createError(message);
     }
 
     sound->setWaveForm(static_cast<WaveForm::Enum>(readInt()));
@@ -97,7 +105,7 @@ bool loadSfxr(Sound* sound, QIODevice* device) {
         sound->setChangeSpeed(readQReal());
         sound->setChangeAmount(readQReal());
     }
-    return true;
+    return {};
 }
 
 bool save(const Sound* sound, const QUrl& url) {
@@ -171,24 +179,27 @@ bool saveSfxr(const Sound* sound, QIODevice* device) {
     return true;
 }
 
-bool loadSfxj(Sound* sound, QIODevice* device) {
+Result loadSfxj(Sound* sound, QIODevice* device) {
     auto json = device->readAll();
     QJsonDocument doc = QJsonDocument::fromJson(json);
     if (!doc.isObject()) {
-        qWarning() << "Invalid json";
-        return false;
+        auto message = QCoreApplication::translate("SoundIO", "Invalid JSON.");
+        return Result::createError(message);
     }
     auto root = doc.object();
     auto versionValue = root["version"];
     if (!versionValue.isDouble()) {
-        qWarning() << "Invalid version field";
-        return false;
+        auto message = QCoreApplication::translate("SoundIO", "Invalid version field.");
+        return Result::createError(message);
     }
     auto version = versionValue.toInt();
     if (version > MAX_SUPPORTED_VERSION) {
-        qWarning() << "Unsupported version:" << version;
-        qWarning() << "This version only supports files up to version" << MAX_SUPPORTED_VERSION;
-        return false;
+        auto message = QCoreApplication::translate("SoundIO",
+                                                   "Unsupported version: %1. This application only "
+                                                   "supports SFXJ files up to version %2.")
+                           .arg(version)
+                           .arg(MAX_SUPPORTED_VERSION);
+        return Result::createError(message);
     }
 
     auto props = root["properties"].toObject();
@@ -196,7 +207,7 @@ bool loadSfxj(Sound* sound, QIODevice* device) {
     for (; it != end; ++it) {
         sound->setProperty(it.key().toUtf8(), it.value().toVariant());
     }
-    return true;
+    return {};
 }
 
 bool saveSfxj(const Sound* sound, QIODevice* device) {

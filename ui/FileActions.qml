@@ -14,6 +14,14 @@ ColumnLayout {
         font.bold: true
     }
 
+    Component {
+        id: messageDialogComponent
+        MessageDialog {
+            icon: StandardIcon.Warning
+            standardButtons: StandardButton.Ok
+        }
+    }
+
     Button {
         Layout.fillWidth: true
         FileDialog {
@@ -23,7 +31,7 @@ ColumnLayout {
                 qsTr("Supported formats (*.sfxj, *.sfxr)") + " (*.sfxj *.sfxr)",
                 qsTr("All files") + " (*)"]
             onAccepted: {
-                sound.load(fileUrl);
+                loadSound(fileUrl);
             }
         }
         text: qsTr("Load...")
@@ -121,7 +129,20 @@ ColumnLayout {
         }
     }
 
+    function showError(title, text) {
+        var dlg = messageDialogComponent.createObject(this, {title: title, text: text});
+        dlg.open();
+    }
+
     function saveSound() {
         sound.save(sound.url);
+    }
+
+    function loadSound(url) {
+        var result = sound.load(url);
+        if (!result.ok) {
+            var message = qsTr("Could not load file \"%1\".\n%2").arg(url).arg(result.message);
+            showError(qsTr("Error loading file"), message);
+        }
     }
 }

@@ -1,6 +1,7 @@
 #ifndef SOUNDIO_H
 #define SOUNDIO_H
 
+class Result;
 class Sound;
 
 class QIODevice;
@@ -9,13 +10,13 @@ class QUrl;
 
 namespace SoundIO {
 
-bool load(Sound* sound, const QUrl& url);
+Result load(Sound* sound, const QUrl& url);
 
 bool save(const Sound* sound, const QUrl& url);
 
-bool loadSfxr(Sound* sound, QIODevice* device);
+Result loadSfxr(Sound* sound, QIODevice* device);
 
-bool loadSfxj(Sound* sound, QIODevice* device);
+Result loadSfxj(Sound* sound, QIODevice* device);
 
 bool saveSfxr(const Sound* sound, QIODevice* device);
 

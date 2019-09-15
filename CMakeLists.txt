@@ -24,6 +24,7 @@ set(sfxr_qt_lib_SRCS
     core/SoundPlayer.cpp
     core/SoundListModel.cpp
     core/SoundIO.cpp
+    core/Result.cpp
     core/WaveForm.cpp
 )
 

@@ -7,6 +7,7 @@
 #include "SoundListModel.h"
 #include "SoundPlayer.h"
 #include "WavSaver.h"
+#include "Result.h"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -27,6 +28,7 @@ int main(int argc, char* argv[]) {
     qmlRegisterType<SoundListModel>("sfxr", 1, 0, "SoundListModel");
     qmlRegisterType<WavSaver>("sfxr", 1, 0, "WavSaver");
     WaveForm::registerType();
+    Result::registerType();
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 

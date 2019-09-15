@@ -56,7 +56,7 @@ void Sound::fromOther(const Sound* other) {
     }
 }
 
-bool Sound::load(const QUrl& url) {
+Result Sound::load(const QUrl& url) {
     return SoundIO::load(this, url);
 }
 
