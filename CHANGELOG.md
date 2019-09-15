@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.3.0 - 2019-09-15
+
+### Added
+
+- Changed to a new, JSON based, file format: SFXJ.
+- Added a new wave form: triangle.
+- Added continuous integration using Travis CI.
+
+### Changed
+
+- Open and save file dialogs now show an error message when something went
+  wrong.
+
+- Internal cleanups:
+    - Ported loading and saving code from FILE to QFile.
+    - Applied my coding style.
+    - Split the code into a static lib and an app.
+    - Added tests.
+    - Cleaned some float vs qreal warnings.
+
 ## 1.2.0 - 2018-10-29
 
 ### Added
