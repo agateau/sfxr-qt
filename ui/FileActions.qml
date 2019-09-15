@@ -50,7 +50,7 @@ ColumnLayout {
         enabled: sound.hasRealUrl
         text: qsTr("Save")
         onClicked: {
-            saveSound();
+            saveSound(sound.url);
         }
     }
 
@@ -65,7 +65,7 @@ ColumnLayout {
                 qsTr("SFXR Binary (old) (*.sfxr)") + " (*.sfxr)",
                 qsTr("All files") + " (*)"]
             onAccepted: {
-                sound.save(fileUrl);
+                saveSound(fileUrl);
             }
         }
         text: qsTr("Save as...")
@@ -78,7 +78,7 @@ ColumnLayout {
         sequence: "CTRL+S"
         onActivated: {
             if (sound.hasRealUrl) {
-                saveSound();
+                saveSound(sound.url);
             } else {
                 saveFileDialog.open();
             }
@@ -134,8 +134,8 @@ ColumnLayout {
         dlg.open();
     }
 
-    function saveSound() {
-        sound.save(sound.url);
+    function saveSound(url) {
+        sound.save(url);
     }
 
     function loadSound(url) {
