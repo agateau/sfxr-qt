@@ -27,7 +27,7 @@ Building SFXR Qt requires installing the following tools:
 
 - Qt 5.7
 - SDL 1.2
-- CMake 3.7 (You might be able to build with older versions if you adjust the
+- CMake 3.10 (You might be able to build with older versions if you adjust the
   minimum version in the `CMakeLists.txt` file, let me know if you do)
 
 ### Step 2

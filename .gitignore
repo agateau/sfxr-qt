@@ -1,3 +1,4 @@
-build
+/build
+/dist
 .*.swp
 CMakeLists.txt.user

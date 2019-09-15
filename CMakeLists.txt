@@ -1,5 +1,8 @@
-project(sfxr-qt)
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.10)
+project(sfxr-qt
+    VERSION 1.3.0
+    DESCRIPTION "Retro sound effect generator"
+)
 
 find_package(SDL REQUIRED)
 find_package(Qt5 REQUIRED Gui Quick Widgets Test)
@@ -9,6 +12,7 @@ add_subdirectory(3rdparty/catch2)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual")
+enable_testing()
 
 # sfxr-qt-lib
 set(sfxr_qt_lib_SRCS
@@ -77,3 +81,29 @@ foreach(size 16 32 48)
         RENAME sfxr-qt.png
     )
 endforeach()
+
+# Packaging
+set(PROJECT_URL "https://github.com/agateau/sfxr-qt")
+
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_PACKAGE_CONTACT "Aurélien Gâteau <mail@agateau.com>")
+
+set(CPACK_GENERATOR "DEB;RPM")
+set(CPACK_SOURCE_GENERATOR "TBZ2")
+
+## DEB config
+set(CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE ${PROJECT_URL})
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+set(CPACK_DEBIAN_PACKAGE_RELEASE "0agc1")
+
+## RPM config
+set(CPACK_RPM_FILE_NAME "RPM-DEFAULT")
+set(CPACK_RPM_PACKAGE_URL ${PROJECT_URL})
+
+## Source config
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
+set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;/__pycache__/;~$")
+include(CPack)
