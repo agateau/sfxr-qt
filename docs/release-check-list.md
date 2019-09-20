@@ -13,7 +13,9 @@ Build packages:
 
     tools/release
 
-Review README and docs
+Update README and docs
+
+Commit changes
 
 Smoke test binary packages:
 
@@ -34,3 +36,5 @@ Push:
 Publish packages on GitHub
 
 Write blog post
+
+Spread the word
