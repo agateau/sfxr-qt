@@ -295,4 +295,8 @@ ApplicationWindow {
             width: sideColumnWidth
         }
     }
+
+    function loadSound(url) {
+        fileActions.loadSound(url);
+    }
 }

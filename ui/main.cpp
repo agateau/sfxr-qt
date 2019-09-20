@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QIcon>
 #include <QQmlApplicationEngine>
 
@@ -27,6 +28,22 @@ static void registerQmlTypes() {
     Result::registerType();
 }
 
+static void setupCommandLineParser(QCommandLineParser* parser) {
+    parser->addHelpOption();
+    parser->addPositionalArgument("sound_file", QApplication::translate("main", "File to load."));
+}
+
+static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* engine) {
+    parser->process(*qApp);
+    const auto args = parser->positionalArguments();
+    if (args.isEmpty()) {
+        return;
+    }
+    const QUrl url = QUrl::fromUserInput(args.first());
+    auto* root = engine->rootObjects().first();
+    QMetaObject::invokeMethod(root, "loadSound", Q_ARG(QVariant, url));
+}
+
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     app.setOrganizationDomain("agateau.com");
@@ -34,9 +51,14 @@ int main(int argc, char* argv[]) {
     app.setApplicationDisplayName("SFXR Qt");
     app.setWindowIcon(createIcon());
 
+    QCommandLineParser parser;
+    setupCommandLineParser(&parser);
+
     registerQmlTypes();
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+
+    processArguments(&parser, &engine);
 
     return app.exec();
 }
