@@ -45,6 +45,11 @@ void Generator::generateBlipSelect() {
     finish(move(sound), tr("Blip"));
 }
 
+void Generator::randomize(WaveForm::Enum waveForm) {
+    auto sound = SoundUtils::randomize(waveForm);
+    finish(move(sound), tr("Randomize"));
+}
+
 void Generator::mutate(Sound* source) {
     auto sound = std::make_unique<Sound>();
     sound->fromOther(source);

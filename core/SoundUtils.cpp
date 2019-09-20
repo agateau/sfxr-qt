@@ -4,6 +4,10 @@
 
 #include <Sound.h>
 
+#include <cmath>
+
+using std::pow;
+
 namespace SoundUtils {
 
 inline int rnd(int n) {
@@ -172,6 +176,64 @@ std::unique_ptr<Sound> generateBlipSelect() {
     sound->setSustainTime(0.1 + frnd(0.1));
     sound->setDecayTime(frnd(0.2));
     sound->setHpFilterCutoff(0.1);
+    return sound;
+}
+
+std::unique_ptr<Sound> randomize(WaveForm::Enum waveForm) {
+    auto sound = std::make_unique<Sound>();
+    sound->setWaveForm(waveForm);
+
+    if (rnd(1)) {
+        sound->setBaseFrequency(pow(frnd(2.0) - 1.0, 3.0) + 0.5);
+    } else {
+        sound->setBaseFrequency(pow(frnd(2.0) - 1.0, 2.0));
+    }
+    sound->setMinFrequency(0);
+
+    qreal p_freq_ramp = pow(frnd(2.0) - 1.0, 5.0);
+    if (sound->baseFrequency() > 0.7 && p_freq_ramp > 0.2)
+        p_freq_ramp = -p_freq_ramp;
+    if (sound->baseFrequency() < 0.2 && p_freq_ramp < -0.05)
+        p_freq_ramp = -p_freq_ramp;
+    sound->setSlide(p_freq_ramp);
+
+    sound->setDeltaSlide(pow(frnd(2.0) - 1.0, 3.0));
+
+    sound->setSquareDuty(frnd(2.0) - 1.0);
+    sound->setDutySweep(pow(frnd(2.0) - 1.0, 3.0));
+
+    sound->setVibratoDepth(pow(frnd(2.0) - 1.0, 3.0));
+    sound->setVibratoSpeed(frnd(2.0) - 1.0);
+
+    sound->setAttackTime(pow(frnd(2.0) - 1.0, 3.0));
+    sound->setSustainTime(pow(frnd(2.0) - 1.0, 2.0));
+    sound->setDecayTime(frnd(2.0) - 1.0);
+    sound->setSustainPunch(pow(frnd(0.8), 2.0));
+
+    if (sound->attackTime() + sound->sustainTime() + sound->decayTime() < 0.2) {
+        sound->setSustainTime(sound->sustainTime() + 0.2 + frnd(0.3));
+        sound->setDecayTime(sound->decayTime() + 0.2 + frnd(0.3));
+    }
+
+    sound->setLpFilterResonance(frnd(2.0) - 1.0);
+    sound->setLpFilterCutoff(1.0 - pow(frnd(1.0), 3.0));
+    sound->setLpFilterCutoffSweep(pow(frnd(2.0) - 1.0, 3.0));
+
+    if (sound->lpFilterResonance() < 0.1 && sound->lpFilterCutoffSweep() < -0.05) {
+        sound->setLpFilterCutoffSweep(-sound->lpFilterCutoffSweep());
+    }
+
+    sound->setHpFilterCutoff(pow(frnd(1.0), 5.0));
+    sound->setHpFilterCutoffSweep(pow(frnd(2.0) - 1.0, 5.0));
+
+    sound->setPhaserOffset(pow(frnd(2.0) - 1.0, 3.0));
+    sound->setPhaserSweep(pow(frnd(2.0) - 1.0, 3.0));
+
+    sound->setRepeatSpeed(frnd(2.0) - 1.0);
+
+    sound->setChangeSpeed(frnd(2.0) - 1.0);
+    sound->setChangeAmount(frnd(2.0) - 1.0);
+
     return sound;
 }
 

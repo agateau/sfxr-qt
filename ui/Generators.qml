@@ -73,6 +73,14 @@ ColumnLayout {
     VerticalSpacer {}
 
     Button {
+        text: qsTr("Randomize")
+        Layout.fillWidth: true
+        onClicked: {
+            generator.randomize(sound.waveForm);
+        }
+    }
+
+    Button {
         text: qsTr("Mutate")
         Layout.fillWidth: true
         onClicked: {

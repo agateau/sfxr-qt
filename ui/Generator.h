@@ -5,6 +5,8 @@
 
 #include <memory>
 
+#include <WaveForm.h>
+
 class Sound;
 
 /**
@@ -24,6 +26,7 @@ public:
     Q_INVOKABLE void generateHitHurt();
     Q_INVOKABLE void generateJump();
     Q_INVOKABLE void generateBlipSelect();
+    Q_INVOKABLE void randomize(WaveForm::Enum waveForm);
 
     Q_INVOKABLE void mutate(Sound* sound);
 

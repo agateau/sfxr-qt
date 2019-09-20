@@ -17,6 +17,7 @@ std::unique_ptr<Sound> generatePowerup();
 std::unique_ptr<Sound> generateHitHurt();
 std::unique_ptr<Sound> generateJump();
 std::unique_ptr<Sound> generateBlipSelect();
+std::unique_ptr<Sound> randomize(WaveForm::Enum waveForm);
 
 void mutate(Sound* sound);
 
