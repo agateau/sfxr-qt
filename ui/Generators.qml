@@ -78,6 +78,7 @@ ColumnLayout {
         onClicked: {
             generator.randomize(sound.waveForm);
         }
+        ToolTip.text: qsTr("Generate random sound, based on the current wave form")
     }
 
     Button {
@@ -86,5 +87,6 @@ ColumnLayout {
         onClicked: {
             generator.mutate(sound);
         }
+        ToolTip.text: qsTr("Randomly alter the settings of the current sound")
     }
 }
