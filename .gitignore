@@ -1,4 +1,4 @@
 /build
 /dist
 .*.swp
-CMakeLists.txt.user
+CMakeLists.txt.user*
