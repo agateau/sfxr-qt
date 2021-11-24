@@ -1,5 +1,7 @@
 #include "WavSaver.h"
 
+#include <QFile>
+#include <QtEndian>
 #include <QUrl>
 
 #include "Sound.h"
@@ -14,31 +16,49 @@ public:
     int wav_freq = 44100;
 
     ~WavExportStrategy() {
-        fclose(file);
     }
 
     bool open(const QString& path) {
-        file = fopen(path.toLocal8Bit().constData(), "wb");
-        return bool(file);
+        auto file = std::make_unique<QFile>(path);
+        if (!file->open(QIODevice::WriteOnly)) {
+            return false;
+        }
+        mDevice = std::move(file);
+        return true;
     }
 
-    size_t fwrite(const void *ptr, size_t size, size_t nmemb) {
-        return ::fwrite(ptr, size, nmemb, file);
+    qint64 fwrite(const void* ptr, size_t size) {
+        return mDevice->write(reinterpret_cast<const char*>(ptr), size);
     }
 
-    long ftell() {
-        return ::ftell(file);
+    qint64 ftell() const {
+        return mDevice->pos();
     }
 
-    int fseek(long offset, int whence) {
-        return ::fseek(file, offset, whence);
+    void fseek(qint64 offset) {
+        mDevice->seek(offset);
+    }
+
+    void fwriteUInt16(quint16 value) {
+        value = qToLittleEndian(value);
+        mDevice->write(reinterpret_cast<char*>(&value), 2);
+    }
+
+    void fwriteUInt32(quint32 value) {
+        value = qToLittleEndian(value);
+        mDevice->write(reinterpret_cast<char*>(&value), 4);
+    }
+
+    void fwriteInt16(qint16 value) {
+        value = qToLittleEndian(value);
+        mDevice->write(reinterpret_cast<char*>(&value), 2);
     }
 
     // Synthesizer::SynthStrategy implementation
     void write(qreal sample) override;
 
 private:
-    FILE* file = nullptr;
+    std::unique_ptr<QIODevice> mDevice;
 };
 
 void WavExportStrategy::write(qreal ssample) {
@@ -52,11 +72,11 @@ void WavExportStrategy::write(qreal ssample) {
         filesample /= fileacc;
         fileacc = 0;
         if (wav_bits == 16) {
-            short isample = (short)(filesample * 32000);
-            fwrite(&isample, 1, 2);
+            qint16 isample = qint16(filesample * 32000);
+            fwriteInt16(isample);
         } else {
-            unsigned char isample = (unsigned char)(filesample * 127 + 128);
-            fwrite(&isample, 1, 1);
+            quint8 isample = quint8(filesample * 127 + 128);
+            fwrite(&isample, 1);
         }
         filesample = 0.0;
     }
@@ -76,33 +96,23 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
     wav.wav_freq = frequency();
 
     // write wav header
-    unsigned int dword = 0;
-    unsigned short word = 0;
-    wav.fwrite("RIFF", 4, 1); // "RIFF"
-    dword = 0;
-    wav.fwrite(&dword, 1, 4); // remaining file size
-    wav.fwrite("WAVE", 4, 1); // "WAVE"
+    wav.fwrite("RIFF", 4); // "RIFF"
+    wav.fwriteUInt32(0); // remaining file size
+    wav.fwrite("WAVE", 4); // "WAVE"
 
-    wav.fwrite("fmt ", 4, 1); // "fmt "
-    dword = 16;
-    wav.fwrite(&dword, 1, 4); // chunk size
-    word = 1;
-    wav.fwrite(&word, 1, 2); // compression code
-    word = 1;
-    wav.fwrite(&word, 1, 2); // channels
-    dword = wav.wav_freq;
-    wav.fwrite(&dword, 1, 4); // sample rate
-    dword = wav.wav_freq * wav.wav_bits / 8;
-    wav.fwrite(&dword, 1, 4); // bytes/sec
-    word = wav.wav_bits / 8;
-    wav.fwrite(&word, 1, 2); // block align
-    word = wav.wav_bits;
-    wav.fwrite(&word, 1, 2); // bits per sample
+    wav.fwrite("fmt ", 4); // "fmt "
+    wav.fwriteUInt32(16); // chunk size
+    wav.fwriteUInt16(1); // compression code
+    wav.fwriteUInt16(1); // channels
+    wav.fwriteUInt32(wav.wav_freq); // sample rate
+    quint64 bytesPerSec = wav.wav_freq * wav.wav_bits / 8;
+    wav.fwriteUInt32(bytesPerSec); // bytes/sec
+    wav.fwriteUInt16(wav.wav_bits / 8); // block align
+    wav.fwriteUInt16(wav.wav_bits); // bits per sample
 
-    wav.fwrite("data", 4, 1); // "data"
-    dword = 0;
-    int foutstream_datasize = wav.ftell();
-    wav.fwrite(&dword, 1, 4); // chunk size
+    wav.fwrite("data", 4); // "data"
+    auto foutstream_datasize = wav.ftell();
+    wav.fwriteUInt32(foutstream_datasize); // chunk size
 
     // write sample data
     wav.file_sampleswritten = 0;
@@ -115,13 +125,12 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
     }
 
     // seek back to header and write size info
-    wav.fseek(4, SEEK_SET);
-    dword = 0;
-    dword = foutstream_datasize - 4 + wav.file_sampleswritten * wav.wav_bits / 8;
-    wav.fwrite(&dword, 1, 4); // remaining file size
-    wav.fseek(foutstream_datasize, SEEK_SET);
-    dword = wav.file_sampleswritten * wav.wav_bits / 8;
-    wav.fwrite(&dword, 1, 4); // chunk size (data)
+    wav.fseek(4);
+    quint64 remainingFileSize = foutstream_datasize - 4 + wav.file_sampleswritten * wav.wav_bits / 8;
+    wav.fwriteUInt32(remainingFileSize); // remaining file size
+    wav.fseek(foutstream_datasize);
+    quint64 dataChunkSize = wav.file_sampleswritten * wav.wav_bits / 8;
+    wav.fwriteUInt32(dataChunkSize); // chunk size (data)
 
     return true;
 }
