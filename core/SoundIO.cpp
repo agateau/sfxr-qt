@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMetaProperty>
+#include <QtEndian>
 #include <QUrl>
 
 #include <Result.h>
@@ -48,22 +49,24 @@ Result loadSfxr(Sound* sound, QIODevice* device) {
     auto readQReal = [device] {
         float value;
         device->read(reinterpret_cast<char*>(&value), sizeof(float));
+        value = qFromLittleEndian(value);
         return qreal(value);
     };
-    auto readInt = [device] {
-        int value;
-        device->read(reinterpret_cast<char*>(&value), sizeof(int));
+    auto readInt32 = [device] {
+        qint32 value;
+        device->read(reinterpret_cast<char*>(&value), sizeof(qint32));
+        value = qFromLittleEndian(value);
         return value;
     };
 
-    int version = readInt();
+    int version = readInt32();
     if (version != 100 && version != 101 && version != 102) {
         auto message =
             QCoreApplication::translate("SoundIO", "Invalid version value: %1.").arg(version);
         return Result::createError(message);
     }
 
-    sound->setWaveForm(static_cast<WaveForm::Enum>(readInt()));
+    sound->setWaveForm(static_cast<WaveForm::Enum>(readInt32()));
 
     sound->setVolume(version == 102 ? readQReal() : 0.5);
 
@@ -129,16 +132,18 @@ Result saveSfxr(const Sound* sound, QIODevice* device) {
     // File format uses float, but we use qreal, so we need to round the value down
     auto writeQReal = [device](qreal value) {
         float fvalue = float(value);
+        fvalue = qToLittleEndian(fvalue);
         device->write(reinterpret_cast<char*>(&fvalue), sizeof(float));
     };
 
-    auto writeInt = [device](int value) {
-        device->write(reinterpret_cast<char*>(&value), sizeof(int));
+    auto writeInt32 = [device](qint32 value) {
+        value = qToLittleEndian(value);
+        device->write(reinterpret_cast<char*>(&value), sizeof(qint32));
     };
 
-    int version = 102;
-    writeInt(version);
-    writeInt(sound->waveForm());
+    qint32 version = 102;
+    writeInt32(version);
+    writeInt32(sound->waveForm());
 
     writeQReal(sound->volume());
 
@@ -159,7 +164,7 @@ Result saveSfxr(const Sound* sound, QIODevice* device) {
     writeQReal(sound->decayTime());
     writeQReal(sound->sustainPunch());
 
-    bool filter_on = false;
+    bool filter_on = qToLittleEndian(false);
     device->write(reinterpret_cast<char*>(&filter_on), sizeof(bool));
     writeQReal(sound->lpFilterResonance());
     writeQReal(sound->lpFilterCutoff());
