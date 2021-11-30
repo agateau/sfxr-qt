@@ -164,8 +164,8 @@ Result saveSfxr(const Sound* sound, QIODevice* device) {
     writeQReal(sound->decayTime());
     writeQReal(sound->sustainPunch());
 
-    bool filter_on = qToLittleEndian(false);
-    device->write(reinterpret_cast<char*>(&filter_on), sizeof(bool));
+    qint32 filter_on = 0;
+    writeInt32(filter_on);
     writeQReal(sound->lpFilterResonance());
     writeQReal(sound->lpFilterCutoff());
     writeQReal(sound->lpFilterCutoffSweep());
