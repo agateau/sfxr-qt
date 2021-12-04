@@ -153,4 +153,12 @@ ColumnLayout {
     function saveWav(url) {
         wavSaver.save(sound, url);
     }
+
+    function setWavBits(bits) {
+        wavSaver.bits = bits;
+    }
+
+    function setWavFrequency(freq) {
+        wavSaver.frequency = freq;
+    }
 }

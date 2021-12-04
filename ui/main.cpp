@@ -35,6 +35,8 @@ static void setupCommandLineParser(QCommandLineParser* parser) {
 
     parser->addOption({"export", QApplication::translate("main", "Create a wav file from the given SFXR file and exit.")});
     parser->addOption({{"o", "output"},QApplication::translate("main", "Set the file to export to if --export is given."), "file"});
+    parser->addOption({{"b", "bits"},QApplication::translate("main", "Set the bits per sample of the exported wav."), "8 or 16"});
+    parser->addOption({{"s", "samplerate"},QApplication::translate("main", "Set samplerate in hertz of the exported wav."), "22050 or 44100"});
 }
 
 static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* engine) {
@@ -56,6 +58,17 @@ static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* 
     if (outputUrl.isEmpty()) {
        outputUrl = QUrl(url.toString().append(".wav"));
     }
+
+    int outputBits = parser->value("bits").toInt();
+    if (outputBits > 0) {
+        QMetaObject::invokeMethod(root, "setWavBits", Q_ARG(QVariant, outputBits));
+    }
+
+    int outputFreq = parser->value("samplerate").toInt();
+    if (outputFreq > 0) {
+        QMetaObject::invokeMethod(root, "setWavFrequency", Q_ARG(QVariant, outputFreq));
+    }
+
     QMetaObject::invokeMethod(root, "saveWav", Q_ARG(QVariant, outputUrl));
     exit(0);
 }
