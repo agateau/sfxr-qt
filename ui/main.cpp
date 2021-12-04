@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QDir>
 #include <QIcon>
 #include <QQmlApplicationEngine>
 
@@ -31,17 +32,32 @@ static void registerQmlTypes() {
 static void setupCommandLineParser(QCommandLineParser* parser) {
     parser->addHelpOption();
     parser->addPositionalArgument("sound_file", QApplication::translate("main", "File to load."));
+
+    parser->addOption({"export", QApplication::translate("main", "Create a wav file from the given SFXR file and exit.")});
+    parser->addOption({{"o", "output"},QApplication::translate("main", "Set the file to export to if --export is given."), "file"});
 }
 
 static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* engine) {
     parser->process(*qApp);
     const auto args = parser->positionalArguments();
+
     if (args.isEmpty()) {
         return;
     }
-    const QUrl url = QUrl::fromUserInput(args.first());
+    const QUrl url = QUrl::fromUserInput(args.first(),QDir::currentPath(),QUrl::AssumeLocalFile);
     auto* root = engine->rootObjects().first();
     QMetaObject::invokeMethod(root, "loadSound", Q_ARG(QVariant, url));
+
+    if (!parser->isSet("export")) {
+        return;
+    }
+
+    QUrl outputUrl = QUrl::fromUserInput(parser->value("output"),QDir::currentPath(),QUrl::AssumeLocalFile);
+    if (outputUrl.isEmpty()) {
+       outputUrl = QUrl(url.toString().append(".wav"));
+    }
+    QMetaObject::invokeMethod(root, "saveWav", Q_ARG(QVariant, outputUrl));
+    exit(0);
 }
 
 int main(int argc, char* argv[]) {

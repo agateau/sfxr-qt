@@ -299,4 +299,8 @@ ApplicationWindow {
     function loadSound(url) {
         fileActions.loadSound(url);
     }
+
+    function saveWav(url) {
+        fileActions.saveWav(url);
+    }
 }

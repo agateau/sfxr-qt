@@ -149,4 +149,8 @@ ColumnLayout {
             showError(qsTr("Error loading file"), message);
         }
     }
+
+    function saveWav(url) {
+        wavSaver.save(sound, url);
+    }
 }
