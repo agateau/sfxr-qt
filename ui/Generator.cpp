@@ -1,7 +1,5 @@
 #include <Generator.h>
 
-#include <QQmlEngine>
-
 #include <Sound.h>
 #include <SoundUtils.h>
 
@@ -60,6 +58,5 @@ void Generator::mutate(Sound* source) {
 void Generator::finish(std::unique_ptr<Sound> soundPtr, const QString& name) {
     auto sound = soundPtr.release();
     sound->setUnsavedName(name);
-    QQmlEngine::setObjectOwnership(sound, QQmlEngine::CppOwnership);
     soundGenerated(sound);
 }
