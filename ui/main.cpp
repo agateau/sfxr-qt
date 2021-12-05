@@ -46,7 +46,7 @@ static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* 
     if (args.isEmpty()) {
         return;
     }
-    const QUrl url = QUrl::fromUserInput(args.first(),QDir::currentPath(),QUrl::AssumeLocalFile);
+    const QUrl url = QUrl::fromUserInput(args.first(), QDir::currentPath(), QUrl::AssumeLocalFile);
     auto* root = engine->rootObjects().first();
     QMetaObject::invokeMethod(root, "loadSound", Q_ARG(QVariant, url));
 
@@ -54,7 +54,7 @@ static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* 
         return;
     }
 
-    QUrl outputUrl = QUrl::fromUserInput(parser->value("output"),QDir::currentPath(),QUrl::AssumeLocalFile);
+    QUrl outputUrl = QUrl::fromUserInput(parser->value("output"), QDir::currentPath(), QUrl::AssumeLocalFile);
     if (outputUrl.isEmpty()) {
        outputUrl = QUrl(url.toString().append(".wav"));
     }
