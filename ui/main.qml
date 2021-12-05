@@ -299,4 +299,16 @@ ApplicationWindow {
     function loadSound(url) {
         fileActions.loadSound(url);
     }
+
+    function saveWav(url) {
+        fileActions.saveWav(url);
+    }
+
+    function setWavBits(bits) {
+        fileActions.setWavBits(bits);
+    }
+
+    function setWavFrequency(freq) {
+       fileActions.setWavFrequency(freq);
+    }
 }
