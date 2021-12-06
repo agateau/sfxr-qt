@@ -11,6 +11,10 @@
 #include "WavSaver.h"
 #include "Result.h"
 
+#include <optional>
+
+using std::optional;
+
 static QIcon createIcon() {
     QIcon icon;
     for (int size : {16, 32, 48}) {
@@ -18,6 +22,46 @@ static QIcon createIcon() {
     }
     return icon;
 }
+
+struct Arguments {
+    QUrl url;
+    bool export_ = false;
+    QUrl outputUrl;
+    std::optional<int> outputBits;
+    std::optional<int> outputFrequency;
+
+    static optional<Arguments> parse(QCommandLineParser* parser) {
+        Arguments instance;
+        auto args = parser->positionalArguments();
+        if (args.isEmpty()) {
+            return {};
+        }
+
+        instance.url = QUrl::fromUserInput(args.first(), QDir::currentPath(), QUrl::AssumeLocalFile);
+
+        instance.export_ = parser->isSet("export");
+        if (!instance.export_) {
+            return instance;
+        }
+
+        instance.outputUrl = QUrl::fromUserInput(parser->value("output"), QDir::currentPath(), QUrl::AssumeLocalFile);
+        if (instance.outputUrl.isEmpty()) {
+           instance.outputUrl = QUrl(instance.url.toString().append(".wav"));
+        }
+
+        int outputBits = parser->value("bits").toInt();
+        if (outputBits > 0) {
+            instance.outputBits = outputBits;
+        }
+
+        int outputFrequency = parser->value("samplerate").toInt();
+        if (outputFrequency > 0) {
+            instance.outputFrequency = outputFrequency;
+        }
+
+        return instance;
+    }
+};
 
 static void registerQmlTypes() {
     qmlRegisterType<Sound>("sfxr", 1, 0, "Sound");
@@ -41,35 +85,28 @@ static void setupCommandLineParser(QCommandLineParser* parser) {
 
 static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* engine) {
     parser->process(*qApp);
-    const auto args = parser->positionalArguments();
-
-    if (args.isEmpty()) {
+    auto maybeArgs = Arguments::parse(parser);
+    if (!maybeArgs.has_value()) {
         return;
     }
-    const QUrl url = QUrl::fromUserInput(args.first(), QDir::currentPath(), QUrl::AssumeLocalFile);
+    auto args = maybeArgs.value();
+
     auto* root = engine->rootObjects().first();
-    QMetaObject::invokeMethod(root, "loadSound", Q_ARG(QVariant, url));
+    QMetaObject::invokeMethod(root, "loadSound", Q_ARG(QVariant, args.url));
 
-    if (!parser->isSet("export")) {
+    if (!args.export_) {
         return;
     }
 
-    QUrl outputUrl = QUrl::fromUserInput(parser->value("output"), QDir::currentPath(), QUrl::AssumeLocalFile);
-    if (outputUrl.isEmpty()) {
-       outputUrl = QUrl(url.toString().append(".wav"));
+    if (args.outputBits.has_value()) {
+        QMetaObject::invokeMethod(root, "setWavBits", Q_ARG(QVariant, args.outputBits.value()));
     }
 
-    int outputBits = parser->value("bits").toInt();
-    if (outputBits > 0) {
-        QMetaObject::invokeMethod(root, "setWavBits", Q_ARG(QVariant, outputBits));
+    if (args.outputFrequency.has_value()) {
+        QMetaObject::invokeMethod(root, "setWavFrequency", Q_ARG(QVariant, args.outputFrequency.value()));
     }
 
-    int outputFreq = parser->value("samplerate").toInt();
-    if (outputFreq > 0) {
-        QMetaObject::invokeMethod(root, "setWavFrequency", Q_ARG(QVariant, outputFreq));
-    }
-
-    QMetaObject::invokeMethod(root, "saveWav", Q_ARG(QVariant, outputUrl));
+    QMetaObject::invokeMethod(root, "saveWav", Q_ARG(QVariant, args.outputUrl));
     exit(0);
 }
 
