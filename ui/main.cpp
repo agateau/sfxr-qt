@@ -32,31 +32,31 @@ struct Arguments {
     std::optional<int> outputBits;
     std::optional<int> outputFrequency;
 
-    static optional<Arguments> parse(QCommandLineParser* parser) {
+    static optional<Arguments> parse(const QCommandLineParser& parser) {
         Arguments instance;
-        auto args = parser->positionalArguments();
+        auto args = parser.positionalArguments();
         if (args.isEmpty()) {
             return {};
         }
 
         instance.url = QUrl::fromUserInput(args.first(), QDir::currentPath(), QUrl::AssumeLocalFile);
 
-        instance.export_ = parser->isSet("export");
+        instance.export_ = parser.isSet("export");
         if (!instance.export_) {
             return instance;
         }
 
-        instance.outputUrl = QUrl::fromUserInput(parser->value("output"), QDir::currentPath(), QUrl::AssumeLocalFile);
+        instance.outputUrl = QUrl::fromUserInput(parser.value("output"), QDir::currentPath(), QUrl::AssumeLocalFile);
         if (instance.outputUrl.isEmpty()) {
            instance.outputUrl = QUrl(instance.url.toString().append(".wav"));
         }
 
-        int outputBits = parser->value("bits").toInt();
+        int outputBits = parser.value("bits").toInt();
         if (outputBits > 0) {
             instance.outputBits = outputBits;
         }
 
-        int outputFrequency = parser->value("samplerate").toInt();
+        int outputFrequency = parser.value("samplerate").toInt();
         if (outputFrequency > 0) {
             instance.outputFrequency = outputFrequency;
         }
@@ -85,25 +85,11 @@ static void setupCommandLineParser(QCommandLineParser* parser) {
     parser->addOption({{"s", "samplerate"},QApplication::translate("main", "Set samplerate in hertz of the exported wav."), "22050 or 44100"});
 }
 
-static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* engine) {
-    parser->process(*qApp);
-    auto maybeArgs = Arguments::parse(parser);
-    if (!maybeArgs.has_value()) {
-        return;
-    }
-    auto args = maybeArgs.value();
-
-    auto* root = engine->rootObjects().first();
-    QMetaObject::invokeMethod(root, "loadSound", Q_ARG(QVariant, args.url));
-
-    if (!args.export_) {
-        return;
-    }
-
+static int exportSound(const Arguments& args) {
     Sound sound;
     if (auto res = SoundIO::load(&sound, args.url); !res) {
         qWarning() << res.message();
-        exit(1);
+        return 1;
     }
 
     WavSaver saver;
@@ -117,9 +103,14 @@ static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* 
 
     if (!saver.save(&sound, args.outputUrl)) {
         qWarning() << "Could not save sound to" << args.outputUrl.path();
-        exit(1);
+        return 1;
     }
-    exit(0);
+    return 0;
+}
+
+static void loadInitialSound(QQmlApplicationEngine* engine, const QUrl& url) {
+    auto* root = engine->rootObjects().first();
+    QMetaObject::invokeMethod(root, "loadSound", Q_ARG(QVariant, url));
 }
 
 int main(int argc, char* argv[]) {
@@ -128,15 +119,23 @@ int main(int argc, char* argv[]) {
     app.setApplicationName("sfxr-qt");
     app.setApplicationDisplayName("SFXR Qt");
     app.setWindowIcon(createIcon());
+    registerQmlTypes();
 
     QCommandLineParser parser;
     setupCommandLineParser(&parser);
+    parser.process(*qApp);
 
-    registerQmlTypes();
+    auto maybeArgs = Arguments::parse(parser);
+    if (maybeArgs.has_value() && maybeArgs.value().export_) {
+        return exportSound(maybeArgs.value());
+    }
+
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
-    processArguments(&parser, &engine);
+    if (maybeArgs.has_value()) {
+        loadInitialSound(&engine, maybeArgs.value().url);
+    }
 
     return app.exec();
 }
