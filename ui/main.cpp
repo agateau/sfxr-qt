@@ -1,11 +1,13 @@
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QDebug>
 #include <QDir>
 #include <QIcon>
 #include <QQmlApplicationEngine>
 
 #include "Generator.h"
 #include "Sound.h"
+#include "SoundIO.h"
 #include "SoundListModel.h"
 #include "SoundPlayer.h"
 #include "WavSaver.h"
@@ -98,15 +100,25 @@ static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* 
         return;
     }
 
+    Sound sound;
+    if (auto res = SoundIO::load(&sound, args.url); !res) {
+        qWarning() << res.message();
+        exit(1);
+    }
+
+    WavSaver saver;
     if (args.outputBits.has_value()) {
-        QMetaObject::invokeMethod(root, "setWavBits", Q_ARG(QVariant, args.outputBits.value()));
+        saver.setBits(args.outputBits.value());
     }
 
     if (args.outputFrequency.has_value()) {
-        QMetaObject::invokeMethod(root, "setWavFrequency", Q_ARG(QVariant, args.outputFrequency.value()));
+        saver.setFrequency(args.outputFrequency.value());
     }
 
-    QMetaObject::invokeMethod(root, "saveWav", Q_ARG(QVariant, args.outputUrl));
+    if (!saver.save(&sound, args.outputUrl)) {
+        qWarning() << "Could not save sound to" << args.outputUrl.path();
+        exit(1);
+    }
     exit(0);
 }
 
