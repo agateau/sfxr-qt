@@ -88,7 +88,7 @@ static void setupCommandLineParser(QCommandLineParser* parser) {
 static int exportSound(const Arguments& args) {
     Sound sound;
     if (auto res = SoundIO::load(&sound, args.url); !res) {
-        qWarning() << res.message();
+        qCritical("%s", qUtf8Printable(res.message()));
         return 1;
     }
 
@@ -102,7 +102,7 @@ static int exportSound(const Arguments& args) {
     }
 
     if (!saver.save(&sound, args.outputUrl)) {
-        qWarning() << "Could not save sound to" << args.outputUrl.path();
+        qCritical( "Could not save sound to %s.", qUtf8Printable(args.outputUrl.path()));
         return 1;
     }
     return 0;
