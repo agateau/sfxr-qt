@@ -49,6 +49,12 @@ ColumnLayout {
                 text: "⨯"
 
                 onClicked: {
+                    if (model.index < 0) {
+                        // This can happen when clicking fast enough on the button.
+                        // Especially when running under Valgrind.
+                        console.warn("Sound has already been removed");
+                        return;
+                    }
                     if (listView.count === 1) {
                         // If the item is alone, reset it, do not remove it
                         root.model.resetSoundAtRow(0);

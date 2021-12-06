@@ -2,6 +2,8 @@
 
 #include "Sound.h"
 
+#include <QQmlEngine>
+
 #include <algorithm>
 
 SoundListModel::SoundListModel(QObject* parent) : BaseSoundListModel(parent) {
@@ -43,6 +45,9 @@ QHash<int, QByteArray> SoundListModel::roleNames() const {
 }
 
 void SoundListModel::addNew(Sound* sound) {
+    // Make sure QML does not delete `sound` behind our back
+    QQmlEngine::setObjectOwnership(sound, QQmlEngine::CppOwnership);
+
     beginInsertRows(QModelIndex(), 0, 0);
     mItems.insert(mItems.begin(), std::unique_ptr<Sound>(sound));
     endInsertRows();
