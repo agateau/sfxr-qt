@@ -48,7 +48,8 @@ struct Arguments {
 
         instance.outputUrl = QUrl::fromUserInput(parser.value("output"), QDir::currentPath(), QUrl::AssumeLocalFile);
         if (instance.outputUrl.isEmpty()) {
-           instance.outputUrl = QUrl(instance.url.toString().append(".wav"));
+            auto path = instance.url.path().section('.', 0, -2) + ".wav";
+            instance.outputUrl = QUrl::fromLocalFile(path);
         }
 
         int outputBits = parser.value("bits").toInt();
