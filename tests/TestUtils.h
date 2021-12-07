@@ -1,10 +1,9 @@
 #ifndef TESTUTILS_H
 #define TESTUTILS_H
 
-#include <fstream>
-
 #include <QString>
 #include <QUrl>
+#include <fstream>
 
 QByteArray loadFile(const QString& path);
 

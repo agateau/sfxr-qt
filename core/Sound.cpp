@@ -5,7 +5,7 @@
 #include <QMetaProperty>
 #include <QUrl>
 
-#include <SoundIO.h>
+#include "SoundIO.h"
 
 static const char UNSAVED_SCHEME[] = "unsaved";
 

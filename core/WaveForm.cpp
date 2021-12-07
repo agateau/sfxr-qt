@@ -1,4 +1,4 @@
-#include <WaveForm.h>
+#include "WaveForm.h"
 
 #include <QQmlEngine>
 

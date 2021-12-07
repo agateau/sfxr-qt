@@ -13,7 +13,9 @@ public:
     bool isOk() const;
     QString message() const;
 
-    operator bool() const { return isOk(); }
+    operator bool() const {
+        return isOk();
+    }
 
     static Result createOk();
     static Result createError(const QString& message);

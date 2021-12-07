@@ -1,8 +1,8 @@
 #include "Synthesizer.h"
 
-#include <QDebug>
-
 #include <math.h>
+
+#include <QDebug>
 
 #include "NoiseGenerator.h"
 #include "Sound.h"

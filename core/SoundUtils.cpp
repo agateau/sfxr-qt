@@ -1,10 +1,9 @@
-#include <SoundUtils.h>
+#include "SoundUtils.h"
 
 #include <QMetaProperty>
-
-#include <Sound.h>
-
 #include <cmath>
+
+#include "Sound.h"
 
 using std::pow;
 

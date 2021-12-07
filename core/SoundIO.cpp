@@ -1,4 +1,4 @@
-#include <SoundIO.h>
+#include "SoundIO.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -7,11 +7,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMetaProperty>
-#include <QtEndian>
 #include <QUrl>
+#include <QtEndian>
 
-#include <Result.h>
-#include <Sound.h>
+#include "Result.h"
+#include "Sound.h"
 
 namespace SoundIO {
 
@@ -22,8 +22,8 @@ Result load(Sound* sound, const QUrl& url) {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
         auto message = QCoreApplication::translate("SoundIO", "Cannot open %1: %2.")
-                .arg(path)
-                .arg(file.errorString());
+                           .arg(path)
+                           .arg(file.errorString());
         return Result::createError(message);
     }
     QString ext = path.section(".", -1);

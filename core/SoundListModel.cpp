@@ -1,10 +1,9 @@
 #include "SoundListModel.h"
 
-#include "Sound.h"
-
 #include <QQmlEngine>
-
 #include <algorithm>
+
+#include "Sound.h"
 
 SoundListModel::SoundListModel(QObject* parent) : BaseSoundListModel(parent) {
     addNew(new Sound);

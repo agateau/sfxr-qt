@@ -1,10 +1,9 @@
 #ifndef SYNTHESIZER_H
 #define SYNTHESIZER_H
 
+#include <QtGlobal>
 #include <memory>
 #include <unordered_map>
-
-#include <QtGlobal>
 
 static constexpr int PHASER_BUFFER_LENGTH = 1024;
 

@@ -2,8 +2,23 @@
 set -euo pipefail
 
 cd "$(dirname $0)/.."
+
+CLANG_FORMAT_VERSION=10
+
 CLANG_FORMAT_CMD=${CLANG_FORMAT_CMD:-clang-format}
-$CLANG_FORMAT_CMD --version
+
+version=$($CLANG_FORMAT_CMD --version)
+
+case "$version" in
+    clang-format\ version\ $CLANG_FORMAT_VERSION.*)
+        ;;
+    *)
+        echo "$version"
+        echo "Error: expected clang-format version $CLANG_FORMAT_VERSION.*"
+        exit 1
+        ;;
+esac
+
 exec ci/run-clang-format.py \
     --clang-format-executable $CLANG_FORMAT_CMD \
     --recursive \

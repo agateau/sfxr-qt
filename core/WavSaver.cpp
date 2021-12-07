@@ -1,8 +1,8 @@
 #include "WavSaver.h"
 
 #include <QFile>
-#include <QtEndian>
 #include <QUrl>
+#include <QtEndian>
 
 #include "Sound.h"
 #include "Synthesizer.h"
@@ -97,18 +97,18 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
 
     // write wav header
     wav.fwrite("RIFF", 4); // "RIFF"
-    wav.fwriteUInt32(0); // remaining file size
+    wav.fwriteUInt32(0);   // remaining file size
     wav.fwrite("WAVE", 4); // "WAVE"
 
-    wav.fwrite("fmt ", 4); // "fmt "
-    wav.fwriteUInt32(16); // chunk size
-    wav.fwriteUInt16(1); // compression code
-    wav.fwriteUInt16(1); // channels
+    wav.fwrite("fmt ", 4);          // "fmt "
+    wav.fwriteUInt32(16);           // chunk size
+    wav.fwriteUInt16(1);            // compression code
+    wav.fwriteUInt16(1);            // channels
     wav.fwriteUInt32(wav.wav_freq); // sample rate
     quint64 bytesPerSec = wav.wav_freq * wav.wav_bits / 8;
-    wav.fwriteUInt32(bytesPerSec); // bytes/sec
+    wav.fwriteUInt32(bytesPerSec);      // bytes/sec
     wav.fwriteUInt16(wav.wav_bits / 8); // block align
-    wav.fwriteUInt16(wav.wav_bits); // bits per sample
+    wav.fwriteUInt16(wav.wav_bits);     // bits per sample
 
     wav.fwrite("data", 4); // "data"
     auto foutstream_datasize = wav.ftell();
@@ -126,7 +126,8 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
 
     // seek back to header and write size info
     wav.fseek(4);
-    quint64 remainingFileSize = foutstream_datasize - 4 + wav.file_sampleswritten * wav.wav_bits / 8;
+    quint64 remainingFileSize =
+        foutstream_datasize - 4 + wav.file_sampleswritten * wav.wav_bits / 8;
     wav.fwriteUInt32(remainingFileSize); // remaining file size
     wav.fseek(foutstream_datasize);
     quint64 dataChunkSize = wav.file_sampleswritten * wav.wav_bits / 8;
