@@ -1,15 +1,21 @@
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QDebug>
 #include <QDir>
 #include <QIcon>
 #include <QQmlApplicationEngine>
 
 #include "Generator.h"
 #include "Sound.h"
+#include "SoundIO.h"
 #include "SoundListModel.h"
 #include "SoundPlayer.h"
 #include "WavSaver.h"
 #include "Result.h"
+
+#include <optional>
+
+using std::optional;
 
 static QIcon createIcon() {
     QIcon icon;
@@ -18,6 +24,47 @@ static QIcon createIcon() {
     }
     return icon;
 }
+
+struct Arguments {
+    QUrl url;
+    bool export_ = false;
+    QUrl outputUrl;
+    std::optional<int> outputBits;
+    std::optional<int> outputFrequency;
+
+    static optional<Arguments> parse(const QCommandLineParser& parser) {
+        Arguments instance;
+        auto args = parser.positionalArguments();
+        if (args.isEmpty()) {
+            return {};
+        }
+
+        instance.url = QUrl::fromUserInput(args.first(), QDir::currentPath(), QUrl::AssumeLocalFile);
+
+        instance.export_ = parser.isSet("export");
+        if (!instance.export_) {
+            return instance;
+        }
+
+        instance.outputUrl = QUrl::fromUserInput(parser.value("output"), QDir::currentPath(), QUrl::AssumeLocalFile);
+        if (instance.outputUrl.isEmpty()) {
+            auto path = instance.url.path().section('.', 0, -2) + ".wav";
+            instance.outputUrl = QUrl::fromLocalFile(path);
+        }
+
+        int outputBits = parser.value("bits").toInt();
+        if (outputBits > 0) {
+            instance.outputBits = outputBits;
+        }
+
+        int outputFrequency = parser.value("samplerate").toInt();
+        if (outputFrequency > 0) {
+            instance.outputFrequency = outputFrequency;
+        }
+
+        return instance;
+    }
+};
 
 static void registerQmlTypes() {
     qmlRegisterType<Sound>("sfxr", 1, 0, "Sound");
@@ -39,38 +86,32 @@ static void setupCommandLineParser(QCommandLineParser* parser) {
     parser->addOption({{"s", "samplerate"},QApplication::translate("main", "Set samplerate in hertz of the exported wav."), "22050 or 44100"});
 }
 
-static void processArguments(QCommandLineParser* parser, QQmlApplicationEngine* engine) {
-    parser->process(*qApp);
-    const auto args = parser->positionalArguments();
-
-    if (args.isEmpty()) {
-        return;
+static int exportSound(const Arguments& args) {
+    Sound sound;
+    if (auto res = SoundIO::load(&sound, args.url); !res) {
+        qCritical("%s", qUtf8Printable(res.message()));
+        return 1;
     }
-    const QUrl url = QUrl::fromUserInput(args.first(), QDir::currentPath(), QUrl::AssumeLocalFile);
+
+    WavSaver saver;
+    if (args.outputBits.has_value()) {
+        saver.setBits(args.outputBits.value());
+    }
+
+    if (args.outputFrequency.has_value()) {
+        saver.setFrequency(args.outputFrequency.value());
+    }
+
+    if (!saver.save(&sound, args.outputUrl)) {
+        qCritical( "Could not save sound to %s.", qUtf8Printable(args.outputUrl.path()));
+        return 1;
+    }
+    return 0;
+}
+
+static void loadInitialSound(QQmlApplicationEngine* engine, const QUrl& url) {
     auto* root = engine->rootObjects().first();
     QMetaObject::invokeMethod(root, "loadSound", Q_ARG(QVariant, url));
-
-    if (!parser->isSet("export")) {
-        return;
-    }
-
-    QUrl outputUrl = QUrl::fromUserInput(parser->value("output"), QDir::currentPath(), QUrl::AssumeLocalFile);
-    if (outputUrl.isEmpty()) {
-       outputUrl = QUrl(url.toString().append(".wav"));
-    }
-
-    int outputBits = parser->value("bits").toInt();
-    if (outputBits > 0) {
-        QMetaObject::invokeMethod(root, "setWavBits", Q_ARG(QVariant, outputBits));
-    }
-
-    int outputFreq = parser->value("samplerate").toInt();
-    if (outputFreq > 0) {
-        QMetaObject::invokeMethod(root, "setWavFrequency", Q_ARG(QVariant, outputFreq));
-    }
-
-    QMetaObject::invokeMethod(root, "saveWav", Q_ARG(QVariant, outputUrl));
-    exit(0);
 }
 
 int main(int argc, char* argv[]) {
@@ -79,15 +120,23 @@ int main(int argc, char* argv[]) {
     app.setApplicationName("sfxr-qt");
     app.setApplicationDisplayName("SFXR Qt");
     app.setWindowIcon(createIcon());
+    registerQmlTypes();
 
     QCommandLineParser parser;
     setupCommandLineParser(&parser);
+    parser.process(*qApp);
 
-    registerQmlTypes();
+    auto maybeArgs = Arguments::parse(parser);
+    if (maybeArgs.has_value() && maybeArgs.value().export_) {
+        return exportSound(maybeArgs.value());
+    }
+
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
-    processArguments(&parser, &engine);
+    if (maybeArgs.has_value()) {
+        loadInitialSound(&engine, maybeArgs.value().url);
+    }
 
     return app.exec();
 }

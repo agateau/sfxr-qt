@@ -21,6 +21,10 @@ to save it in [SFXJ format][format], so that you can work on it later.
 For more details, you should read the original [SFXR
 readme.txt](readme-sfxr-sdl.txt).
 
+You can also use the `--export` option to export your SFXR or SFXJ files to wav
+files from the command-line. Look at the output of `sfxr-qt --help` for
+details.
+
 ## Precompiled binaries
 
 Precompiled binaries for Linux are available in the [releases section][ghr].
@@ -33,6 +37,7 @@ Precompiled binaries for Linux are available in the [releases section][ghr].
 
 Building SFXR Qt requires installing the following tools:
 
+- A C++ 17 compiler
 - Qt 5.7
 - SDL 1.2
 - CMake 3.10 (You might be able to build with older versions if you adjust the

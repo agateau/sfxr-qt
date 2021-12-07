@@ -21,7 +21,9 @@ Result load(Sound* sound, const QUrl& url) {
     QString path = url.path();
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
-        auto message = QCoreApplication::translate("SoundIO", "Cannot open file.");
+        auto message = QCoreApplication::translate("SoundIO", "Cannot open %1: %2.")
+                .arg(path)
+                .arg(file.errorString());
         return Result::createError(message);
     }
     QString ext = path.section(".", -1);
