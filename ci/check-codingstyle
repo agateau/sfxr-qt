@@ -5,7 +5,7 @@ cd "$(dirname $0)/.."
 
 CLANG_FORMAT_VERSION=10
 
-CLANG_FORMAT_CMD=${CLANG_FORMAT_CMD:-clang-format}
+CLANG_FORMAT_CMD=${CLANG_FORMAT_CMD:-clang-format-$CLANG_FORMAT_VERSION}
 
 version=$($CLANG_FORMAT_CMD --version)
 
