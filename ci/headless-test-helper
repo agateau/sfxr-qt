@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+# A wrapper to ensure we have a window manager running when tests are run.
+# This is required for new windows to become focused when they are created.
+
+CMD=$*
+
+openbox &
+sleep 1
+$CMD

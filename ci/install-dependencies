@@ -1,0 +1,56 @@
+#!/bin/bash
+set -euo pipefail
+
+pushd $PWD > /dev/null
+cd $(dirname $0)
+CI_DIR=$PWD
+popd > /dev/null
+
+SRC_DIR=$CI_DIR/..
+
+QT_ARCH_WINDOWS=win64_msvc2017_64
+QT_ARCH_MACOS=clang_64
+QT_VERSION=5.12.8
+
+ECM_VERSION=5.69.0
+
+CMAKE_VERSION=3.17.\*
+
+QPROPGEN_VERSION=0.1.\*
+
+add_env_var() {
+    echo "export $1=$2" >> $ENV_FILE
+    export $1=$2
+}
+
+prepend_path() {
+    echo "export PATH=$1:\$PATH" >> $ENV_FILE
+    export PATH=$1:$PATH
+}
+
+. $CI_DIR/lib/common.sh
+. $CI_DIR/lib/common-dependencies.sh
+. $CI_DIR/lib/$OS-dependencies.sh
+
+INST_DIR=$1
+mkdir -p $INST_DIR
+
+# Make INST_DIR absolute
+pushd $PWD > /dev/null
+cd $INST_DIR
+INST_DIR=$PWD
+popd
+
+if is_windows ; then
+    INST_DIR=$(cygpath $INST_DIR)
+fi
+
+ENV_FILE=$INST_DIR/env.sh
+
+rm -f $ENV_FILE
+touch $ENV_FILE
+
+add_env_var CMAKE_INSTALL_PREFIX $INST_DIR
+add_env_var CMAKE_PREFIX_PATH $INST_DIR
+
+main

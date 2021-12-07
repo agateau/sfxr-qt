@@ -1,7 +1,5 @@
-#!/bin/sh
-set -e
-cd "$(git rev-parse --show-toplevel)"
-find \( -name '*.h' -o -name '*.cpp' \) -print0 \
-    | grep --null-data --invert-match /3rdparty/ \
-    | xargs --null clang-format -i
+#!/bin/bash
+set -euo pipefail
 
+cd "$(git rev-parse --show-toplevel)"
+ci/check-codingstyle | patch -p0

@@ -20,7 +20,7 @@ using std::optional;
 static QIcon createIcon() {
     QIcon icon;
     for (int size : {16, 32, 48}) {
-        icon.addFile(QString(":/icons/sfxr-qt-%1.png").arg(size));
+        icon.addFile(QString(":/icons/%1-apps-sfxr-qt.png").arg(size));
     }
     return icon;
 }
@@ -116,6 +116,7 @@ static void loadInitialSound(QQmlApplicationEngine* engine, const QUrl& url) {
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
+    Q_INIT_RESOURCE(qml);
     app.setOrganizationDomain("agateau.com");
     app.setApplicationName("sfxr-qt");
     app.setApplicationDisplayName("SFXR Qt");
