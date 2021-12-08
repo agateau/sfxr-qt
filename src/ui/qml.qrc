@@ -7,9 +7,9 @@
         <file>SliderGroup.qml</file>
         <file>FileActions.qml</file>
         <file>TitleLabel.qml</file>
-        <file>icons/sfxr-qt-16.png</file>
-        <file>icons/sfxr-qt-32.png</file>
-        <file>icons/sfxr-qt-48.png</file>
+        <file>icons/16-apps-sfxr-qt.png</file>
+        <file>icons/32-apps-sfxr-qt.png</file>
+        <file>icons/48-apps-sfxr-qt.png</file>
         <file>SoundListView.qml</file>
         <file>VerticalSpacer.qml</file>
         <file>PlayBar.qml</file>

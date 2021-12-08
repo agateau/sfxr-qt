@@ -1,17 +1,15 @@
-#include <Synthesizer.h>
-
-#include <catch2/catch.hpp>
+#include "Sound.h"
+#include "Synthesizer.h"
+#include "TestConfig.h"
+#include "TestUtils.h"
+#include "WavSaver.h"
+#include "WaveForm.h"
 
 #include <QDebug>
 #include <QDir>
 #include <QTemporaryDir>
 
-#include <TestConfig.h>
-#include "TestUtils.h"
-
-#include <Sound.h>
-#include <WavSaver.h>
-#include <WaveForm.h>
+#include <catch2/catch.hpp>
 
 static constexpr char FIXTURES_DIR[] = TEST_FIXTURES_DIR "/synthesizer";
 

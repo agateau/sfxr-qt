@@ -1,0 +1,30 @@
+name: main
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONUNBUFFERED: 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-20.04
+          #- macos-10.15
+          #- windows-2019
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Install dependencies
+        run: ci/install-dependencies deps
+        shell: bash
+      - name: Build
+        run: . deps/env.sh && ci/build-app
+        shell: bash
+      - uses: actions/upload-artifact@v2
+        with:
+          name: packages
+          path: build/sfxr-qt[-_]*.*

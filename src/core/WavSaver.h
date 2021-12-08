@@ -1,9 +1,9 @@
 #ifndef WAVSAVER_H
 #define WAVSAVER_H
 
-#include <QObject>
+#include "BaseWavSaver.h"
 
-#include <BaseWavSaver.h>
+#include <QObject>
 
 class QUrl;
 

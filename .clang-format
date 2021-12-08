@@ -54,6 +54,18 @@ AlignEscapedNewlines: DontAlign
 AlignTrailingComments: true
 Cpp11BracedListStyle: true
 
+# Includes
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^"'
+    Priority: 1
+  - Regex: '^<K'
+    Priority: 2
+  - Regex: '^<Q'
+    Priority: 3
+  - Regex: '^<'
+    Priority: 4
+
 # Misc
 ForEachMacros: [ foreach, Q_FOREACH, BOOST_FOREACH ]
 ...

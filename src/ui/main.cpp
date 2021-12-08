@@ -1,17 +1,17 @@
+#include "Generator.h"
+#include "Result.h"
+#include "Sound.h"
+#include "SoundIO.h"
+#include "SoundListModel.h"
+#include "SoundPlayer.h"
+#include "WavSaver.h"
+
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDebug>
 #include <QDir>
 #include <QIcon>
 #include <QQmlApplicationEngine>
-
-#include "Generator.h"
-#include "Sound.h"
-#include "SoundIO.h"
-#include "SoundListModel.h"
-#include "SoundPlayer.h"
-#include "WavSaver.h"
-#include "Result.h"
 
 #include <optional>
 
@@ -20,7 +20,7 @@ using std::optional;
 static QIcon createIcon() {
     QIcon icon;
     for (int size : {16, 32, 48}) {
-        icon.addFile(QString(":/icons/sfxr-qt-%1.png").arg(size));
+        icon.addFile(QString(":/icons/%1-apps-sfxr-qt.png").arg(size));
     }
     return icon;
 }
@@ -39,14 +39,16 @@ struct Arguments {
             return {};
         }
 
-        instance.url = QUrl::fromUserInput(args.first(), QDir::currentPath(), QUrl::AssumeLocalFile);
+        instance.url =
+            QUrl::fromUserInput(args.first(), QDir::currentPath(), QUrl::AssumeLocalFile);
 
         instance.export_ = parser.isSet("export");
         if (!instance.export_) {
             return instance;
         }
 
-        instance.outputUrl = QUrl::fromUserInput(parser.value("output"), QDir::currentPath(), QUrl::AssumeLocalFile);
+        instance.outputUrl =
+            QUrl::fromUserInput(parser.value("output"), QDir::currentPath(), QUrl::AssumeLocalFile);
         if (instance.outputUrl.isEmpty()) {
             auto path = instance.url.path().section('.', 0, -2) + ".wav";
             instance.outputUrl = QUrl::fromLocalFile(path);
@@ -80,10 +82,21 @@ static void setupCommandLineParser(QCommandLineParser* parser) {
     parser->addHelpOption();
     parser->addPositionalArgument("sound_file", QApplication::translate("main", "File to load."));
 
-    parser->addOption({"export", QApplication::translate("main", "Create a wav file from the given SFXR file and exit.")});
-    parser->addOption({{"o", "output"},QApplication::translate("main", "Set the file to export to if --export is given."), "file"});
-    parser->addOption({{"b", "bits"},QApplication::translate("main", "Set the bits per sample of the exported wav."), "8 or 16"});
-    parser->addOption({{"s", "samplerate"},QApplication::translate("main", "Set samplerate in hertz of the exported wav."), "22050 or 44100"});
+    parser->addOption(
+        {"export",
+         QApplication::translate("main", "Create a wav file from the given SFXR file and exit.")});
+    parser->addOption(
+        {{"o", "output"},
+         QApplication::translate("main", "Set the file to export to if --export is given."),
+         "file"});
+    parser->addOption(
+        {{"b", "bits"},
+         QApplication::translate("main", "Set the bits per sample of the exported wav."),
+         "8 or 16"});
+    parser->addOption(
+        {{"s", "samplerate"},
+         QApplication::translate("main", "Set samplerate in hertz of the exported wav."),
+         "22050 or 44100"});
 }
 
 static int exportSound(const Arguments& args) {
@@ -103,7 +116,7 @@ static int exportSound(const Arguments& args) {
     }
 
     if (!saver.save(&sound, args.outputUrl)) {
-        qCritical( "Could not save sound to %s.", qUtf8Printable(args.outputUrl.path()));
+        qCritical("Could not save sound to %s.", qUtf8Printable(args.outputUrl.path()));
         return 1;
     }
     return 0;
@@ -116,6 +129,7 @@ static void loadInitialSound(QQmlApplicationEngine* engine, const QUrl& url) {
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
+    Q_INIT_RESOURCE(qml);
     app.setOrganizationDomain("agateau.com");
     app.setApplicationName("sfxr-qt");
     app.setApplicationDisplayName("SFXR Qt");

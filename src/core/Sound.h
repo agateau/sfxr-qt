@@ -2,8 +2,7 @@
 #define SOUND_H
 
 #include "BaseSound.h"
-
-#include <Result.h>
+#include "Result.h"
 
 class Sound : public BaseSound {
     Q_OBJECT

@@ -1,11 +1,11 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
+#include "WaveForm.h"
+
 #include <QObject>
 
 #include <memory>
-
-#include <WaveForm.h>
 
 class Sound;
 

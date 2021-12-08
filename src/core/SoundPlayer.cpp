@@ -1,11 +1,11 @@
 #include "SoundPlayer.h"
 
+#include "Sound.h"
+#include "Synthesizer.h"
+
 #include <QTimer>
 
 #include <SDL.h>
-
-#include <Sound.h>
-#include <Synthesizer.h>
 
 static const int SCHEDULED_PLAY_DELAY = 200;
 

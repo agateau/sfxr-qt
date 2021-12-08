@@ -1,8 +1,8 @@
-#include <SoundUtils.h>
+#include "SoundUtils.h"
+
+#include "Sound.h"
 
 #include <QMetaProperty>
-
-#include <Sound.h>
 
 #include <cmath>
 

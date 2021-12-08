@@ -1,4 +1,8 @@
-#include <Sound.h>
+#include "Sound.h"
+#include "SoundIO.h"
+#include "SoundUtils.h"
+#include "TestConfig.h"
+#include "TestUtils.h"
 
 #include <QBuffer>
 #include <QMetaProperty>
@@ -6,12 +10,6 @@
 #include <QUrl>
 
 #include <catch2/catch.hpp>
-
-#include <TestConfig.h>
-#include <TestUtils.h>
-
-#include <SoundIO.h>
-#include <SoundUtils.h>
 
 static bool fuzzyEq(const Sound& s1, const Sound& s2) {
     QMetaObject mo = BaseSound::staticMetaObject;

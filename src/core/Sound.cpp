@@ -1,11 +1,11 @@
 #include "Sound.h"
 
+#include "SoundIO.h"
+
 #include <QDebug>
 #include <QFile>
 #include <QMetaProperty>
 #include <QUrl>
-
-#include <SoundIO.h>
 
 static const char UNSAVED_SCHEME[] = "unsaved";
 

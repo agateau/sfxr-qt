@@ -1,7 +1,7 @@
 #ifndef SOUNDUTILS_H
 #define SOUNDUTILS_H
 
-#include <Sound.h>
+#include "Sound.h"
 
 #include <memory>
 
