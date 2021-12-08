@@ -3,6 +3,7 @@
 
 #include <QMutex>
 #include <QObject>
+
 #include <memory>
 
 class QTimer;

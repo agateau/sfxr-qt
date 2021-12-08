@@ -1,9 +1,10 @@
 #define CATCH_CONFIG_RUNNER
+#include "SynthesizerTest.h"
+
 #include <QCoreApplication>
 #include <QtTest>
-#include <catch2/catch.hpp>
 
-#include "SynthesizerTest.h"
+#include <catch2/catch.hpp>
 
 int main(int argc, char* argv[]) {
     QCoreApplication app(argc, argv);

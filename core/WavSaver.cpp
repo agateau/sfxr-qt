@@ -1,11 +1,11 @@
 #include "WavSaver.h"
 
+#include "Sound.h"
+#include "Synthesizer.h"
+
 #include <QFile>
 #include <QUrl>
 #include <QtEndian>
-
-#include "Sound.h"
-#include "Synthesizer.h"
 
 class WavExportStrategy : public Synthesizer::SynthStrategy {
 public:

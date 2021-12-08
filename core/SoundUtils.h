@@ -1,9 +1,9 @@
 #ifndef SOUNDUTILS_H
 #define SOUNDUTILS_H
 
-#include <memory>
-
 #include "Sound.h"
+
+#include <memory>
 
 /**
  * Functions to randomly generate or mutate sounds

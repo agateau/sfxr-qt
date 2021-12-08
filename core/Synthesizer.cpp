@@ -1,11 +1,11 @@
 #include "Synthesizer.h"
 
-#include <math.h>
+#include "NoiseGenerator.h"
+#include "Sound.h"
 
 #include <QDebug>
 
-#include "NoiseGenerator.h"
-#include "Sound.h"
+#include <math.h>
 
 static const qreal PI = 3.14159265;
 

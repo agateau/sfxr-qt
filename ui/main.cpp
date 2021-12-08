@@ -1,11 +1,3 @@
-#include <QApplication>
-#include <QCommandLineParser>
-#include <QDebug>
-#include <QDir>
-#include <QIcon>
-#include <QQmlApplicationEngine>
-#include <optional>
-
 #include "Generator.h"
 #include "Result.h"
 #include "Sound.h"
@@ -13,6 +5,15 @@
 #include "SoundListModel.h"
 #include "SoundPlayer.h"
 #include "WavSaver.h"
+
+#include <QApplication>
+#include <QCommandLineParser>
+#include <QDebug>
+#include <QDir>
+#include <QIcon>
+#include <QQmlApplicationEngine>
+
+#include <optional>
 
 using std::optional;
 

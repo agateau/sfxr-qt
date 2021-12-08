@@ -2,6 +2,7 @@
 #define SYNTHESIZER_H
 
 #include <QtGlobal>
+
 #include <memory>
 #include <unordered_map>
 

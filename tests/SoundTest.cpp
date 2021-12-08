@@ -1,13 +1,14 @@
-#include <Sound.h>
-#include <SoundIO.h>
-#include <SoundUtils.h>
-#include <TestConfig.h>
-#include <TestUtils.h>
+#include "Sound.h"
+#include "SoundIO.h"
+#include "SoundUtils.h"
+#include "TestConfig.h"
+#include "TestUtils.h"
 
 #include <QBuffer>
 #include <QMetaProperty>
 #include <QTemporaryDir>
 #include <QUrl>
+
 #include <catch2/catch.hpp>
 
 static bool fuzzyEq(const Sound& s1, const Sound& s2) {

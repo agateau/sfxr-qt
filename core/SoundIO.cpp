@@ -1,5 +1,8 @@
 #include "SoundIO.h"
 
+#include "Result.h"
+#include "Sound.h"
+
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
@@ -9,9 +12,6 @@
 #include <QMetaProperty>
 #include <QUrl>
 #include <QtEndian>
-
-#include "Result.h"
-#include "Sound.h"
 
 namespace SoundIO {
 

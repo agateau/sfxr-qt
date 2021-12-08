@@ -10,7 +10,7 @@ CLANG_FORMAT_CMD=${CLANG_FORMAT_CMD:-clang-format-$CLANG_FORMAT_VERSION}
 version=$($CLANG_FORMAT_CMD --version)
 
 case "$version" in
-    clang-format\ version\ $CLANG_FORMAT_VERSION.*)
+    *clang-format\ version\ $CLANG_FORMAT_VERSION.*)
         ;;
     *)
         echo "$version"
