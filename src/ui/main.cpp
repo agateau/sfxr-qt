@@ -57,7 +57,8 @@ struct Arguments {
         if (parser.isSet("bits")) {
             int outputBits = parser.value("bits").toInt();
             if (!(outputBits == 8 || outputBits == 16)) {
-                qCritical() << QApplication::translate("main", "Invalid bits per sample. Supported values are 8 and 16.");
+                qCritical() << QApplication::translate(
+                    "main", "Invalid bits per sample. Supported values are 8 and 16.");
                 exit(1);
             }
             instance.outputBits = outputBits;
@@ -66,7 +67,8 @@ struct Arguments {
         if (parser.isSet("rate")) {
             int outputFrequency = parser.value("rate").toInt();
             if (!(outputFrequency == 22050 || outputFrequency == 44100)) {
-                qCritical() << QApplication::translate("main", "Invalid samplerate. Supported values are 22050 and 44100.");
+                qCritical() << QApplication::translate(
+                    "main", "Invalid samplerate. Supported values are 22050 and 44100.");
                 exit(1);
             }
             instance.outputFrequency = outputFrequency;
@@ -90,20 +92,24 @@ static void setupCommandLineParser(QCommandLineParser* parser) {
     parser->addHelpOption();
     parser->addPositionalArgument("sound_file", QApplication::translate("main", "File to load."));
 
-    parser->addOption(
-        {"export",
-         QApplication::translate("main", "Creates a wav file from the given SFXR file and exits.")});
+    parser->addOption({"export",
+                       QApplication::translate(
+                           "main", "Creates a wav file from the given SFXR file and exits.")});
     parser->addOption(
         {{"o", "output"},
          QApplication::translate("main", "Specifies the path for the file created with --export."),
          "path"});
     parser->addOption(
         {{"b", "bits"},
-         QApplication::translate("main", "Specifies the bits per sample for the wav file created with --export. Supported values are 8 and 16."),
+         QApplication::translate("main",
+                                 "Specifies the bits per sample for the wav file created with "
+                                 "--export. Supported values are 8 and 16."),
          "number"});
     parser->addOption(
         {{"r", "rate"},
-         QApplication::translate("main", "Specifies the samplerate for the wav file created with --export. Supported values are 22050 and 44100."),
+         QApplication::translate("main",
+                                 "Specifies the samplerate for the wav file created with --export. "
+                                 "Supported values are 22050 and 44100."),
          "number"});
 }
 
