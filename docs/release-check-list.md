@@ -3,11 +3,11 @@ Check working tree is up to date and clean:
     git checkout master
     git status
 
+Bump version number in CMakeLists.txt
+
 Update CHANGELOG.md:
 
     r!git log --pretty=format:'- \%s (\%an)' x.y.z-1..HEAD
-
-Bump version number in CMakeLists.txt
 
 Update README and docs
 
