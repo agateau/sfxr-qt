@@ -9,13 +9,12 @@ Update CHANGELOG.md:
 
 Bump version number in CMakeLists.txt
 
-Build packages:
-
-    tools/release
-
 Update README and docs
 
-Commit changes
+Build packages:
+
+    rm -rf build
+    ci/build-app
 
 Smoke test binary packages:
 
@@ -23,6 +22,8 @@ Smoke test binary packages:
 - Load a file
 - Save a file
 - Export a file
+
+Commit changes
 
 Create "x.y.z" tag:
 
