@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.4.0 - 2022-01-12
+
+### Added
+
+- SFXR-Qt can now export wavs from the command line (#9) (Linus Vana).
+- Added tooltips (Aurelien Gateau).
+- Implemented "Randomize", based on the original SFXR code (Aurelien Gateau).
+- Make it possible to load sounds from the command line (Aurelien Gateau).
+
+### Fixed
+
+- Fixed crash when clicking too fast on the remove button (#8) (Aurelien Gateau).
+- Fixed build on big-endian machines (#7) (Aurelien Gateau).
+
+### Internal
+
+- Reorganized source tree to match cookiecutter-qt-app layout (Aurelien Gateau).
+- Updated clang-format config to group and sort includes (Aurelien Gateau).
+- Use GitHub Actions (Aurelien Gateau).
+
 ## 1.3.0 - 2019-09-15
 
 ### Added
@@ -10,36 +30,33 @@
 
 ### Changed
 
-- Open and save file dialogs now show an error message when something went
-  wrong.
+- Open and save file dialogs now show an error message when something went wrong.
 
-- Internal cleanups:
-    - Ported loading and saving code from FILE to QFile.
-    - Applied my coding style.
-    - Split the code into a static lib and an app.
-    - Added tests.
-    - Cleaned some float vs qreal warnings.
+### Internal
+
+- Ported loading and saving code from FILE to QFile.
+- Applied my coding style.
+- Split the code into a static lib and an app.
+- Added tests.
+- Cleaned some float vs qreal warnings.
 
 ## 1.2.0 - 2018-10-29
 
 ### Added
 
 - Added a "Save" button.
-- You can now open the file-open dialog with Ctrl+O and the file-save dialog
-  with Ctrl+S.
+- You can now open the file-open dialog with Ctrl+O and the file-save dialog with Ctrl+S.
 - Show real filename in sound buttons.
 
 ### Changed
 
-- Rework noise buffer so that output is reproducible: when looping the same
-  sound should be replayed.
+- Rework noise buffer so that output is reproducible: when looping the same sound should be replayed.
 - Draw a thin line in the middle of bipolar sliders.
 
 ### Fixed
 
 - Follow OS color theme, making the application usable if the theme is dark.
-- Fixed invisible "close sound" button by using a different symbol, which works
-  in all tested themes.
+- Fixed invisible "close sound" button by using a different symbol, which works in all tested themes.
 - Make sure user interface elements do not overlap.
 - Fixed pip install doc (thanks to feinstaub).
 - Workaround for a bug with Slider which made it behave strangely when values
@@ -48,8 +65,7 @@
 ## 1.1.0 - 2018-02-09
 
 ### Added
-- Multiple sound support: clicking on a generator button creates a new sound.
-  You can switch between the different sounds and easily drop the bad ones.
+- Multiple sound support: clicking on a generator button creates a new sound. You can switch between the different sounds and easily drop the bad ones.
 
 - Added a way to play a sound in loop.
 
