@@ -35,14 +35,24 @@ struct Arguments {
     static optional<Arguments> parse(const QCommandLineParser& parser) {
         Arguments instance;
         auto args = parser.positionalArguments();
+        instance.export_ = parser.isSet("export");
+
         if (args.isEmpty()) {
+            if (instance.export_) {
+                qCritical() << QApplication::translate("main", "No file given to export.");
+                exit(1);
+            }
             return {};
+        }
+
+        if (args.size() > 1) {
+            qWarning() << QApplication::translate(
+                "main", "Too many positional arguments given. Only the first one is used.");
         }
 
         instance.url =
             QUrl::fromUserInput(args.first(), QDir::currentPath(), QUrl::AssumeLocalFile);
 
-        instance.export_ = parser.isSet("export");
         if (!instance.export_) {
             return instance;
         }
