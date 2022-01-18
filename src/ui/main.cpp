@@ -152,22 +152,25 @@ static void loadInitialSound(QQmlApplicationEngine* engine, const QUrl& url) {
 }
 
 int main(int argc, char* argv[]) {
+    QCoreApplication cli(argc, argv);
+
+    QCommandLineParser parser;
+    setupCommandLineParser(&parser);
+    parser.process(*qApp);
+
+    registerQmlTypes();
+
+    auto maybeArgs = Arguments::parse(parser);
+    if (maybeArgs.has_value() && maybeArgs.value().export_) {
+        return exportSound(maybeArgs.value());
+    }
+
     QApplication app(argc, argv);
     Q_INIT_RESOURCE(qml);
     app.setOrganizationDomain("agateau.com");
     app.setApplicationName("sfxr-qt");
     app.setApplicationDisplayName("SFXR Qt");
     app.setWindowIcon(createIcon());
-    registerQmlTypes();
-
-    QCommandLineParser parser;
-    setupCommandLineParser(&parser);
-    parser.process(*qApp);
-
-    auto maybeArgs = Arguments::parse(parser);
-    if (maybeArgs.has_value() && maybeArgs.value().export_) {
-        return exportSound(maybeArgs.value());
-    }
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
