@@ -46,8 +46,9 @@ struct Arguments {
         }
 
         if (args.size() > 1) {
-            qWarning() << QApplication::translate(
-                "main", "Too many positional arguments given. Only the first one is used.");
+            qCritical() << QApplication::translate(
+                "main", "Too many positional arguments given. Only one input file is supported.");
+            exit(1);
         }
 
         instance.url =
