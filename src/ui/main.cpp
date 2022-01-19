@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
 
     QCommandLineParser parser;
     setupCommandLineParser(&parser);
-    parser.process(*qApp);
+    parser.process(cli);
 
     registerQmlTypes();
 
@@ -165,6 +165,8 @@ int main(int argc, char* argv[]) {
     if (maybeArgs.has_value() && maybeArgs.value().export_) {
         return exportSound(maybeArgs.value());
     }
+
+    cli.~QCoreApplication();
 
     QApplication app(argc, argv);
     Q_INIT_RESOURCE(qml);
