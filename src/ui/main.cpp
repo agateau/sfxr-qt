@@ -35,14 +35,25 @@ struct Arguments {
     static optional<Arguments> parse(const QCommandLineParser& parser) {
         Arguments instance;
         auto args = parser.positionalArguments();
+        instance.export_ = parser.isSet("export");
+
         if (args.isEmpty()) {
+            if (instance.export_) {
+                qCritical() << QApplication::translate("main", "No file given to export.");
+                exit(1);
+            }
             return {};
+        }
+
+        if (args.size() > 1) {
+            qCritical() << QApplication::translate(
+                "main", "Too many positional arguments given. Only one input file is supported.");
+            exit(1);
         }
 
         instance.url =
             QUrl::fromUserInput(args.first(), QDir::currentPath(), QUrl::AssumeLocalFile);
 
-        instance.export_ = parser.isSet("export");
         if (!instance.export_) {
             return instance;
         }
@@ -142,22 +153,27 @@ static void loadInitialSound(QQmlApplicationEngine* engine, const QUrl& url) {
 }
 
 int main(int argc, char* argv[]) {
+    auto cli = std::make_unique<QCoreApplication>(argc, argv);
+
+    QCommandLineParser parser;
+    setupCommandLineParser(&parser);
+    parser.process(*cli.get());
+
+    registerQmlTypes();
+
+    auto maybeArgs = Arguments::parse(parser);
+    if (maybeArgs.has_value() && maybeArgs.value().export_) {
+        return exportSound(maybeArgs.value());
+    }
+
+    cli.reset();
+
     QApplication app(argc, argv);
     Q_INIT_RESOURCE(qml);
     app.setOrganizationDomain("agateau.com");
     app.setApplicationName("sfxr-qt");
     app.setApplicationDisplayName("SFXR Qt");
     app.setWindowIcon(createIcon());
-    registerQmlTypes();
-
-    QCommandLineParser parser;
-    setupCommandLineParser(&parser);
-    parser.process(*qApp);
-
-    auto maybeArgs = Arguments::parse(parser);
-    if (maybeArgs.has_value() && maybeArgs.value().export_) {
-        return exportSound(maybeArgs.value());
-    }
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
