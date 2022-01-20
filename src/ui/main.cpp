@@ -153,11 +153,11 @@ static void loadInitialSound(QQmlApplicationEngine* engine, const QUrl& url) {
 }
 
 int main(int argc, char* argv[]) {
-    QCoreApplication cli(argc, argv);
+    auto cli = std::make_unique<QCoreApplication>(argc, argv);
 
     QCommandLineParser parser;
     setupCommandLineParser(&parser);
-    parser.process(cli);
+    parser.process(*cli.get());
 
     registerQmlTypes();
 
@@ -166,7 +166,7 @@ int main(int argc, char* argv[]) {
         return exportSound(maybeArgs.value());
     }
 
-    cli.~QCoreApplication();
+    cli.reset();
 
     QApplication app(argc, argv);
     Q_INIT_RESOURCE(qml);
