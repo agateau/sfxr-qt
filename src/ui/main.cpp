@@ -4,6 +4,7 @@
 #include "SoundIO.h"
 #include "SoundListModel.h"
 #include "SoundPlayer.h"
+#include "SoundPreview.h"
 #include "WavSaver.h"
 
 #include <QApplication>
@@ -95,6 +96,7 @@ static void registerQmlTypes() {
     qmlRegisterType<Generator>("sfxr", 1, 0, "Generator");
     qmlRegisterType<SoundListModel>("sfxr", 1, 0, "SoundListModel");
     qmlRegisterType<WavSaver>("sfxr", 1, 0, "WavSaver");
+    qmlRegisterType<SoundPreview>("sfxr", 1, 0, "SoundPreview");
     WaveForm::registerType();
     Result::registerType();
 }

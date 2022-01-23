@@ -25,9 +25,12 @@ public:
     bool loop() const;
     void setLoop(bool value);
 
+    QVector<qreal> samples() const;
+
 signals:
     void soundChanged(Sound* value);
     void loopChanged(bool value);
+    void soundModified();
 
 private:
     bool mPlaying = false;

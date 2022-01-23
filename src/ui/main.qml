@@ -8,7 +8,7 @@ import sfxr 1.0
 ApplicationWindow {
     id: root
     visible: true
-    minimumHeight: 600
+    minimumHeight: 700
     minimumWidth: leftColumn.width + mainContent.implicitWidth + fileActions.width + 2 * margin
 
     property real margin: 12
@@ -90,6 +90,14 @@ ApplicationWindow {
                     sound: root.sound
                 }
             }
+
+            SoundPreview {
+                soundPlayer: soundPlayer
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+
+            VerticalSpacer {}
 
             Row {
                 spacing: margin * 2

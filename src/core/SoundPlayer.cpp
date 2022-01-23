@@ -76,6 +76,11 @@ void SoundPlayer::setLoop(bool value) {
     loopChanged(value);
 }
 
+QVector<qreal> SoundPlayer::samples() const {
+    QMutexLocker lock(&mMutex);
+    return mPlayThreadData.samples;
+}
+
 void SoundPlayer::startPlaying() {
     mPlaying = true;
     {
@@ -142,6 +147,7 @@ void SoundPlayer::play() {
 void SoundPlayer::onSoundModified() {
     updateSamples();
     play();
+    soundModified();
 }
 
 void SoundPlayer::updateSamples() {
