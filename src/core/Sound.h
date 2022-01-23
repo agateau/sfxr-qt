@@ -24,6 +24,10 @@ public:
      * Set the name of the sound until it is saved
      */
     void setUnsavedName(const QString& name);
+
+Q_SIGNALS:
+    // Emitted when any property of the sound changes
+    void modified();
 };
 
 Q_DECLARE_METATYPE(Sound*)

@@ -47,38 +47,7 @@ void SoundPlayer::setSound(Sound* value) {
     }
     mSound = value;
     if (mSound) {
-        connect(mSound, &Sound::waveFormChanged, this, &SoundPlayer::onSoundModified);
-
-        connect(mSound, &Sound::attackTimeChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::sustainTimeChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::sustainPunchChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::decayTimeChanged, this, &SoundPlayer::onSoundModified);
-
-        connect(mSound, &Sound::baseFrequencyChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::minFrequencyChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::slideChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::deltaSlideChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::vibratoDepthChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::vibratoSpeedChanged, this, &SoundPlayer::onSoundModified);
-
-        connect(mSound, &Sound::changeAmountChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::changeSpeedChanged, this, &SoundPlayer::onSoundModified);
-
-        connect(mSound, &Sound::squareDutyChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::dutySweepChanged, this, &SoundPlayer::onSoundModified);
-
-        connect(mSound, &Sound::repeatSpeedChanged, this, &SoundPlayer::onSoundModified);
-
-        connect(mSound, &Sound::phaserOffsetChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::phaserSweepChanged, this, &SoundPlayer::onSoundModified);
-
-        connect(mSound, &Sound::lpFilterCutoffChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::lpFilterCutoffSweepChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::lpFilterResonanceChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::hpFilterCutoffChanged, this, &SoundPlayer::onSoundModified);
-        connect(mSound, &Sound::hpFilterCutoffSweepChanged, this, &SoundPlayer::onSoundModified);
-
-        connect(mSound, &Sound::volumeChanged, this, &SoundPlayer::onSoundModified);
+        connect(mSound, &Sound::modified, this, &SoundPlayer::onSoundModified);
     } else {
         mPlaying = false;
     }

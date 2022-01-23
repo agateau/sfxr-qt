@@ -11,6 +11,39 @@ static const char UNSAVED_SCHEME[] = "unsaved";
 
 Sound::Sound(QObject* parent) : BaseSound(parent) {
     resetParams();
+
+    connect(this, &Sound::waveFormChanged, this, &Sound::modified);
+
+    connect(this, &Sound::attackTimeChanged, this, &Sound::modified);
+    connect(this, &Sound::sustainTimeChanged, this, &Sound::modified);
+    connect(this, &Sound::sustainPunchChanged, this, &Sound::modified);
+    connect(this, &Sound::decayTimeChanged, this, &Sound::modified);
+
+    connect(this, &Sound::baseFrequencyChanged, this, &Sound::modified);
+    connect(this, &Sound::minFrequencyChanged, this, &Sound::modified);
+    connect(this, &Sound::slideChanged, this, &Sound::modified);
+    connect(this, &Sound::deltaSlideChanged, this, &Sound::modified);
+    connect(this, &Sound::vibratoDepthChanged, this, &Sound::modified);
+    connect(this, &Sound::vibratoSpeedChanged, this, &Sound::modified);
+
+    connect(this, &Sound::changeAmountChanged, this, &Sound::modified);
+    connect(this, &Sound::changeSpeedChanged, this, &Sound::modified);
+
+    connect(this, &Sound::squareDutyChanged, this, &Sound::modified);
+    connect(this, &Sound::dutySweepChanged, this, &Sound::modified);
+
+    connect(this, &Sound::repeatSpeedChanged, this, &Sound::modified);
+
+    connect(this, &Sound::phaserOffsetChanged, this, &Sound::modified);
+    connect(this, &Sound::phaserSweepChanged, this, &Sound::modified);
+
+    connect(this, &Sound::lpFilterCutoffChanged, this, &Sound::modified);
+    connect(this, &Sound::lpFilterCutoffSweepChanged, this, &Sound::modified);
+    connect(this, &Sound::lpFilterResonanceChanged, this, &Sound::modified);
+    connect(this, &Sound::hpFilterCutoffChanged, this, &Sound::modified);
+    connect(this, &Sound::hpFilterCutoffSweepChanged, this, &Sound::modified);
+
+    connect(this, &Sound::volumeChanged, this, &Sound::modified);
 }
 
 void Sound::resetParams() {
