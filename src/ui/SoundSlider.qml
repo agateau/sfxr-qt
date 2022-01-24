@@ -18,7 +18,17 @@ Slider {
     value: sliderValueForSoundValue(sound[soundProperty])
 
     onValueChanged: {
-        sound[soundProperty] = soundValueForSliderValue(value);
+        updateTimer.start();
+    }
+
+    // Delay the update of the sound property to avoid glitchy sounds when
+    // moving the slider continuously
+    Timer {
+        id: updateTimer
+        interval: 200
+        onTriggered: {
+            root.sound[soundProperty] = soundValueForSliderValue(root.value);
+        }
     }
 
     MouseArea {

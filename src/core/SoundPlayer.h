@@ -3,13 +3,11 @@
 
 #include <QMutex>
 #include <QObject>
-
-#include <memory>
+#include <QVector>
 
 class QTimer;
 
 class Sound;
-class Synthesizer;
 
 class SoundPlayer : public QObject {
     Q_OBJECT
@@ -39,19 +37,22 @@ private:
 
     mutable QMutex mMutex;
     struct PlayThreadData {
+        QVector<qreal> samples;
         bool playing = false;
         bool loop = false;
-        std::unique_ptr<Synthesizer> synth;
+        int position = 0;
     } mPlayThreadData;
 
     void sdlAudioCallback(unsigned char* stream, int len);
     void registerCallback();
     void unregisterCallback();
-    void schedulePlay();
 
-    void onSoundModified();
+    void startPlaying();
 
     static void staticSdlAudioCallback(void* userdata, unsigned char* stream, int len);
+
+    void onSoundModified();
+    void updateSamples();
 };
 
 #endif // SOUNDPLAYER_H
