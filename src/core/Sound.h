@@ -4,6 +4,8 @@
 #include "BaseSound.h"
 #include "Result.h"
 
+#include <QTimer>
+
 class Sound : public BaseSound {
     Q_OBJECT
 public:
@@ -28,6 +30,11 @@ public:
 Q_SIGNALS:
     // Emitted when any property of the sound changes
     void modified();
+
+private:
+    void scheduleEmitModified();
+
+    QTimer mModifiedTimer;
 };
 
 Q_DECLARE_METATYPE(Sound*)
