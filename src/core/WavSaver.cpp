@@ -64,7 +64,6 @@ private:
 void WavExportStrategy::write(qreal ssample) {
     // quantize depending on format
     // accumulate/count to accomodate variable sample rate?
-    ssample *= 4.0; // arbitrary gain to get reasonable output volume...
     ssample = qBound(-1.0, ssample, 1.0);
     filesample += ssample;
     fileacc++;
