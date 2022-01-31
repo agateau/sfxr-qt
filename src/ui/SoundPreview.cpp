@@ -3,14 +3,19 @@
 #include "Sound.h"
 
 #include <QPainter>
+#include <QtConcurrent>
 
 static const QColor WAVE_BORDER_COLOR = Qt::white;
 static const QColor WAVE_FILL_COLOR = QColor::fromRgbF(0.6, 0.6, 0.6);
 static const QColor POSITION_COLOR = Qt::white;
 
-SoundPreview::SoundPreview(QQuickItem* parent) : QQuickPaintedItem(parent) {
+SoundPreview::SoundPreview(QQuickItem* parent)
+        : QQuickPaintedItem(parent), mPreviewWatcher(new QFutureWatcher<QImage>(this)) {
     setImplicitSize(100, 120);
     setAntialiasing(true);
+
+    connect(
+        mPreviewWatcher, &QFutureWatcher<QImage>::finished, this, &SoundPreview::onPreviewReady);
 }
 
 SoundPlayer* SoundPreview::soundPlayer() const {
@@ -73,26 +78,18 @@ void SoundPreview::paint(QPainter* painter) {
     painter->drawLine(x, 0, x, height());
 }
 
-void SoundPreview::updatePreview() {
-    if (!mSoundPlayer) {
-        return;
-    }
+static QImage generatePreviewImage(const QVector<qreal>& samples, qreal width, qreal height) {
+    int iWidth = int(width);
+    int iHeight = int(height);
 
-    int iWidth = int(width());
-    int iHeight = int(height());
-    if (iWidth <= 0 || iHeight <= 0) {
-        return;
-    }
-
-    auto samples = mSoundPlayer->samples();
     QVector<MinMax> minMaxes(iWidth);
     for (int x = 0; x < iWidth; ++x) {
-        qreal from = qreal(x) / width();
-        qreal to = qreal(x + 1) / width();
+        qreal from = qreal(x) / width;
+        qreal to = qreal(x + 1) / width;
         minMaxes[x] = computeMinMax(samples, from, to);
     }
 
-    qreal halfHeight = height() / 2;
+    qreal halfHeight = height / 2;
 
     QPainterPath path;
 
@@ -124,7 +121,26 @@ void SoundPreview::updatePreview() {
         painter.translate(0.5, 0.5);
         painter.drawPath(path);
     }
-    mPreview = image;
+    return image;
+}
+
+void SoundPreview::onPreviewReady() {
+    mPreview = mPreviewWatcher->result();
+    update();
+}
+
+void SoundPreview::updatePreview() {
+    if (!mSoundPlayer) {
+        return;
+    }
+
+    if (width() <= 0 || height() <= 0) {
+        return;
+    }
+
+    auto samples = mSoundPlayer->samples();
+    QFuture<QImage> future = QtConcurrent::run(generatePreviewImage, samples, width(), height());
+    mPreviewWatcher->setFuture(future);
 }
 
 void SoundPreview::onPlayPositionChanged(qreal position) {

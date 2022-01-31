@@ -1,6 +1,7 @@
 #ifndef SOUNDPREVIEW_H
 #define SOUNDPREVIEW_H
 
+#include <QFutureWatcher>
 #include <QImage>
 #include <QObject>
 #include <QQuickPaintedItem>
@@ -30,7 +31,9 @@ private:
 private:
     void updatePreview();
     void onPlayPositionChanged(qreal position);
+    void onPreviewReady();
 
+    QFutureWatcher<QImage>* const mPreviewWatcher;
     SoundPlayer* mSoundPlayer = nullptr;
     QImage mPreview;
     qreal mPlayPosition = 0;
