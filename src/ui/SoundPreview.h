@@ -29,9 +29,11 @@ private:
 
 private:
     void updatePreview();
+    void onPlayPositionChanged(qreal position);
 
     SoundPlayer* mSoundPlayer = nullptr;
     QImage mPreview;
+    qreal mPlayPosition = 0;
 };
 
 #endif // SOUNDPREVIEW_H

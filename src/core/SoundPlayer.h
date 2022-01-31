@@ -31,6 +31,7 @@ signals:
     void soundChanged(Sound* value);
     void loopChanged(bool value);
     void soundModified();
+    void playPositionChanged(qreal position);
 
 private:
     bool mPlaying = false;

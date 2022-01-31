@@ -88,6 +88,7 @@ void SoundPlayer::startPlaying() {
         mPlayThreadData.position = 0;
         mPlayThreadData.playing = true;
     }
+    playPositionChanged(0);
 }
 
 void SoundPlayer::staticSdlAudioCallback(void* userdata, unsigned char* stream, int len) {
@@ -100,25 +101,30 @@ void SoundPlayer::sdlAudioCallback(unsigned char* stream, int byteLength) {
     if (!mSound) {
         return;
     }
-    QMutexLocker lock(&mMutex);
-    if (!mPlayThreadData.playing) {
-        return;
-    }
-    int sampleCount = mPlayThreadData.samples.count();
-    auto ptr = reinterpret_cast<qint16*>(stream);
-    auto end = ptr + byteLength / 2;
-
-    for (; ptr != end; ++mPlayThreadData.position, ++ptr) {
-        if (mPlayThreadData.position == sampleCount) {
-            mPlayThreadData.position = 0;
-            if (!mPlayThreadData.loop) {
-                mPlayThreadData.playing = false;
-                break;
-            }
+    qreal playPosition = 0;
+    {
+        QMutexLocker lock(&mMutex);
+        if (!mPlayThreadData.playing) {
+            return;
         }
-        qreal value = mPlayThreadData.samples[mPlayThreadData.position];
-        *ptr = static_cast<qint16>(value * 32767);
+        int sampleCount = mPlayThreadData.samples.count();
+        auto ptr = reinterpret_cast<qint16*>(stream);
+        auto end = ptr + byteLength / 2;
+
+        for (; ptr != end; ++mPlayThreadData.position, ++ptr) {
+            if (mPlayThreadData.position == sampleCount) {
+                mPlayThreadData.position = 0;
+                if (!mPlayThreadData.loop) {
+                    mPlayThreadData.playing = false;
+                    break;
+                }
+            }
+            qreal value = mPlayThreadData.samples[mPlayThreadData.position];
+            *ptr = static_cast<qint16>(value * 32767);
+        }
+        playPosition = mPlayThreadData.position / qreal(sampleCount);
     }
+    playPositionChanged(playPosition);
 }
 
 void SoundPlayer::registerCallback() {

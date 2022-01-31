@@ -6,6 +6,7 @@
 
 static const QColor WAVE_BORDER_COLOR = Qt::white;
 static const QColor WAVE_FILL_COLOR = QColor::fromRgbF(0.6, 0.6, 0.6);
+static const QColor POSITION_COLOR = Qt::white;
 
 SoundPreview::SoundPreview(QQuickItem* parent) : QQuickPaintedItem(parent) {
     setImplicitSize(100, 120);
@@ -27,6 +28,10 @@ void SoundPreview::setSoundPlayer(SoundPlayer* value) {
     if (mSoundPlayer) {
         connect(mSoundPlayer, &SoundPlayer::soundChanged, this, &SoundPreview::updatePreview);
         connect(mSoundPlayer, &SoundPlayer::soundModified, this, &SoundPreview::updatePreview);
+        connect(mSoundPlayer,
+                &SoundPlayer::playPositionChanged,
+                this,
+                &SoundPreview::onPlayPositionChanged);
     }
     soundPlayerChanged(value);
 }
@@ -58,18 +63,28 @@ void SoundPreview::paint(QPainter* painter) {
     painter->setBrush(Qt::black);
     painter->setPen(Qt::NoPen);
     painter->drawRoundedRect(rect, 4, 4);
-    if (!mPreview.isNull()) {
-        painter->drawImage(0, 0, mPreview);
+    if (mPreview.isNull()) {
+        return;
     }
+
+    painter->drawImage(0, 0, mPreview);
+    qreal x = width() * mPlayPosition + 0.5;
+    painter->setPen(POSITION_COLOR);
+    painter->drawLine(x, 0, x, height());
 }
 
 void SoundPreview::updatePreview() {
     if (!mSoundPlayer) {
         return;
     }
-    auto samples = mSoundPlayer->samples();
 
     int iWidth = int(width());
+    int iHeight = int(height());
+    if (iWidth <= 0 || iHeight <= 0) {
+        return;
+    }
+
+    auto samples = mSoundPlayer->samples();
     QVector<MinMax> minMaxes(iWidth);
     for (int x = 0; x < iWidth; ++x) {
         qreal from = qreal(x) / width();
@@ -99,7 +114,7 @@ void SoundPreview::updatePreview() {
 
     path.closeSubpath();
 
-    QImage image(iWidth, int(height()), QImage::Format_ARGB32_Premultiplied);
+    QImage image(iWidth, iHeight, QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::transparent);
     {
         QPainter painter(&image);
@@ -110,5 +125,9 @@ void SoundPreview::updatePreview() {
         painter.drawPath(path);
     }
     mPreview = image;
+}
+
+void SoundPreview::onPlayPositionChanged(qreal position) {
+    mPlayPosition = position;
     update();
 }
