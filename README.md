@@ -14,7 +14,15 @@ Start the application and click on one of the generator buttons. Then play with 
 
 For more details, you should read the original [SFXR readme.txt](readme-sfxr-sdl.txt).
 
-You can also use the `--export` option to export your SFXR or SFXJ files to wav files from the command-line. Look at the output of `sfxr-qt --help` for details.
+### Tips
+
+Right-clicking on a slider resets its value to 0.
+
+You can use the mouse wheel to adjust the slider value. Hold-down Shift to make bigger changes.
+
+### Command-line usage
+
+You can use the `--export` option to export your SFXR or SFXJ files to wav files from the command-line. Look at the output of `sfxr-qt --help` for details.
 
 ## Precompiled binaries
 

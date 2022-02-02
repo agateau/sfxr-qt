@@ -15,6 +15,9 @@ Slider {
     // from: bipolar ? -1 : 0
     to: bipolar ? 2 : 1
 
+    // Do not use stepSize: it draws too many ticks
+    property real step: (to - from) / 200
+    property real shiftMultiplier: 4
     value: sliderValueForSoundValue(sound[soundProperty])
 
     onValueChanged: {
@@ -36,6 +39,18 @@ Slider {
         acceptedButtons: Qt.RightButton
         onClicked: {
             root.value = sliderValueForSoundValue(0);
+        }
+        onWheel: {
+            var delta = 0;
+            if (wheel.angleDelta.y < 0) {
+                delta = -step;
+            } else if (wheel.angleDelta.y > 0) {
+                delta = step;
+            }
+            if (wheel.modifiers & Qt.ShiftModifier) {
+                delta *= shiftMultiplier;
+            }
+            root.value += delta;
         }
     }
 
