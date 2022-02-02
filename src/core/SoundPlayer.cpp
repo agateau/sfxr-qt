@@ -49,12 +49,10 @@ void SoundPlayer::setSound(Sound* value) {
     if (mSound) {
         updateSamples();
         connect(mSound, &Sound::modified, this, &SoundPlayer::onSoundModified);
-    } else {
-        mPlaying = false;
     }
     {
         QMutexLocker lock(&mMutex);
-        mPlayThreadData.playing = mPlaying;
+        mPlayThreadData.playing = false;
         mPlayThreadData.position = 0;
     }
     soundChanged(value);
@@ -82,7 +80,6 @@ QVector<qreal> SoundPlayer::samples() const {
 }
 
 void SoundPlayer::startPlaying() {
-    mPlaying = true;
     {
         QMutexLocker lock(&mMutex);
         mPlayThreadData.position = 0;

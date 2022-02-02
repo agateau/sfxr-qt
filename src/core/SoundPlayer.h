@@ -34,7 +34,6 @@ signals:
     void playPositionChanged(qreal position);
 
 private:
-    bool mPlaying = false;
     bool mLoop = false;
     QTimer* mPlayTimer;
     Sound* mSound = nullptr;
