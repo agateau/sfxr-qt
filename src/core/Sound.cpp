@@ -12,38 +12,42 @@ static const char UNSAVED_SCHEME[] = "unsaved";
 Sound::Sound(QObject* parent) : BaseSound(parent) {
     resetParams();
 
-    connect(this, &Sound::waveFormChanged, this, &Sound::modified);
+    mModifiedTimer.setInterval(0);
+    mModifiedTimer.setSingleShot(true);
+    connect(&mModifiedTimer, &QTimer::timeout, this, &Sound::modified);
 
-    connect(this, &Sound::attackTimeChanged, this, &Sound::modified);
-    connect(this, &Sound::sustainTimeChanged, this, &Sound::modified);
-    connect(this, &Sound::sustainPunchChanged, this, &Sound::modified);
-    connect(this, &Sound::decayTimeChanged, this, &Sound::modified);
+    connect(this, &Sound::waveFormChanged, this, &Sound::scheduleEmitModified);
 
-    connect(this, &Sound::baseFrequencyChanged, this, &Sound::modified);
-    connect(this, &Sound::minFrequencyChanged, this, &Sound::modified);
-    connect(this, &Sound::slideChanged, this, &Sound::modified);
-    connect(this, &Sound::deltaSlideChanged, this, &Sound::modified);
-    connect(this, &Sound::vibratoDepthChanged, this, &Sound::modified);
-    connect(this, &Sound::vibratoSpeedChanged, this, &Sound::modified);
+    connect(this, &Sound::attackTimeChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::sustainTimeChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::sustainPunchChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::decayTimeChanged, this, &Sound::scheduleEmitModified);
 
-    connect(this, &Sound::changeAmountChanged, this, &Sound::modified);
-    connect(this, &Sound::changeSpeedChanged, this, &Sound::modified);
+    connect(this, &Sound::baseFrequencyChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::minFrequencyChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::slideChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::deltaSlideChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::vibratoDepthChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::vibratoSpeedChanged, this, &Sound::scheduleEmitModified);
 
-    connect(this, &Sound::squareDutyChanged, this, &Sound::modified);
-    connect(this, &Sound::dutySweepChanged, this, &Sound::modified);
+    connect(this, &Sound::changeAmountChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::changeSpeedChanged, this, &Sound::scheduleEmitModified);
 
-    connect(this, &Sound::repeatSpeedChanged, this, &Sound::modified);
+    connect(this, &Sound::squareDutyChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::dutySweepChanged, this, &Sound::scheduleEmitModified);
 
-    connect(this, &Sound::phaserOffsetChanged, this, &Sound::modified);
-    connect(this, &Sound::phaserSweepChanged, this, &Sound::modified);
+    connect(this, &Sound::repeatSpeedChanged, this, &Sound::scheduleEmitModified);
 
-    connect(this, &Sound::lpFilterCutoffChanged, this, &Sound::modified);
-    connect(this, &Sound::lpFilterCutoffSweepChanged, this, &Sound::modified);
-    connect(this, &Sound::lpFilterResonanceChanged, this, &Sound::modified);
-    connect(this, &Sound::hpFilterCutoffChanged, this, &Sound::modified);
-    connect(this, &Sound::hpFilterCutoffSweepChanged, this, &Sound::modified);
+    connect(this, &Sound::phaserOffsetChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::phaserSweepChanged, this, &Sound::scheduleEmitModified);
 
-    connect(this, &Sound::volumeChanged, this, &Sound::modified);
+    connect(this, &Sound::lpFilterCutoffChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::lpFilterCutoffSweepChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::lpFilterResonanceChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::hpFilterCutoffChanged, this, &Sound::scheduleEmitModified);
+    connect(this, &Sound::hpFilterCutoffSweepChanged, this, &Sound::scheduleEmitModified);
+
+    connect(this, &Sound::volumeChanged, this, &Sound::scheduleEmitModified);
 }
 
 void Sound::resetParams() {
@@ -120,4 +124,8 @@ void Sound::setUrl(const QUrl& url) {
 void Sound::setUnsavedName(const QString& name) {
     auto urlString = QString("%1:///%2.sfxr").arg(UNSAVED_SCHEME).arg(name);
     setUrl(urlString);
+}
+
+void Sound::scheduleEmitModified() {
+    mModifiedTimer.start();
 }

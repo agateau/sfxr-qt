@@ -9,7 +9,7 @@
 
 static const qreal PI = 3.14159265;
 
-static const qreal MASTER_VOL = 0.05;
+static const qreal MASTER_VOL = 0.2;
 
 static const int NOISE_SAMPLE_COUNT = 32;
 
@@ -244,6 +244,7 @@ bool Synthesizer::synthSample(int length, SynthStrategy* strategy) {
         }
         ssample = ssample / 8 * MASTER_VOL;
 
+        // mSound->volume() goes from 0 to 1, with 0.5 for 100%
         ssample *= 2.0 * mSound->volume();
 
         strategy->write(ssample);

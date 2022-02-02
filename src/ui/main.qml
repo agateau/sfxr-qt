@@ -8,7 +8,7 @@ import sfxr 1.0
 ApplicationWindow {
     id: root
     visible: true
-    minimumHeight: 600
+    minimumHeight: 700
     minimumWidth: leftColumn.width + mainContent.implicitWidth + fileActions.width + 2 * margin
 
     property real margin: 12
@@ -22,15 +22,6 @@ ApplicationWindow {
     SoundPlayer {
         id: soundPlayer
         sound: root.sound
-        property bool startup: true
-        onSoundChanged: {
-            // Hack to avoid playing directly at startup
-            if (startup) {
-                startup = false;
-                return;
-            }
-            play();
-        }
     }
 
     SoundListModel {
@@ -100,10 +91,19 @@ ApplicationWindow {
                 }
             }
 
+            SoundPreview {
+                soundPlayer: soundPlayer
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.maximumHeight: parent.height / 4
+            }
+
+            VerticalSpacer {}
+
             Row {
                 spacing: margin * 2
 
-                Layout.alignment: Qt.AlignHCenter
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 
                 ColumnLayout {
                     width: root.columnWidth

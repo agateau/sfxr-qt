@@ -15,6 +15,7 @@ set(APPLIB_SRCS
     core/SoundIO.cpp
     core/Result.cpp
     core/WaveForm.cpp
+    ui/SoundPreview.cpp
 )
 
 qpropgen(QPROPGEN_SRCS
@@ -36,7 +37,9 @@ target_include_directories(${APPLIB_NAME}
 target_link_libraries(${APPLIB_NAME}
     SDL
     Qt5::Qml
+    Qt5::Concurrent
     Qt5::Core
+    Qt5::Quick
 )
 
 # App executable
