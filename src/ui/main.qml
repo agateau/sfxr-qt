@@ -95,6 +95,7 @@ ApplicationWindow {
                 soundPlayer: soundPlayer
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.maximumHeight: parent.height / 4
             }
 
             VerticalSpacer {}
@@ -102,7 +103,7 @@ ApplicationWindow {
             Row {
                 spacing: margin * 2
 
-                Layout.alignment: Qt.AlignHCenter
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 
                 ColumnLayout {
                     width: root.columnWidth
