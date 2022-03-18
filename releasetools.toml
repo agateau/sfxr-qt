@@ -1,0 +1,11 @@
+[git]
+main_branch="master"
+tag_prefix=""
+work_branch="dev"
+
+[version]
+file="CMakeLists.txt"
+pattern="^    VERSION (.*)$"
+
+[changelog]
+git_log_options="--pretty=format:- %s (%an)."
