@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.5.0 - 2022-03-18
+
+### Added
+
+- Make it possible to adjust sliders with the mouse wheel (Aurelien Gateau).
+- Show a preview of the sound on top of the sliders (Aurelien Gateau).
+
+### Fixed
+
+- Exit on multiple positional arguments (Linus Vanas).
+- Fix CLI needing a graphical environment to work (Linus Vanas).
+- Add a couple more error messages to the CLI (Linus Vanas).
+- Fix wav final volume being higher than the preview (Aurelien Gateau).
+
+
 ## 1.4.0 - 2022-01-12
 
 ### Added
