@@ -4,7 +4,7 @@
 
 This a QtQuick Controls 2 port of [SFXR][]. SFXR is a sound effect generator created by DrPetter to quickly produce retro-sounding sound effects for games.
 
-This project has the same features as the original SFXR, with a more modern user interface and, dare I say, a more modular code base. Meaning DrPetter did all the hard work, I just refactored and plugged a new UI on top of it.
+This project has the same features as the original SFXR with a more modern user interface. This means DrPetter did all the hard work, I just refactored and plugged a new UI on top of it.
 
 ## Usage
 
