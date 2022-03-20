@@ -3,6 +3,7 @@
 #include "Sound.h"
 
 #include <QPainter>
+#include <QPainterPath>
 #include <QtConcurrent>
 
 static const QColor WAVE_BORDER_COLOR = Qt::white;
