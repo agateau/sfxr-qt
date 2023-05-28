@@ -35,7 +35,11 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH ON)
 
 # Source dirs
-add_subdirectory(3rdparty/catch2)
+if (USE_SYSTEM_CATCH2)
+   find_package(Catch2 REQUIRED)
+else()
+    add_subdirectory(3rdparty/catch2)
+endif()
 add_subdirectory(src)
 if (BUILD_TESTING)
     enable_testing() # must come *before* adding tests directory
