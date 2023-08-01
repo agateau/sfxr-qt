@@ -9,7 +9,7 @@
 #include <QDir>
 #include <QTemporaryDir>
 
-#include <catch2/catch_all.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 static constexpr char FIXTURES_DIR[] = TEST_FIXTURES_DIR "/synthesizer";
 
