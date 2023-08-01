@@ -11,6 +11,15 @@
 
 #include <catch2/catch_all.hpp>
 
+using Catch::Matchers::Equals;
+using Catch::Matchers::WithinAbs;
+
+static constexpr double PRECISION = 0.00001;
+
+static auto Within(float value) {
+    return WithinAbs(value, PRECISION);
+}
+
 static bool fuzzyEq(const Sound& s1, const Sound& s2) {
     QMetaObject mo = BaseSound::staticMetaObject;
     for (int i = 0; i < mo.propertyCount(); ++i) {
@@ -19,7 +28,7 @@ static bool fuzzyEq(const Sound& s1, const Sound& s2) {
         QVariant v2 = property.read(&s2);
 
         if (property.type() == QVariant::Double) {
-            if (v1.toDouble() != Catch::Approx(v2.toDouble())) {
+            if (qAbs(v1.toDouble() - v2.toDouble()) > PRECISION) {
                 return false;
             }
         } else {
@@ -37,10 +46,12 @@ TEST_CASE("Sound") {
         Sound sound;
         auto path = QUrl::fromLocalFile(QString(TEST_FIXTURES_DIR) + "/pickup.sfxr");
         REQUIRE(sound.load(path));
-        CHECK(sound.waveForm() == 0);
-        CHECK(sound.sustainTime() == Catch::Approx(0.05916));
-        CHECK(sound.baseFrequency() == Catch::Approx(0.5019));
-        CHECK(sound.changeSpeed() == Catch::Approx(0.54938));
+        CHECK(sound.waveForm() == WaveForm::Enum::Square);
+        CHECK_THAT(sound.sustainTime(), Within(0.05916));
+        CHECK_THAT(sound.sustainTime(), Within(0.05916));
+        CHECK_THAT(sound.sustainTime(), Within(0.05916));
+        CHECK_THAT(sound.baseFrequency(), Within(0.5019));
+        CHECK_THAT(sound.changeSpeed(), Within(0.54938));
         CHECK(sound.phaserOffset() == 0);
     }
 
@@ -48,10 +59,10 @@ TEST_CASE("Sound") {
         Sound sound;
         auto path = QUrl::fromLocalFile(QString(TEST_FIXTURES_DIR) + "/pickup.sfxj");
         REQUIRE(sound.load(path));
-        CHECK(sound.waveForm() == 0);
-        CHECK(sound.sustainTime() == Catch::Approx(0.05916));
-        CHECK(sound.baseFrequency() == Catch::Approx(0.5019));
-        CHECK(sound.changeSpeed() == Catch::Approx(0.54938));
+        CHECK(sound.waveForm() == WaveForm::Enum::Square);
+        CHECK_THAT(sound.sustainTime(), Within(0.05916));
+        CHECK_THAT(sound.baseFrequency(), Within(0.5019));
+        CHECK_THAT(sound.changeSpeed(), Within(0.54938));
         CHECK(sound.phaserOffset() == 0);
     }
 
