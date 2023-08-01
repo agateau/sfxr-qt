@@ -9,7 +9,7 @@
 #include <QTemporaryDir>
 #include <QUrl>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 static bool fuzzyEq(const Sound& s1, const Sound& s2) {
     QMetaObject mo = BaseSound::staticMetaObject;
@@ -19,7 +19,7 @@ static bool fuzzyEq(const Sound& s1, const Sound& s2) {
         QVariant v2 = property.read(&s2);
 
         if (property.type() == QVariant::Double) {
-            if (v1.toDouble() != Approx(v2.toDouble())) {
+            if (v1.toDouble() != Catch::Approx(v2.toDouble())) {
                 return false;
             }
         } else {
@@ -38,9 +38,9 @@ TEST_CASE("Sound") {
         auto path = QUrl::fromLocalFile(QString(TEST_FIXTURES_DIR) + "/pickup.sfxr");
         REQUIRE(sound.load(path));
         CHECK(sound.waveForm() == 0);
-        CHECK(sound.sustainTime() == Approx(0.05916));
-        CHECK(sound.baseFrequency() == Approx(0.5019));
-        CHECK(sound.changeSpeed() == Approx(0.54938));
+        CHECK(sound.sustainTime() == Catch::Approx(0.05916));
+        CHECK(sound.baseFrequency() == Catch::Approx(0.5019));
+        CHECK(sound.changeSpeed() == Catch::Approx(0.54938));
         CHECK(sound.phaserOffset() == 0);
     }
 
@@ -49,9 +49,9 @@ TEST_CASE("Sound") {
         auto path = QUrl::fromLocalFile(QString(TEST_FIXTURES_DIR) + "/pickup.sfxj");
         REQUIRE(sound.load(path));
         CHECK(sound.waveForm() == 0);
-        CHECK(sound.sustainTime() == Approx(0.05916));
-        CHECK(sound.baseFrequency() == Approx(0.5019));
-        CHECK(sound.changeSpeed() == Approx(0.54938));
+        CHECK(sound.sustainTime() == Catch::Approx(0.05916));
+        CHECK(sound.baseFrequency() == Catch::Approx(0.5019));
+        CHECK(sound.changeSpeed() == Catch::Approx(0.54938));
         CHECK(sound.phaserOffset() == 0);
     }
 
