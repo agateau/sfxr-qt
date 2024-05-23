@@ -49,7 +49,7 @@ Building SFXR Qt also requires [qpropgen][], a tool to generate Qt properties.  
 
 qpropgen is written in Python 3, so make sure you have Python 3 and pip installed, then run:
 
-    pip3 install -r qpropgen/requirements.txt
+    pip3 install -r 3rdparty/qpropgen/requirements.txt
 
 ### Step 3
 
