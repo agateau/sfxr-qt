@@ -3,7 +3,7 @@
 #include "Sound.h"
 #include "Synthesizer.h"
 
-#include <QFile>
+#include <QSaveFile>
 #include <QUrl>
 #include <QtEndian>
 
@@ -18,13 +18,7 @@ public:
     ~WavExportStrategy() {
     }
 
-    bool open(const QString& path) {
-        auto file = std::make_unique<QFile>(path);
-        if (!file->open(QIODevice::WriteOnly)) {
-            return false;
-        }
-        mDevice = std::move(file);
-        return true;
+    explicit WavExportStrategy(QIODevice* device) : mDevice(device) {
     }
 
     qint64 fwrite(const void* ptr, size_t size) {
@@ -58,7 +52,7 @@ public:
     void write(qreal sample) override;
 
 private:
-    std::unique_ptr<QIODevice> mDevice;
+    QIODevice* mDevice;
 };
 
 void WavExportStrategy::write(qreal ssample) {
@@ -87,10 +81,11 @@ WavSaver::WavSaver(QObject* parent) : BaseWavSaver(parent) {
 
 bool WavSaver::save(Sound* sound, const QUrl& url) {
     QString path = url.path();
-    WavExportStrategy wav;
-    if (!wav.open(path)) {
+    QSaveFile file(path);
+    if (!file.open(QIODevice::WriteOnly)) {
         return false;
     }
+    WavExportStrategy wav(&file);
     wav.wav_bits = bits();
     wav.wav_freq = frequency();
 
@@ -132,5 +127,5 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
     quint64 dataChunkSize = wav.file_sampleswritten * wav.wav_bits / 8;
     wav.fwriteUInt32(dataChunkSize); // chunk size (data)
 
-    return true;
+    return file.commit();
 }
