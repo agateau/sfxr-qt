@@ -60,6 +60,7 @@ ColumnLayout {
             id: saveFileDialog
             title: qsTr("Save sound")
             selectExisting: false
+            defaultSuffix: "sfxj"
             nameFilters: [
                 qsTr("SFXR JSON (*.sfxj)") + " (*.sfxj)",
                 qsTr("SFXR Binary (from the original SFXR app) (*.sfxr)") + " (*.sfxr)",
@@ -116,6 +117,7 @@ ColumnLayout {
         FileDialog {
             id: exportWavFileDialog
             selectExisting: false
+            defaultSuffix: "wav"
             title: qsTr("Export as WAV")
             nameFilters: [qsTr("Wav files") + " (*.wav)",
                 qsTr("All files") + " (*)"]

@@ -6,10 +6,12 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
+#include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMetaProperty>
+#include <QSaveFile>
 #include <QUrl>
 #include <QtEndian>
 
@@ -115,19 +117,38 @@ Result loadSfxr(Sound* sound, QIODevice* device) {
 
 Result save(const Sound* sound, const QUrl& url) {
     QString path = url.path();
-    QFile file(path);
+    QSaveFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
         auto message = QCoreApplication::translate("SoundIO", "Cannot write file.");
         return Result::createError(message);
     }
-    QString ext = path.section(".", -1);
-    if (ext == "sfxr") {
-        return saveSfxr(sound, &file);
-    } else if (ext == "sfxj") {
-        return saveSfxj(sound, &file);
+
+    QString ext = QFileInfo(path).suffix();
+    if (ext.isEmpty()) {
+        auto message = QCoreApplication::translate("SoundIO", "No file format provided.");
+        return Result::createError(message);
     }
-    auto message = QCoreApplication::translate("SoundIO", "Cannot save to format \"%1\".").arg(ext);
-    return Result::createError(message);
+
+    Result result;
+    if (ext == "sfxr") {
+        result = saveSfxr(sound, &file);
+    } else if (ext == "sfxj") {
+        result = saveSfxj(sound, &file);
+    } else {
+        auto message =
+            QCoreApplication::translate("SoundIO", "Cannot save to format \"%1\".").arg(ext);
+        return Result::createError(message);
+    }
+    if (!result.isOk()) {
+        return result;
+    }
+
+    if (!file.commit()) {
+        auto message = QCoreApplication::translate("SoundIO", "Failed to save file: %1.")
+                           .arg(file.errorString());
+        return Result::createError(message);
+    }
+    return {};
 }
 
 Result saveSfxr(const Sound* sound, QIODevice* device) {
