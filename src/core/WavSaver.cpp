@@ -9,7 +9,7 @@
 
 class WavExportStrategy : public Synthesizer::SynthStrategy {
 public:
-    int file_sampleswritten;
+    int file_sampleswritten = 0;
     qreal filesample = 0.0f;
     int fileacc = 0;
     int wav_bits = 16;
