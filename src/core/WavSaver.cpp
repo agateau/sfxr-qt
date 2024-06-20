@@ -72,8 +72,8 @@ void WavExportStrategy::write(qreal ssample) {
             fwrite(&isample, 1);
         }
         filesample = 0.0;
+        file_sampleswritten++;
     }
-    file_sampleswritten++;
 }
 
 WavSaver::WavSaver(QObject* parent) : BaseWavSaver(parent) {
@@ -119,10 +119,9 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
     }
 
     // seek back to header and write size info
+    auto fileSize = wav.ftell() - 8;
     wav.fseek(4);
-    quint64 remainingFileSize =
-        foutstream_datasize - 4 + wav.file_sampleswritten * wav.wav_bits / 8;
-    wav.fwriteUInt32(remainingFileSize); // remaining file size
+    wav.fwriteUInt32(fileSize);
     wav.fseek(foutstream_datasize);
     quint64 dataChunkSize = wav.file_sampleswritten * wav.wav_bits / 8;
     wav.fwriteUInt32(dataChunkSize); // chunk size (data)
