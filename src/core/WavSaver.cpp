@@ -85,28 +85,33 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
     if (!file.open(QIODevice::WriteOnly)) {
         return false;
     }
+
+    quint32 bytesPerBlock = bits() / 8;
+
     WavExportStrategy wav(&file);
     wav.wav_bits = bits();
     wav.wav_freq = frequency();
 
-    // write wav header
-    wav.fwrite("RIFF", 4); // "RIFF"
-    wav.fwriteUInt32(0);   // remaining file size
-    wav.fwrite("WAVE", 4); // "WAVE"
+    // RIFF chunk
+    wav.fwrite("RIFF", 4);
+    wav.fwriteUInt32(0); // remaining file size. Filled at the end
+    wav.fwrite("WAVE", 4);
 
-    wav.fwrite("fmt ", 4);          // "fmt "
+    // "fmt " chunk
+    wav.fwrite("fmt ", 4);
     wav.fwriteUInt32(16);           // chunk size
     wav.fwriteUInt16(1);            // compression code
     wav.fwriteUInt16(1);            // channels
     wav.fwriteUInt32(wav.wav_freq); // sample rate
-    quint64 bytesPerSec = wav.wav_freq * wav.wav_bits / 8;
+    quint64 bytesPerSec = wav.wav_freq * bytesPerBlock;
     wav.fwriteUInt32(bytesPerSec);      // bytes/sec
-    wav.fwriteUInt16(wav.wav_bits / 8); // block align
+    wav.fwriteUInt16(bytesPerBlock);    // block align
     wav.fwriteUInt16(wav.wav_bits);     // bits per sample
 
-    wav.fwrite("data", 4); // "data"
+    // "data" chunk
+    wav.fwrite("data", 4);
     auto foutstream_datasize = wav.ftell();
-    wav.fwriteUInt32(foutstream_datasize); // chunk size
+    wav.fwriteUInt32(0); // chunk size. Filled at the end
 
     // write sample data
     wav.file_sampleswritten = 0;
@@ -118,13 +123,15 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
     while (synth.synthSample(256, &wav)) {
     }
 
-    // seek back to header and write size info
+    // Fill RIFF chunk
     auto fileSize = wav.ftell() - 8;
     wav.fseek(4);
     wav.fwriteUInt32(fileSize);
+
+    // Fill data chunk
     wav.fseek(foutstream_datasize);
-    quint64 dataChunkSize = wav.file_sampleswritten * wav.wav_bits / 8;
-    wav.fwriteUInt32(dataChunkSize); // chunk size (data)
+    quint32 dataChunkSize = wav.file_sampleswritten * bytesPerBlock;
+    wav.fwriteUInt32(dataChunkSize);
 
     return file.commit();
 }
