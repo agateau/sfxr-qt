@@ -9,16 +9,11 @@
 
 class WavExportStrategy : public Synthesizer::SynthStrategy {
 public:
-    int file_sampleswritten = 0;
-    qreal filesample = 0.0f;
-    int fileacc = 0;
-    int wav_bits = 16;
-    int wav_freq = 44100;
-
-    ~WavExportStrategy() {
+    WavExportStrategy(QIODevice* device, int bits, int frequency)
+            : mDevice(device), mBits(bits), mFrequency(frequency) {
     }
 
-    explicit WavExportStrategy(QIODevice* device) : mDevice(device) {
+    ~WavExportStrategy() {
     }
 
     qint64 fwrite(const void* ptr, size_t size) {
@@ -51,28 +46,38 @@ public:
     // Synthesizer::SynthStrategy implementation
     void write(qreal sample) override;
 
+    int sampleCount() const {
+        return mSampleCount;
+    }
+
 private:
-    QIODevice* mDevice;
+    QIODevice* const mDevice;
+    const int mBits = 16;
+    const int mFrequency = 44100;
+
+    qreal mAccumulatedSamples = 0.0f;
+    int mAccumulatedCount = 0;
+    int mSampleCount = 0;
 };
 
 void WavExportStrategy::write(qreal ssample) {
     // quantize depending on format
     // accumulate/count to accomodate variable sample rate?
     ssample = qBound(-1.0, ssample, 1.0);
-    filesample += ssample;
-    fileacc++;
-    if (wav_freq == 44100 || fileacc == 2) {
-        filesample /= fileacc;
-        fileacc = 0;
-        if (wav_bits == 16) {
-            qint16 isample = qint16(filesample * 32000);
+    mAccumulatedSamples += ssample;
+    mAccumulatedCount++;
+    if (mFrequency == 44100 || mAccumulatedCount == 2) {
+        mAccumulatedSamples /= mAccumulatedCount;
+        mAccumulatedCount = 0;
+        if (mBits == 16) {
+            qint16 isample = qint16(mAccumulatedSamples * 32000);
             fwriteInt16(isample);
         } else {
-            quint8 isample = quint8(filesample * 127 + 128);
+            quint8 isample = quint8(mAccumulatedSamples * 127 + 128);
             fwrite(&isample, 1);
         }
-        filesample = 0.0;
-        file_sampleswritten++;
+        mAccumulatedSamples = 0.0;
+        mSampleCount++;
     }
 }
 
@@ -88,9 +93,7 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
 
     quint32 bytesPerBlock = bits() / 8;
 
-    WavExportStrategy wav(&file);
-    wav.wav_bits = bits();
-    wav.wav_freq = frequency();
+    WavExportStrategy wav(&file, bits(), frequency());
 
     // RIFF chunk
     wav.fwrite("RIFF", 4);
@@ -99,14 +102,14 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
 
     // "fmt " chunk
     wav.fwrite("fmt ", 4);
-    wav.fwriteUInt32(16);           // chunk size
-    wav.fwriteUInt16(1);            // compression code
-    wav.fwriteUInt16(1);            // channels
-    wav.fwriteUInt32(wav.wav_freq); // sample rate
-    quint64 bytesPerSec = wav.wav_freq * bytesPerBlock;
-    wav.fwriteUInt32(bytesPerSec);      // bytes/sec
-    wav.fwriteUInt16(bytesPerBlock);    // block align
-    wav.fwriteUInt16(wav.wav_bits);     // bits per sample
+    wav.fwriteUInt32(16);          // chunk size
+    wav.fwriteUInt16(1);           // compression code
+    wav.fwriteUInt16(1);           // channels
+    wav.fwriteUInt32(frequency()); // sample rate
+    quint64 bytesPerSec = frequency() * bytesPerBlock;
+    wav.fwriteUInt32(bytesPerSec);   // bytes/sec
+    wav.fwriteUInt16(bytesPerBlock); // block align
+    wav.fwriteUInt16(bits());        // bits per sample
 
     // "data" chunk
     wav.fwrite("data", 4);
@@ -114,10 +117,6 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
     wav.fwriteUInt32(0); // chunk size. Filled at the end
 
     // write sample data
-    wav.file_sampleswritten = 0;
-    wav.filesample = 0.0;
-    wav.fileacc = 0;
-
     Synthesizer synth;
     synth.init(sound);
     while (synth.synthSample(256, &wav)) {
@@ -130,7 +129,7 @@ bool WavSaver::save(Sound* sound, const QUrl& url) {
 
     // Fill data chunk
     wav.fseek(foutstream_datasize);
-    quint32 dataChunkSize = wav.file_sampleswritten * bytesPerBlock;
+    quint32 dataChunkSize = wav.sampleCount() * bytesPerBlock;
     wav.fwriteUInt32(dataChunkSize);
 
     return file.commit();
