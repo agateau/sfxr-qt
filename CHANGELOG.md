@@ -1,18 +1,31 @@
 # Changelog
 
+## 1.5.1 - 2024-06-24
+
+### Fixed
+
+- Fix rendering of very short sounds (#21) (Aurélien Gâteau)
+- Fix 22.5 khz wav files being reported as truncated by some apps (#22) (Aurélien Gâteau)
+
+### Internal
+
+- Use system version of Catch2 (Matthias Mailänder)
+- Fix build failure (Alex Myczko)
+- Port to Catch2 3.4.0 (Aurélien Gâteau)
+
 ## 1.5.0 - 2022-03-18
 
 ### Added
 
-- Make it possible to adjust sliders with the mouse wheel (Aurelien Gateau).
-- Show a preview of the sound on top of the sliders (Aurelien Gateau).
+- Make it possible to adjust sliders with the mouse wheel (Aurélien Gâteau).
+- Show a preview of the sound on top of the sliders (Aurélien Gâteau).
 
 ### Fixed
 
 - Exit on multiple positional arguments (Linus Vanas).
 - Fix CLI needing a graphical environment to work (Linus Vanas).
 - Add a couple more error messages to the CLI (Linus Vanas).
-- Fix wav final volume being higher than the preview (Aurelien Gateau).
+- Fix wav final volume being higher than the preview (Aurélien Gâteau).
 
 
 ## 1.4.0 - 2022-01-12
@@ -20,20 +33,20 @@
 ### Added
 
 - SFXR-Qt can now export wavs from the command line (#9) (Linus Vana).
-- Added tooltips (Aurelien Gateau).
-- Implemented "Randomize", based on the original SFXR code (Aurelien Gateau).
-- Make it possible to load sounds from the command line (Aurelien Gateau).
+- Added tooltips (Aurélien Gâteau).
+- Implemented "Randomize", based on the original SFXR code (Aurélien Gâteau).
+- Make it possible to load sounds from the command line (Aurélien Gâteau).
 
 ### Fixed
 
-- Fixed crash when clicking too fast on the remove button (#8) (Aurelien Gateau).
-- Fixed build on big-endian machines (#7) (Aurelien Gateau).
+- Fixed crash when clicking too fast on the remove button (#8) (Aurélien Gâteau).
+- Fixed build on big-endian machines (#7) (Aurélien Gâteau).
 
 ### Internal
 
-- Reorganized source tree to match cookiecutter-qt-app layout (Aurelien Gateau).
-- Updated clang-format config to group and sort includes (Aurelien Gateau).
-- Use GitHub Actions (Aurelien Gateau).
+- Reorganized source tree to match cookiecutter-qt-app layout (Aurélien Gâteau).
+- Updated clang-format config to group and sort includes (Aurélien Gâteau).
+- Use GitHub Actions (Aurélien Gâteau).
 
 ## 1.3.0 - 2019-09-15
 
