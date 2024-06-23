@@ -54,7 +54,7 @@ struct MinMax {
 
 static MinMax computeMinMax(const QVector<qreal>& samples, qreal from, qreal to) {
     int fromIdx = from * samples.length();
-    int toIdx = to * samples.length();
+    int toIdx = qMax(int(to * samples.length()), fromIdx + 1);
     MinMax minMax;
     for (int idx = fromIdx; idx < toIdx; ++idx) {
         auto volume = samples[idx];
@@ -140,6 +140,9 @@ void SoundPreview::updatePreview() {
     }
 
     auto samples = mSoundPlayer->samples();
+    if (samples.isEmpty()) {
+        return;
+    }
     QFuture<QImage> future = QtConcurrent::run(generatePreviewImage, samples, width(), height());
     mPreviewWatcher->setFuture(future);
 }
